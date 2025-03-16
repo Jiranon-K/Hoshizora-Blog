@@ -1,6 +1,7 @@
 import { executeQuery } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 
 export async function GET(request, { params }) {
@@ -137,7 +138,10 @@ export async function PUT(request, { params }) {
       ]
     });
     
-    
+    revalidatePath('/');  
+    revalidatePath('/blog'); 
+    revalidatePath(`/blog/${data.slug}`);  
+
     const updatedPost = await executeQuery({
       query: 'SELECT * FROM posts WHERE id = ?',
       values: [id]
@@ -196,7 +200,7 @@ export async function DELETE(request, { params }) {
       );
     }
     
-    // ลบบทความ
+    
     await executeQuery({
       query: 'DELETE FROM posts WHERE id = ?',
       values: [id]

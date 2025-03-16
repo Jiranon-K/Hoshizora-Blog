@@ -3,6 +3,18 @@ import Link from "next/link";
 import { executeQuery } from "@/lib/db";
 
 
+const getImageUrlWithTimestamp = (imageUrl) => {
+  if (!imageUrl) return "/placeholder-image.jpg";
+  
+  
+  if (imageUrl.startsWith('http')) {
+    
+    return `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}v=${Date.now()}`;
+  }
+  
+  
+  return `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}v=${Date.now()}`;
+};
 
 const BlogPostCard = ({ title, description, category, date, author, authorTitle, image, slug }) => {
   return (
@@ -10,7 +22,7 @@ const BlogPostCard = ({ title, description, category, date, author, authorTitle,
       {/* Image Container with Aspect Ratio */}
       <figure className="relative h-48 overflow-hidden">
         <img
-          src={image}
+          src={getImageUrlWithTimestamp(image)}  
           alt={title}
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
@@ -42,7 +54,9 @@ const BlogPostCard = ({ title, description, category, date, author, authorTitle,
         <div className="flex items-center mt-auto pt-2 border-t border-gray-100">
           <div className="w-8 h-8 rounded-full overflow-hidden mr-3">
             <img 
-              src={typeof author === 'object' ? author.avatar || "/avatar/Aharen-san.webp" : "/avatar/Aharen-san.webp"} 
+              src={typeof author === 'object' ? 
+                 getImageUrlWithTimestamp(author.avatar || "/avatar/Aharen-san.webp") : 
+                 getImageUrlWithTimestamp("/avatar/Aharen-san.webp")}  
               alt={typeof author === 'object' ? author.display_name || "Author" : author} 
               className="w-full h-full object-cover"
             />
