@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import AdminNavbar from '../../components/AdminNavbar';
 import Link from 'next/link';
 
+
 export default function PostsPage() {
   const [posts, setPosts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -15,6 +16,7 @@ export default function PostsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [deleteLoading, setDeleteLoading] = useState(false);
   
   const router = useRouter();
 
@@ -33,10 +35,10 @@ export default function PostsPage() {
       router.push('/login');
     }
 
-    
+   
     fetchPosts();
     
-    
+   
     fetchCategories();
   }, [router]);
 
@@ -51,6 +53,7 @@ export default function PostsPage() {
       setPosts(data);
     } catch (error) {
       console.error('Error fetching posts:', error);
+      alert('ไม่สามารถดึงข้อมูลบทความได้: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -66,6 +69,7 @@ export default function PostsPage() {
       setCategories(data);
     } catch (error) {
       console.error('Error fetching categories:', error);
+      alert('ไม่สามารถดึงข้อมูลหมวดหมู่ได้: ' + error.message);
     }
   };
 
@@ -88,7 +92,7 @@ export default function PostsPage() {
     }
   };
 
-  
+
   const openDeleteModal = (id) => {
     setDeleteId(id);
     setDeleteModalOpen(true);
@@ -96,22 +100,44 @@ export default function PostsPage() {
 
   
   const handleDelete = async () => {
+    if (!deleteId) {
+      alert('ไม่พบ ID ของบทความที่ต้องการลบ');
+      setDeleteModalOpen(false);
+      return;
+    }
+    
     try {
+      setDeleteLoading(true);
+      console.log('Deleting post with ID:', deleteId);
+      
       const response = await fetch(`/api/posts/${deleteId}`, {
         method: 'DELETE',
       });
       
+    
       if (!response.ok) {
-        throw new Error('Failed to delete post');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'ไม่สามารถลบบทความได้');
       }
       
+      const data = await response.json();
+      console.log('Delete response:', data);
       
-      fetchPosts();
       
+      setPosts(prevPosts => prevPosts.filter(post => post.id !== deleteId));
+      
+     
       setDeleteModalOpen(false);
+      setDeleteId(null);
+      
+     
+      alert(data.message || 'ลบบทความเรียบร้อยแล้ว');
+      
     } catch (error) {
       console.error('Error deleting post:', error);
-      alert('เกิดข้อผิดพลาดในการลบบทความ');
+      alert(error.message || 'เกิดข้อผิดพลาดในการลบบทความ');
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -125,13 +151,13 @@ export default function PostsPage() {
     return matchesSearch && matchesStatus && matchesCategory;
   });
 
-  
+ 
   const getCategoryName = (categoryId) => {
     const category = categories.find(cat => cat.id === categoryId);
     return category ? category.name : 'ไม่มีหมวดหมู่';
   };
 
-  
+
   const getStatusText = (status) => {
     switch (status) {
       case 'draft': return 'ฉบับร่าง';
@@ -141,7 +167,7 @@ export default function PostsPage() {
     }
   };
 
-  
+ 
   const getStatusColor = (status) => {
     switch (status) {
       case 'draft': return 'badge-warning';
@@ -167,12 +193,12 @@ export default function PostsPage() {
       <AdminNavbar user={user} onLogout={handleLogout} />
       
       <div className="container mx-auto p-4">
-        <div className="bg-base-100 rounded-lg shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-            <h1 className="text-2xl font-bold">จัดการบทความ</h1>
+            <h1 className="text-2xl font-bold text-blue-600">จัดการบทความ</h1>
             <Link 
               href="/admin/posts/create" 
-              className="btn btn-primary"
+              className="btn btn-primary bg-blue-800 border-none  hover:bg-blue-500"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
@@ -286,13 +312,40 @@ export default function PostsPage() {
       
       
       {deleteModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg">ยืนยันการลบบทความ</h3>
+        <div className="fixed inset-0 backdrop-brightness-75 flex items-center justify-center z-50 p-4" 
+             onClick={(e) => {
+              
+               if (e.target === e.currentTarget) {
+                 setDeleteModalOpen(false);
+               }
+             }}>
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 overflow-hidden" 
+               onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-bold text-lg mb-4">ยืนยันการลบบทความ</h3>
             <p className="py-4">คุณแน่ใจหรือไม่ว่าต้องการลบบทความนี้? การกระทำนี้ไม่สามารถย้อนกลับได้</p>
-            <div className="modal-action">
-              <button className="btn btn-neutral" onClick={() => setDeleteModalOpen(false)}>ยกเลิก</button>
-              <button className="btn btn-error" onClick={handleDelete}>ลบบทความ</button>
+            <div className="flex justify-end gap-3 mt-6">
+              <button 
+                className="px-4 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors"
+                onClick={() => setDeleteModalOpen(false)}
+                disabled={deleteLoading}
+              >
+                ยกเลิก
+              </button>
+              <button 
+                className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors flex items-center gap-2"
+                onClick={handleDelete}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    กำลังลบ...
+                  </>
+                ) : 'ลบบทความ'}
+              </button>
             </div>
           </div>
         </div>

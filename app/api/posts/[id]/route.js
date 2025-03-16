@@ -4,11 +4,14 @@ import { verifyToken } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 
 
-export async function GET(request, { params }) {
+
+
+export async function GET(request, context) {
   try {
-    const { id } = params;
+   
+    const id = context.params.id;
     
-    
+ 
     const posts = await executeQuery({
       query: `
         SELECT p.*, c.name as category_name
@@ -36,12 +39,13 @@ export async function GET(request, { params }) {
   }
 }
 
-
-export async function PUT(request, { params }) {
+// อัปเดตบทความ
+export async function PUT(request, context) {
   try {
-    const { id } = params;
     
+    const id = context.params.id;
     
+   
     const token = request.cookies.get('blog_token')?.value;
     if (!token) {
       return NextResponse.json(
@@ -79,7 +83,7 @@ export async function PUT(request, { params }) {
       );
     }
     
-   
+    
     const data = await request.json();
     
     
@@ -107,10 +111,10 @@ export async function PUT(request, { params }) {
     
     
     const publishedAt = existingPost[0].published_at || 
-                        (data.status === 'published' && existingPost[0].status !== 'published' ? 
-                         new Date() : null);
+                       (data.status === 'published' && existingPost[0].status !== 'published' ? 
+                       new Date() : null);
     
-    
+   
     await executeQuery({
       query: `
         UPDATE posts
@@ -138,10 +142,12 @@ export async function PUT(request, { params }) {
       ]
     });
     
-    revalidatePath('/');  
-    revalidatePath('/blog'); 
-    revalidatePath(`/blog/${data.slug}`);  
-
+    
+    revalidatePath('/');
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${data.slug}`);
+    
+    
     const updatedPost = await executeQuery({
       query: 'SELECT * FROM posts WHERE id = ?',
       values: [id]
@@ -158,11 +164,22 @@ export async function PUT(request, { params }) {
 }
 
 
-export async function DELETE(request, { params }) {
+export async function DELETE(request, context) {
   try {
-    const { id } = params;
     
+    const id = context.params.id;
     
+    console.log('Attempting to delete post with ID:', id);
+    
+   
+    if (!id || isNaN(parseInt(id))) {
+      return NextResponse.json(
+        { error: 'ID ไม่ถูกต้อง' },
+        { status: 400 }
+      );
+    }
+    
+   
     const token = request.cookies.get('blog_token')?.value;
     if (!token) {
       return NextResponse.json(
@@ -192,25 +209,57 @@ export async function DELETE(request, { params }) {
       );
     }
     
-    
+   
     if (user.role !== 'admin' && existingPost[0].user_id !== user.id) {
       return NextResponse.json(
         { error: 'คุณไม่มีสิทธิ์ลบบทความนี้' },
         { status: 403 }
       );
     }
+
+    console.log('Authorization passed, proceeding with deletion...');
     
+    try {
+      
+      await executeQuery({
+        query: 'DELETE FROM posts WHERE id = ?',
+        values: [id]
+      });
+      
+      console.log('Post deleted successfully');
     
-    await executeQuery({
-      query: 'DELETE FROM posts WHERE id = ?',
-      values: [id]
-    });
-    
-    return NextResponse.json({ success: true, message: 'ลบบทความเรียบร้อยแล้ว' });
+      revalidatePath('/');
+      revalidatePath('/blog');
+      revalidatePath('/admin/posts');
+      
+      return NextResponse.json({ 
+        success: true, 
+        message: 'ลบบทความเรียบร้อยแล้ว',
+        deletedId: id
+      });
+    } catch (dbError) {
+      console.error('Database error when deleting post:', dbError);
+      
+     
+      if (dbError.code === 'ER_ROW_IS_REFERENCED' || dbError.errno === 1451) {
+        return NextResponse.json(
+          { 
+            error: 'ไม่สามารถลบบทความนี้ได้เนื่องจากมีข้อมูลที่เชื่อมโยงอยู่ กรุณาลบข้อมูลที่เชื่อมโยงก่อน',
+            details: dbError.message
+          },
+          { status: 400 }
+        );
+      }
+      
+      throw dbError;
+    }
   } catch (error) {
     console.error('Error deleting post:', error);
     return NextResponse.json(
-      { error: 'เกิดข้อผิดพลาดในการลบบทความ' },
+      { 
+        error: 'เกิดข้อผิดพลาดในการลบบทความ', 
+        details: error.message 
+      },
       { status: 500 }
     );
   }

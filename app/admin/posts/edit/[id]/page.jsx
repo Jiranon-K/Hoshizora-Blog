@@ -6,13 +6,16 @@ import AdminNavbar from '../../../../components/AdminNavbar';
 import Link from 'next/link';
 
 export default function EditPostPage({ params }) {
-  const { id } = params;
+ 
+  const router = useRouter();
+  
+  
+  const [postId, setPostId] = useState(null);
   const [post, setPost] = useState(null);
   const [categories, setCategories] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const router = useRouter();
   
   
   const [formData, setFormData] = useState({
@@ -29,7 +32,12 @@ export default function EditPostPage({ params }) {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    
+   
+    const pathSegments = window.location.pathname.split('/');
+    const idFromUrl = pathSegments[pathSegments.length - 1];
+    setPostId(idFromUrl);
+
+   
     const userData = localStorage.getItem('blog_user');
     if (userData) {
       try {
@@ -42,15 +50,17 @@ export default function EditPostPage({ params }) {
     } else {
       router.push('/login');
     }
-    
-    
-    fetchPost();
-    
-    
-    fetchCategories();
-  }, [router, id]);
+  }, [router]);
 
-  const fetchPost = async () => {
+  
+  useEffect(() => {
+    if (postId) {
+      fetchPost(postId);
+      fetchCategories();
+    }
+  }, [postId]);
+
+  const fetchPost = async (id) => {
     try {
       const response = await fetch(`/api/posts/${id}`);
       if (!response.ok) {
@@ -110,7 +120,7 @@ export default function EditPostPage({ params }) {
     }
   };
 
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     
@@ -146,11 +156,16 @@ export default function EditPostPage({ params }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ฟังก์ชั่นจัดการการส่งฟอร์ม
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // ตรวจสอบข้อมูล
+    if (!postId) {
+      alert('ไม่พบ ID ของบทความที่ต้องการแก้ไข');
+      return;
+    }
+    
+    
     if (!validateForm()) {
       return;
     }
@@ -158,7 +173,7 @@ export default function EditPostPage({ params }) {
     setSubmitting(true);
     
     try {
-      const response = await fetch(`/api/posts/${id}`, {
+      const response = await fetch(`/api/posts/${postId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -185,17 +200,17 @@ export default function EditPostPage({ params }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-base-200">
+      <div className="min-h-screen bg-neutral">
         <AdminNavbar user={user} onLogout={handleLogout} />
         <div className="flex justify-center items-center h-[80vh]">
-          <span className="loading loading-spinner loading-lg text-neutral"></span>
+          <span className="loading loading-spinner loading-lg text-white"></span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-base-200">
+    <div className="min-h-screen bg-neutral">
       <AdminNavbar user={user} onLogout={handleLogout} />
       
       <div className="container mx-auto p-4">
@@ -288,7 +303,7 @@ export default function EditPostPage({ params }) {
                 {formData.featured_image && (
                   <div className="mt-2">
                     <img 
-                      src={formData.featured_image} 
+                      src={`${formData.featured_image}?v=${Date.now()}`} 
                       alt="ภาพตัวอย่าง" 
                       className="w-full max-w-xs rounded-md shadow-sm" 
                       onError={(e) => {
@@ -362,7 +377,7 @@ export default function EditPostPage({ params }) {
               </div>
             </div>
             
-            
+          
             <div className="flex justify-end gap-4 mt-6">
               <Link href="/admin/posts" className="btn btn-neutral">
                 ยกเลิก
