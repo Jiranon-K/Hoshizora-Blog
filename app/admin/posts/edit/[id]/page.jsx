@@ -4,11 +4,16 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminNavbar from '../../../../components/AdminNavbar';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+
+const RichTextEditor = dynamic(() => import('../../../../components/RichTextEditor'), {
+  ssr: false,
+  loading: () => <div className="h-64 w-full bg-gray-100 animate-pulse rounded"></div>
+});
 
 export default function EditPostPage({ params }) {
- 
   const router = useRouter();
-  
   
   const [postId, setPostId] = useState(null);
   const [post, setPost] = useState(null);
@@ -16,7 +21,6 @@ export default function EditPostPage({ params }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  
   
   const [formData, setFormData] = useState({
     title: '',
@@ -28,16 +32,16 @@ export default function EditPostPage({ params }) {
     category_id: ''
   });
   
- 
   const [errors, setErrors] = useState({});
+  
+  
+  const [isImageSelectorOpen, setIsImageSelectorOpen] = useState(false);
 
   useEffect(() => {
-   
     const pathSegments = window.location.pathname.split('/');
     const idFromUrl = pathSegments[pathSegments.length - 1];
     setPostId(idFromUrl);
 
-   
     const userData = localStorage.getItem('blog_user');
     if (userData) {
       try {
@@ -52,7 +56,6 @@ export default function EditPostPage({ params }) {
     }
   }, [router]);
 
-  
   useEffect(() => {
     if (postId) {
       fetchPost(postId);
@@ -68,7 +71,6 @@ export default function EditPostPage({ params }) {
       }
       const data = await response.json();
       setPost(data);
-      
       
       setFormData({
         title: data.title || '',
@@ -101,7 +103,6 @@ export default function EditPostPage({ params }) {
     }
   };
 
-  
   const handleLogout = async () => {
     try {
       const response = await fetch('/api/auth/logout', {
@@ -120,7 +121,6 @@ export default function EditPostPage({ params }) {
     }
   };
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     
@@ -130,7 +130,23 @@ export default function EditPostPage({ params }) {
     }));
   };
 
-  
+  // จัดการเมื่อเนื้อหาจาก Rich Text Editor มีการเปลี่ยนแปลง
+  const handleEditorChange = (content) => {
+    setFormData(prev => ({
+      ...prev,
+      content
+    }));
+  };
+
+  // จัดการเมื่อเลือกรูปภาพจาก Modal
+  const handleSelectFeaturedImage = (imageUrl) => {
+    setFormData(prev => ({
+      ...prev,
+      featured_image: imageUrl
+    }));
+    setIsImageSelectorOpen(false);
+  };
+
   const validateForm = () => {
     const newErrors = {};
     
@@ -156,7 +172,6 @@ export default function EditPostPage({ params }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -164,7 +179,6 @@ export default function EditPostPage({ params }) {
       alert('ไม่พบ ID ของบทความที่ต้องการแก้ไข');
       return;
     }
-    
     
     if (!validateForm()) {
       return;
@@ -187,7 +201,6 @@ export default function EditPostPage({ params }) {
         throw new Error(data.error || 'เกิดข้อผิดพลาดในการอัปเดตบทความ');
       }
       
-      
       router.push('/admin/posts');
       
     } catch (error) {
@@ -196,6 +209,182 @@ export default function EditPostPage({ params }) {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  // Modal เลือกรูปภาพ
+  const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
+    const [images, setImages] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [uploadFile, setUploadFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState('');
+    const [uploading, setUploading] = useState(false);
+    
+    // โหลดรายการรูปภาพเมื่อ modal เปิด
+    useEffect(() => {
+      if (isOpen) {
+        fetchImages();
+      }
+    }, [isOpen]);
+    
+    // ดึงรายการรูปภาพที่มีอยู่
+    const fetchImages = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('/api/uploads');
+        const data = await response.json();
+        setImages(data.images || []);
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    // จัดการเมื่อเลือกไฟล์จากเครื่อง
+    const handleFileChange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      if (!file.type.startsWith('image/')) {
+        alert('กรุณาเลือกไฟล์รูปภาพเท่านั้น');
+        return;
+      }
+      
+      setUploadFile(file);
+      
+      // แสดงตัวอย่างรูปภาพ
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    };
+    
+    // อัพโหลดรูปภาพไปยังเซิร์ฟเวอร์
+    const handleUpload = async () => {
+      if (!uploadFile) return;
+      
+      setUploading(true);
+      
+      try {
+        const formData = new FormData();
+        formData.append('image', uploadFile);
+        
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'อัพโหลดล้มเหลว');
+        }
+        
+        
+        setImages([{ name: uploadFile.name, url: data.url }, ...images]);
+        
+        
+        setUploadFile(null);
+        setPreviewUrl('');
+        
+        alert('อัพโหลดรูปภาพสำเร็จ');
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        alert(`อัพโหลดล้มเหลว: ${error.message}`);
+      } finally {
+        setUploading(false);
+      }
+    };
+    
+    if (!isOpen) return null;
+    
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col">
+          <div className="p-4 border-b">
+            <h3 className="text-lg font-semibold">เลือกรูปภาพหน้าปก</h3>
+          </div>
+          
+          {/* อัพโหลดรูปภาพ */}
+          <div className="p-4 border-b">
+            <h4 className="font-medium mb-2">อัพโหลดรูปภาพใหม่</h4>
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="file-input file-input-bordered w-full"
+                />
+                <button
+                  onClick={handleUpload}
+                  disabled={!uploadFile || uploading}
+                  className="btn btn-primary mt-2 w-full"
+                >
+                  {uploading ? (
+                    <>
+                      <span className="loading loading-spinner loading-sm"></span>
+                      กำลังอัพโหลด...
+                    </>
+                  ) : (
+                    'อัพโหลดรูปภาพ'
+                  )}
+                </button>
+              </div>
+              
+              {/* ตัวอย่างรูปภาพ */}
+              {previewUrl && (
+                <div className="w-32 h-32 md:w-40 md:h-40 flex-shrink-0 bg-gray-100 border rounded-md overflow-hidden">
+                  <img
+                    src={previewUrl}
+                    alt="ตัวอย่าง"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* แสดงรูปภาพที่มีอยู่แล้ว */}
+          <div className="p-4 flex-1 overflow-y-auto">
+            <h4 className="font-medium mb-2">รูปภาพที่มีอยู่</h4>
+            {loading ? (
+              <div className="flex justify-center p-8">
+                <span className="loading loading-spinner loading-lg"></span>
+              </div>
+            ) : images.length === 0 ? (
+              <div className="bg-gray-50 rounded-md p-8 text-center text-gray-500">
+                ยังไม่มีรูปภาพที่อัพโหลด
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {images.map((image) => (
+                  <div
+                    key={image.url}
+                    onClick={() => onSelectImage(image.url)}
+                    className="aspect-square border rounded-md overflow-hidden cursor-pointer hover:border-primary transition-colors"
+                  >
+                    <img
+                      src={image.url}
+                      alt={image.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          {/* ปุ่มปิด Modal */}
+          <div className="p-4 border-t">
+            <button onClick={onClose} className="btn btn-neutral w-full">
+              ปิด
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   if (loading) {
@@ -271,18 +460,16 @@ export default function EditPostPage({ params }) {
               {errors.description && <span className="text-error text-sm mt-1">{errors.description}</span>}
             </div>
             
-            {/* เนื้อหา */}
+            {/* เนื้อหา (Rich Text Editor) */}
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">เนื้อหาบทความ</span>
               </label>
-              <textarea 
-                name="content"
+              <RichTextEditor
                 value={formData.content}
-                onChange={handleChange}
-                className={`textarea textarea-bordered w-full h-64 ${errors.content ? 'textarea-error' : ''}`}
-                placeholder="ใส่เนื้อหาบทความ (รองรับ HTML)"
-              ></textarea>
+                onChange={handleEditorChange}
+                placeholder="ใส่เนื้อหาบทความของคุณที่นี่..."
+              />
               {errors.content && <span className="text-error text-sm mt-1">{errors.content}</span>}
             </div>
             
@@ -290,20 +477,30 @@ export default function EditPostPage({ params }) {
               {/* ภาพปก */}
               <div className="form-control w-full">
                 <label className="label">
-                  <span className="label-text">ภาพปก (URL)</span>
+                  <span className="label-text">ภาพปก</span>
                 </label>
-                <input 
-                  type="text" 
-                  name="featured_image"
-                  value={formData.featured_image}
-                  onChange={handleChange}
-                  className="input input-bordered w-full"
-                  placeholder="ระบุ URL ของภาพปก"
-                />
+                <div className="flex items-center">
+                  <input 
+                    type="text" 
+                    name="featured_image"
+                    value={formData.featured_image}
+                    onChange={handleChange}
+                    className="input input-bordered w-full mr-2"
+                    placeholder="URL ของภาพปก"
+                    readOnly
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => setIsImageSelectorOpen(true)}
+                  >
+                    เลือกรูปภาพ
+                  </button>
+                </div>
                 {formData.featured_image && (
                   <div className="mt-2">
                     <img 
-                      src={`${formData.featured_image}?v=${Date.now()}`} 
+                      src={formData.featured_image} 
                       alt="ภาพตัวอย่าง" 
                       className="w-full max-w-xs rounded-md shadow-sm" 
                       onError={(e) => {
@@ -315,69 +512,71 @@ export default function EditPostPage({ params }) {
                 )}
               </div>
               
-              {/* หมวดหมู่ */}
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">หมวดหมู่</span>
-                </label>
-                <select 
-                  name="category_id"
-                  value={formData.category_id}
-                  onChange={handleChange}
-                  className="select select-bordered w-full"
-                >
-                  <option value="">-- เลือกหมวดหมู่ --</option>
-                  {categories.map(category => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              {/* สถานะ */}
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">สถานะ</span>
-                </label>
-                <select 
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                  className="select select-bordered w-full"
-                >
-                  <option value="draft">ฉบับร่าง</option>
-                  <option value="published">เผยแพร่</option>
-                  <option value="archived">เก็บถาวร</option>
-                </select>
-              </div>
-              
-              
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">ข้อมูลเพิ่มเติม</span>
-                </label>
-                <div className="bg-base-200 p-4 rounded-md text-sm space-y-2">
-                  <p>
-                    <span className="font-semibold">ID:</span> {post?.id}
-                  </p>
-                  <p>
-                    <span className="font-semibold">ยอดเข้าชม:</span> {post?.views || 0}
-                  </p>
-                  <p>
-                    <span className="font-semibold">วันที่สร้าง:</span> {post?.created_at ? new Date(post.created_at).toLocaleString('th-TH') : '-'}
-                  </p>
-                  <p>
-                    <span className="font-semibold">วันที่เผยแพร่:</span> {post?.published_at ? new Date(post.published_at).toLocaleString('th-TH') : '-'}
-                  </p>
-                  <p>
-                    <span className="font-semibold">วันที่แก้ไขล่าสุด:</span> {post?.updated_at ? new Date(post.updated_at).toLocaleString('th-TH') : '-'}
-                  </p>
+              <div className="space-y-6">
+                {/* หมวดหมู่ */}
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">หมวดหมู่</span>
+                  </label>
+                  <select 
+                    name="category_id"
+                    value={formData.category_id}
+                    onChange={handleChange}
+                    className="select select-bordered w-full"
+                  >
+                    <option value="">-- เลือกหมวดหมู่ --</option>
+                    {categories.map(category => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                {/* สถานะ */}
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">สถานะ</span>
+                  </label>
+                  <select 
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                    className="select select-bordered w-full"
+                  >
+                    <option value="draft">ฉบับร่าง</option>
+                    <option value="published">เผยแพร่</option>
+                    <option value="archived">เก็บถาวร</option>
+                  </select>
+                </div>
+                
+                {/* ข้อมูลเพิ่มเติม */}
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">ข้อมูลเพิ่มเติม</span>
+                  </label>
+                  <div className="bg-base-200 p-4 rounded-md text-sm space-y-2">
+                    <p>
+                      <span className="font-semibold">ID:</span> {post?.id}
+                    </p>
+                    <p>
+                      <span className="font-semibold">ยอดเข้าชม:</span> {post?.views || 0}
+                    </p>
+                    <p>
+                      <span className="font-semibold">วันที่สร้าง:</span> {post?.created_at ? new Date(post.created_at).toLocaleString('th-TH') : '-'}
+                    </p>
+                    <p>
+                      <span className="font-semibold">วันที่เผยแพร่:</span> {post?.published_at ? new Date(post.published_at).toLocaleString('th-TH') : '-'}
+                    </p>
+                    <p>
+                      <span className="font-semibold">วันที่แก้ไขล่าสุด:</span> {post?.updated_at ? new Date(post.updated_at).toLocaleString('th-TH') : '-'}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
             
-          
+            {/* ปุ่มส่งฟอร์ม */}
             <div className="flex justify-end gap-4 mt-6">
               <Link href="/admin/posts" className="btn btn-neutral">
                 ยกเลิก
@@ -396,6 +595,13 @@ export default function EditPostPage({ params }) {
           </form>
         </div>
       </div>
+      
+      
+      <ImageSelectorModal
+        isOpen={isImageSelectorOpen}
+        onClose={() => setIsImageSelectorOpen(false)}
+        onSelectImage={handleSelectFeaturedImage}
+      />
     </div>
   );
 }
