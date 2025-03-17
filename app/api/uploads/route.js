@@ -23,8 +23,6 @@ export async function GET() {
       }
     }
     
-   
-    
     let files = [];
     try {
       console.log("กำลังอ่านรายการไฟล์จากโฟลเดอร์");

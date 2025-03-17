@@ -9,14 +9,14 @@ export default function TestUploadsPage() {
   const [debugInfo, setDebugInfo] = useState(null);
   const [apiResponses, setApiResponses] = useState({});
   
-  
+  // เช็คไฟล์ที่อัปโหลดแล้ว
   useEffect(() => {
     async function fetchImages() {
       try {
         setLoading(true);
         const response = await fetch('/api/uploads');
         
-        
+        // บันทึก response ตัวจริงเพื่อดีบัก
         try {
           const clonedResponse = response.clone();
           const text = await clonedResponse.text();
@@ -56,12 +56,12 @@ export default function TestUploadsPage() {
     fetchImages();
   }, []);
   
- 
+  // เช็คพาธและสิทธิ์ของโฟลเดอร์
   async function checkPaths() {
     try {
       const response = await fetch('/api/debug-paths');
       
-     
+      // บันทึก response ตัวจริงเพื่อดีบัก
       try {
         const clonedResponse = response.clone();
         const text = await clonedResponse.text();
@@ -92,7 +92,7 @@ export default function TestUploadsPage() {
     }
   }
   
-  
+  // อัปโหลดไฟล์ทดสอบ
   async function uploadTestFile(e) {
     e.preventDefault();
     
@@ -111,7 +111,7 @@ export default function TestUploadsPage() {
         body: formData
       });
       
-     
+      // บันทึก response ตัวจริงเพื่อดีบัก
       try {
         const clonedResponse = response.clone();
         const text = await clonedResponse.text();
@@ -177,7 +177,7 @@ export default function TestUploadsPage() {
         ตรวจสอบพาธและสิทธิ์
       </button>
       
-      
+      {/* แสดงผลการตอบกลับของ API เพื่อดีบัก */}
       {Object.keys(apiResponses).length > 0 && (
         <div className="mb-6 p-4 bg-gray-50 rounded overflow-auto">
           <h2 className="text-lg font-semibold mb-2">API Responses (Debug)</h2>

@@ -1,95 +1,116 @@
 import { NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
-import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs/promises';
 import path from 'path';
-import fs from 'fs';
+import { v4 as uuidv4 } from 'uuid';
 
 
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
-
-
-async function ensureDirectoryExists(dir) {
-  try {
-    if (!fs.existsSync(dir)) {
-      console.log(`กำลังสร้างโฟลเดอร์: ${dir}`);
-      await fs.promises.mkdir(dir, { recursive: true });
-      console.log(`สร้างโฟลเดอร์สำเร็จ: ${dir}`);
-    }
-  } catch (error) {
-    console.error(`เกิดข้อผิดพลาดในการสร้างโฟลเดอร์: ${error.message}`);
-    throw error;
-  }
-}
+const UPLOAD_DIR = '/etc/dokploy/applications/jiranonk-blog-q8pgy1/code/public/uploads';  
 
 export async function POST(request) {
   try {
-    console.log("เริ่มกระบวนการอัปโหลดรูปภาพ");
-    console.log("โฟลเดอร์ที่จะใช้:", UPLOAD_DIR);
+    console.log("เริ่มกระบวนการอัปโหลด");
+    console.log("โฟลเดอร์ที่ใช้:", UPLOAD_DIR);
+    
+    
+    try {
+      await fs.mkdir(UPLOAD_DIR, { recursive: true });
+      console.log("ตรวจสอบ/สร้างโฟลเดอร์สำเร็จ:", UPLOAD_DIR);
+    } catch (mkdirError) {
+      console.error("ไม่สามารถสร้างโฟลเดอร์ได้:", mkdirError);
+      return NextResponse.json({ 
+        error: `ไม่สามารถสร้างโฟลเดอร์ได้: ${mkdirError.message}`,
+        path: UPLOAD_DIR 
+      }, { status: 500 });
+    }
     
    
-    await ensureDirectoryExists(UPLOAD_DIR);
+    try {
+      
+      const testPath = path.join(UPLOAD_DIR, `test-${Date.now()}.txt`);
+      await fs.writeFile(testPath, 'test');
     
+      await fs.unlink(testPath);
+      console.log("สามารถเขียนไฟล์ในโฟลเดอร์ได้");
+    } catch (writeTestError) {
+      console.error("ไม่สามารถเขียนไฟล์ทดสอบได้:", writeTestError);
+      return NextResponse.json({ 
+        error: `ไม่สามารถเขียนไฟล์ทดสอบได้: ${writeTestError.message}`,
+        path: UPLOAD_DIR 
+      }, { status: 500 });
+    }
+    
+   
     const formData = await request.formData();
     const file = formData.get('image');
     
     if (!file) {
-      console.log("ไม่พบไฟล์รูปภาพในคำขอ");
-      return NextResponse.json(
-        { error: 'ไม่พบไฟล์รูปภาพ' },
-        { status: 400 }
-      );
+      console.error("ไม่พบไฟล์ในคำขอ");
+      return NextResponse.json({ error: 'ไม่พบไฟล์ในคำขอ' }, { status: 400 });
     }
     
-    console.log(`ข้อมูลไฟล์: ชื่อ=${file.name}, ประเภท=${file.type}, ขนาด=${file.size} bytes`);
+    console.log(`ชื่อไฟล์: ${file.name}, ประเภท: ${file.type}, ขนาด: ${file.size} bytes`);
     
-    const buffer = await file.arrayBuffer();
-    const fileBuffer = Buffer.from(buffer);
-    const filename = file.name;
-    const fileType = file.type;
-    
-    if (!fileType.startsWith('image/')) {
-      console.log(`ประเภทไฟล์ไม่ถูกต้อง: ${fileType}`);
-      return NextResponse.json(
-        { error: 'ไฟล์ที่อัพโหลดต้องเป็นรูปภาพเท่านั้น' },
-        { status: 400 }
-      );
+    if (!file.type.startsWith('image/')) {
+      return NextResponse.json({ error: 'ไฟล์ที่อัพโหลดต้องเป็นรูปภาพเท่านั้น' }, { status: 400 });
     }
     
-    const fileExtension = path.extname(filename);
+    
+    const fileExtension = path.extname(file.name);
     const uniqueFilename = `${uuidv4()}${fileExtension}`;
     const filePath = path.join(UPLOAD_DIR, uniqueFilename);
     
     console.log(`กำลังบันทึกไฟล์ที่: ${filePath}`);
     
     try {
-      await writeFile(filePath, fileBuffer);
-      console.log(`บันทึกไฟล์สำเร็จที่: ${filePath}`);
+   
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      
+     
+      await fs.writeFile(filePath, buffer);
       
       
-      const fileExists = fs.existsSync(filePath);
-      console.log(`ไฟล์มีอยู่จริงหลังจากบันทึก: ${fileExists}`);
+      try {
+        await fs.access(filePath);
+        console.log(`ไฟล์ถูกสร้างสำเร็จที่: ${filePath}`);
+      } catch (accessError) {
+        console.error("ไม่พบไฟล์หลังจากบันทึก:", accessError);
+        return NextResponse.json({ 
+          error: `ไม่พบไฟล์หลังจากบันทึก: ${accessError.message}` 
+        }, { status: 500 });
+      }
+      
+     
+      try {
+        
+        await fs.chmod(filePath, 0o644);
+      } catch (chmodError) {
+        console.warn("ไม่สามารถปรับสิทธิ์ไฟล์ได้:", chmodError);
+       
+      }
+      
+      const imageUrl = `/uploads/${uniqueFilename}`;
+      console.log("การอัปโหลดสำเร็จ! URL:", imageUrl);
+      
+      return NextResponse.json({
+        success: true,
+        url: imageUrl,
+        filename: uniqueFilename,
+        path: filePath
+      });
+      
     } catch (writeError) {
       console.error("เกิดข้อผิดพลาดในการเขียนไฟล์:", writeError);
-      return NextResponse.json(
-        { error: `ไม่สามารถบันทึกไฟล์ได้: ${writeError.message}` },
-        { status: 500 }
-      );
+      return NextResponse.json({ 
+        error: `ไม่สามารถบันทึกไฟล์ได้: ${writeError.message}` 
+      }, { status: 500 });
     }
     
-    const imageUrl = `/uploads/${uniqueFilename}`;
-    console.log(`URL ของรูปภาพ: ${imageUrl}`);
-    
-    return NextResponse.json({
-      success: true,
-      url: imageUrl,
-      filename: uniqueFilename
-    });
-    
   } catch (error) {
-    console.error('Error uploading image:', error);
-    return NextResponse.json(
-      { error: `เกิดข้อผิดพลาดในการอัพโหลดรูปภาพ: ${error.message}` },
-      { status: 500 }
-    );
+    console.error("เกิดข้อผิดพลาดในการอัปโหลด:", error);
+    return NextResponse.json({ 
+      error: `เกิดข้อผิดพลาดในการอัปโหลด: ${error.message}`,
+      stack: error.stack
+    }, { status: 500 });
   }
 }
