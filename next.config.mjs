@@ -2,10 +2,21 @@
 const nextConfig = {
   output: 'standalone',
   images: {
-    domains: ['blog.hoshizora.online', 'localhost'],
+    domains: ['blog.hoshizora.online'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'blog.hoshizora.online',
+        pathname: '/uploads/**',
+      },
+    ],
   },
-  
-  experimental: { 
+ 
+  experimental: {
     outputFileTracingRoot: process.cwd(),
-  }
+  },
+ 
+  outputFileTracing: true
 };
+
+export default nextConfig;
