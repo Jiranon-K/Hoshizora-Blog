@@ -6,12 +6,12 @@ export function getYoutubeEmbedUrl(url) {
     return null;
   }
 
- 
+  
   const regExp = /^.*(youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#\&\?]*).*/;
   const match = url.match(regExp);
 
   if (match && match[2].length === 11) {
-    return `https://www.youtube.com/embed/${match[2]}`;
+    return `https://www.youtube-nocookie.com/embed/${match[2]}`;
   }
 
   return null;

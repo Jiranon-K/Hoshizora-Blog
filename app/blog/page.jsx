@@ -12,8 +12,6 @@ export default async function BlogPage({ searchParams }) {
 
   return (
     <div>
-      <Navbar/>
-      
       <AllBlogPostGrid 
         searchParams={{
           category,

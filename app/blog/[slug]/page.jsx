@@ -1,7 +1,7 @@
 import React from "react";
 import { executeQuery } from "@/lib/db"; 
 import BlogDetailClient from "./BlogDetailClient"; 
-import '../../styles/blogContent.css';
+import '../../styles/blogContent.css'; 
 
 async function getPostDetails(slug) {
   try {
@@ -88,12 +88,12 @@ async function getPostDetails(slug) {
       values: [post.id]
     });
 
-    
+  
     if (post.content) {
       
       post.content = post.content.replace(
         /<iframe(.*?)src="https:\/\/www\.youtube\.com\/embed\/(.*?)"(.*?)><\/iframe>/g,
-        '<div data-youtube-video><iframe src="https://www.youtube.com/embed/$2" frameborder="0" allowfullscreen="true" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>'
+        '<div data-youtube-video><iframe src="https://www.youtube-nocookie.com/embed/$2" frameborder="0" allowfullscreen="true" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" loading="lazy"></iframe></div>'
       );
     }
 
@@ -118,7 +118,7 @@ export default async function BlogDetailPage({ params }) {
   
   const data = await getPostDetails(slug);
 
- 
+  
   const metadata = {
     title: data?.post?.title || 'บทความไม่พบ',
     description: data?.post?.description || 'ไม่พบบทความที่คุณต้องการ',
