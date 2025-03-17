@@ -3,19 +3,19 @@ import fs from 'fs/promises';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-
-const UPLOAD_DIR = path.resolve('/app/public/uploads');
-
 export async function POST(request) {
   try {
     console.log("เริ่มกระบวนการอัปโหลด");
+    
+    
+    const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
     console.log("โฟลเดอร์ที่ใช้:", UPLOAD_DIR);
     
     try {
       await fs.mkdir(UPLOAD_DIR, { recursive: true });
       console.log("ตรวจสอบ/สร้างโฟลเดอร์สำเร็จ:", UPLOAD_DIR);
       
-    
+     
       const testFilePath = path.join(UPLOAD_DIR, `test-${Date.now()}.txt`);
       await fs.writeFile(testFilePath, 'test');
       console.log("เขียนไฟล์ทดสอบสำเร็จ:", testFilePath);
@@ -26,11 +26,11 @@ export async function POST(request) {
       console.error("ไม่สามารถสร้างหรือเขียนในโฟลเดอร์ได้:", mkdirError);
       return NextResponse.json({ 
         error: `ไม่สามารถสร้างหรือเขียนในโฟลเดอร์ได้: ${mkdirError.message}`,
-        path: UPLOAD_DIR 
+        path: UPLOAD_DIR,
+        cwd: process.cwd()
       }, { status: 500 });
     }
     
-   
     const formData = await request.formData();
     const file = formData.get('image');
     
@@ -58,19 +58,25 @@ export async function POST(request) {
       await fs.writeFile(filePath, buffer);
       console.log("บันทึกไฟล์สำเร็จ");
       
+      // ตรวจสอบว่าไฟล์ถูกสร้างจริงหรือไม่
+      const stats = await fs.stat(filePath);
+      console.log(`ไฟล์ถูกสร้างขนาด: ${stats.size} bytes`);
+      
       const imageUrl = `/uploads/${uniqueFilename}`;
       console.log("การอัปโหลดสำเร็จ! URL:", imageUrl);
       
       return NextResponse.json({
         success: true,
         url: imageUrl,
-        filename: uniqueFilename
+        filename: uniqueFilename,
+        size: stats.size
       });
       
     } catch (writeError) {
       console.error("เกิดข้อผิดพลาดในการเขียนไฟล์:", writeError);
       return NextResponse.json({ 
-        error: `ไม่สามารถบันทึกไฟล์ได้: ${writeError.message}` 
+        error: `ไม่สามารถบันทึกไฟล์ได้: ${writeError.message}`,
+        path: filePath
       }, { status: 500 });
     }
     
