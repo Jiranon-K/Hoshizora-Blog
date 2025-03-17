@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Head from "next/head";
 
 const BlogDetailClient = ({ data, slug }) => {
   
@@ -20,6 +21,10 @@ const BlogDetailClient = ({ data, slug }) => {
 
   return (
     <div className="w-full py-8 px-4 md:py-12 md:px-6">
+      <Head>
+        <title>{post.title} - Hoshizora Blog</title>
+        <meta name="description" content={post.description} />
+      </Head>
       <div className="mx-auto max-w-3xl">
         {/* Breadcrumbs */}
         <div className="mb-6 text-sm">
@@ -49,7 +54,7 @@ const BlogDetailClient = ({ data, slug }) => {
         </div>
         
         {/* Featured Image */}
-        <div className="mb-8 rounded-lg overflow-hidden">
+        <div className="mb-8 rounded-lg overflow-hidden shadow-md">
           <img
             src={post.image}
             alt={post.title}
@@ -58,7 +63,7 @@ const BlogDetailClient = ({ data, slug }) => {
         </div>
         
         {/* Content */}
-        <div className="prose prose-lg max-w-none mb-8" 
+        <div className="blog-content mb-8" 
              dangerouslySetInnerHTML={{ __html: post.content }} />
         
         {/* Tags */}
@@ -118,6 +123,149 @@ const BlogDetailClient = ({ data, slug }) => {
           </div>
         )}
       </div>
+
+      
+      <style jsx global>{`
+        .blog-content {
+          color: #333;
+          line-height: 1.8;
+          font-size: 1.125rem;
+        }
+        
+        .blog-content p {
+          margin-bottom: 1.5rem;
+          margin-top: 1.5rem;
+        }
+        
+        .blog-content h1 {
+          font-size: 2rem;
+          font-weight: 700;
+          margin-top: 2.5rem;
+          margin-bottom: 1.2rem;
+          color: #111;
+        }
+        
+        .blog-content h2 {
+          font-size: 1.75rem;
+          font-weight: 600;
+          margin-top: 2.2rem;
+          margin-bottom: 1rem;
+          color: #222;
+        }
+        
+        .blog-content h3 {
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-top: 1.8rem;
+          margin-bottom: 0.8rem;
+          color: #333;
+        }
+        
+        .blog-content ul, 
+        .blog-content ol {
+          padding-left: 1.8rem;
+          margin: 1.5rem 0;
+        }
+        
+        .blog-content li {
+          margin-bottom: 0.7rem;
+        }
+        
+        .blog-content blockquote {
+          border-left: 4px solid #e2e8f0;
+          padding: 0.8rem 1.5rem;
+          margin: 2rem 0;
+          font-style: italic;
+          color: #4a5568;
+          background-color: #f8fafc;
+          border-radius: 0 0.5rem 0.5rem 0;
+        }
+        
+        .blog-content img {
+          max-width: 100%;
+          height: auto;
+          margin: 2.5rem auto;
+          border-radius: 0.5rem;
+          display: block;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .blog-content div[data-youtube-video] {
+          position: relative;
+          padding-bottom: 56.25%; /* 16:9 อัตราส่วน */
+          height: 0;
+          margin: 2.5rem auto;
+          max-width: 90%;
+          border-radius: 0.5rem;
+          overflow: hidden;
+        }
+        
+        .blog-content div[data-youtube-video] iframe {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: 0.5rem;
+          border: none;
+        }
+        
+        .blog-content a {
+          color: #2563eb;
+          text-decoration: underline;
+          text-underline-offset: 2px;
+          transition: color 0.2s;
+        }
+        
+        .blog-content a:hover {
+          color: #1d4ed8;
+        }
+        
+        .blog-content .text-align-left {
+          text-align: left;
+        }
+        
+        .blog-content .text-align-center {
+          text-align: center;
+        }
+        
+        .blog-content .text-align-right {
+          text-align: right;
+        }
+        
+        .blog-content pre {
+          background-color: #f1f5f9;
+          border-radius: 0.375rem;
+          padding: 1.2rem;
+          margin: 1.8rem 0;
+          overflow-x: auto;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+          font-size: 0.9rem;
+          line-height: 1.6;
+        }
+        
+        
+        @media (prefers-color-scheme: dark) {
+          .blog-content {
+            color: #e2e8f0;
+          }
+          
+          .blog-content h1, .blog-content h2, .blog-content h3 {
+            color: #f1f5f9;
+          }
+          
+          .blog-content blockquote {
+            background-color: #1a202c;
+            border-left-color: #4a5568;
+            color: #cbd5e0;
+          }
+          
+          .blog-content pre {
+            background-color: #1a202c;
+            color: #e2e8f0;
+          }
+        }
+      `}</style>
     </div>
   );
 };

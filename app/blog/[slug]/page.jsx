@@ -1,6 +1,7 @@
 import React from "react";
 import { executeQuery } from "@/lib/db"; 
 import BlogDetailClient from "./BlogDetailClient"; 
+import '../../styles/blogContent.css';
 
 async function getPostDetails(slug) {
   try {
@@ -87,6 +88,15 @@ async function getPostDetails(slug) {
       values: [post.id]
     });
 
+    
+    if (post.content) {
+      
+      post.content = post.content.replace(
+        /<iframe(.*?)src="https:\/\/www\.youtube\.com\/embed\/(.*?)"(.*?)><\/iframe>/g,
+        '<div data-youtube-video><iframe src="https://www.youtube.com/embed/$2" frameborder="0" allowfullscreen="true" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>'
+      );
+    }
+
     return {
       post: {
         ...post,
@@ -107,6 +117,44 @@ export default async function BlogDetailPage({ params }) {
   const { slug } = resolvedParams;
   
   const data = await getPostDetails(slug);
+
+ 
+  const metadata = {
+    title: data?.post?.title || 'บทความไม่พบ',
+    description: data?.post?.description || 'ไม่พบบทความที่คุณต้องการ',
+    openGraph: {
+      title: data?.post?.title,
+      description: data?.post?.description,
+      images: [data?.post?.image],
+    },
+  };
   
-  return <BlogDetailClient data={data} slug={slug} />;
+  return (
+    <>
+      <BlogDetailClient data={data} slug={slug} />
+    </>
+  );
+}
+
+
+export async function generateMetadata({ params }) {
+  const { slug } = params;
+  const data = await getPostDetails(slug);
+  
+  if (!data || !data.post) {
+    return {
+      title: 'บทความไม่พบ',
+      description: 'ไม่พบบทความที่คุณต้องการ',
+    };
+  }
+  
+  return {
+    title: `${data.post.title} - Hoshizora Blog`,
+    description: data.post.description,
+    openGraph: {
+      title: data.post.title,
+      description: data.post.description,
+      images: [data.post.image],
+    },
+  };
 }
