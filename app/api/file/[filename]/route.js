@@ -37,7 +37,7 @@ export async function GET(request, { params }) {
     
     
     const ext = path.extname(filename).toLowerCase();
-    let contentType = 'application/octet-stream'; // ค่าเริ่มต้น
+    let contentType = 'application/octet-stream'; 
     
     if (ext === '.jpg' || ext === '.jpeg') {
       contentType = 'image/jpeg';
