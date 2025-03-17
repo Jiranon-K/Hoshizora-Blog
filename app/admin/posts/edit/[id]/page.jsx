@@ -130,7 +130,7 @@ export default function EditPostPage({ params }) {
     }));
   };
 
-  // จัดการเมื่อเนื้อหาจาก Rich Text Editor มีการเปลี่ยนแปลง
+ 
   const handleEditorChange = (content) => {
     setFormData(prev => ({
       ...prev,
@@ -138,7 +138,7 @@ export default function EditPostPage({ params }) {
     }));
   };
 
-  // จัดการเมื่อเลือกรูปภาพจาก Modal
+  
   const handleSelectFeaturedImage = (imageUrl) => {
     setFormData(prev => ({
       ...prev,
@@ -219,18 +219,19 @@ export default function EditPostPage({ params }) {
     const [previewUrl, setPreviewUrl] = useState('');
     const [uploading, setUploading] = useState(false);
     
-    // โหลดรายการรูปภาพเมื่อ modal เปิด
+    
     useEffect(() => {
       if (isOpen) {
         fetchImages();
       }
     }, [isOpen]);
     
-    // ดึงรายการรูปภาพที่มีอยู่
+   
     const fetchImages = async () => {
       setLoading(true);
       try {
-        const response = await fetch('/api/file/');
+        
+        const response = await fetch('/api/uploads');
         const data = await response.json();
         setImages(data.images || []);
       } catch (error) {
@@ -500,7 +501,8 @@ export default function EditPostPage({ params }) {
                 {formData.featured_image && (
                   <div className="mt-2">
                     <img 
-                      src={formData.featured_image} 
+                     
+                      src={getImageUrl(formData.featured_image)} 
                       alt="ภาพตัวอย่าง" 
                       className="w-full max-w-xs rounded-md shadow-sm" 
                       onError={(e) => {

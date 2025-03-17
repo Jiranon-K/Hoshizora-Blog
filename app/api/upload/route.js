@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request) {
   try {
-   
     const paths = [
       path.join(process.cwd(), 'public', 'uploads'),
       '/app/public/uploads',
@@ -20,9 +19,7 @@ export async function POST(request) {
     }
     
     const fileExtension = path.extname(file.name) || '.webp';
-    
     const uniqueFilename = `${uuidv4()}-${Date.now()}${fileExtension}`;
-    
     
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -36,7 +33,6 @@ export async function POST(request) {
         const filePath = path.join(dir, uniqueFilename);
         await fs.writeFile(filePath, buffer);
         
-      
         const stat = await fs.stat(filePath);
         savedFiles.push({
           path: filePath,
@@ -50,13 +46,23 @@ export async function POST(request) {
       }
     }
     
-    return NextResponse.json({
-      success: true,
-      url: `/api/file/${uniqueFilename}`,
-      filename: uniqueFilename,
-      savedFiles,
-      errors
-    });
+    
+    if (savedFiles.length > 0) {
+      return NextResponse.json({
+        success: true,
+        url: `/api/uploads/${uniqueFilename}`,
+        filename: uniqueFilename,
+        savedFiles,
+        errors
+      });
+    } else {
+     
+      return NextResponse.json({
+        success: false,
+        error: 'ไม่สามารถบันทึกไฟล์ได้ในทุกตำแหน่ง',
+        errors
+      }, { status: 500 });
+    }
     
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการอัปโหลด:", error);

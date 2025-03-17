@@ -27,11 +27,12 @@ const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
     }
   }, [isOpen]);
 
-  // ดึงรายการรูปภาพที่มีอยู่
+  
   const fetchImages = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/file');
+     
+      const response = await fetch('/api/uploads');
       const data = await response.json();
       setImages(data.images || []);
     } catch (error) {
@@ -41,7 +42,7 @@ const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
     }
   };
 
-  // จัดการเมื่อเลือกไฟล์จากเครื่อง
+  
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -71,7 +72,8 @@ const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
       const formData = new FormData();
       formData.append('image', uploadFile);
       
-      const response = await fetch('/api/file', {
+      
+      const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       });
@@ -197,7 +199,7 @@ const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
   );
 };
 
-// ส่วนของ YouTube Modal เพื่อรับ URL
+//  YouTube Modal 
 const YouTubeModal = ({ isOpen, onClose, onInsert }) => {
   const [url, setUrl] = useState('');
   const [error, setError] = useState(false);
@@ -215,7 +217,7 @@ const YouTubeModal = ({ isOpen, onClose, onInsert }) => {
   };
 
   const handleKeyDown = (e) => {
-    // ถ้ากด Enter
+    
     if (e.key === 'Enter') {
       e.preventDefault();
       handleInsert();
@@ -535,7 +537,7 @@ const RichTextEditor = ({ value, onChange, placeholder }) => {
     }
   }, [editor]);
 
-  // เพิ่มวิดีโอ YouTube
+  
   const handleInsertYouTube = useCallback((url) => {
     if (editor) {
       editor.chain().focus().setYoutubeVideo({ src: url }).run();

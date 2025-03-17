@@ -1,4 +1,3 @@
-// แก้ไขไฟล์ app/api/uploads/route.js ให้สอดคล้องกับการแก้ไขด้านบน
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
@@ -7,8 +6,7 @@ export async function GET() {
   try {
     let UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
     let UPLOAD_DIR2 = '/etc/dokploy/applications/jiranonk-hoshizora-blog-ubqv24/code/public/uploads';
-    let UPLOAD_DIR3 = '/public/uploads';
-    
+    let UPLOAD_DIR3 = '/app/public/uploads';
     
     let workingDir = null;
     let dirsToTry = [UPLOAD_DIR, UPLOAD_DIR2, UPLOAD_DIR3];
@@ -16,7 +14,6 @@ export async function GET() {
     for (const dir of dirsToTry) {
       if (fs.existsSync(dir)) {
         try {
-         
           const testPath = path.join(dir, `test-${Date.now()}.txt`);
           fs.writeFileSync(testPath, 'test');
           fs.unlinkSync(testPath);
@@ -46,7 +43,6 @@ export async function GET() {
       }, { status: 500 });
     }
     
-   
     UPLOAD_DIR = workingDir;
     
     let files = [];
@@ -70,7 +66,8 @@ export async function GET() {
     
     const images = imageFiles.map(file => ({
       name: file,
-      url: `/uploads/${file}`,
+     
+      url: `/api/file/${file}`,
       fullPath: path.join(UPLOAD_DIR, file)
     }));
     
