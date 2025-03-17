@@ -50,7 +50,7 @@ export async function POST(request) {
     if (savedFiles.length > 0) {
       return NextResponse.json({
         success: true,
-        url: `/api/uploads/${uniqueFilename}`,
+        url: `/api/file/${uniqueFilename}`,
         filename: uniqueFilename,
         savedFiles,
         errors
