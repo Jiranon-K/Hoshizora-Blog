@@ -1,0 +1,9 @@
+{
+    "mounts": [
+      {
+        "type": "volume",
+        "source": "blog_uploads",
+        "target": "/app/public/uploads"
+      }
+    ]
+  }

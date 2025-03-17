@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',  // ใช้ standalone output
+  output: 'standalone',
   images: {
     domains: ['blog.hoshizora.online'],
     remotePatterns: [
@@ -10,7 +10,7 @@ const nextConfig = {
         pathname: '/uploads/**',
       },
     ],
-  },
+  }
 };
 
 export default nextConfig;
