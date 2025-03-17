@@ -4,7 +4,7 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 
-const UPLOAD_DIR = '/etc/dokploy/applications/jiranonk-blog-q8pgy1/code/public/uploads';  
+const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
 
 export async function POST(request) {
   try {
