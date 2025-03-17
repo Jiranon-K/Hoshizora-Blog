@@ -1,20 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { executeQuery } from "@/lib/db";
-
-
-const getImageUrlWithTimestamp = (imageUrl) => {
-  if (!imageUrl) return "/Hero.jpg";
-  
-  
-  if (imageUrl.startsWith('http')) {
-    
-    return `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}v=${Date.now()}`;
-  }
-  
-  
-  return `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}v=${Date.now()}`;
-};
+import { getImageUrl } from "@/lib/helpers";
 
 async function getFeaturedPost() {
   try {
@@ -58,7 +45,8 @@ const Hero = async () => {
           <div className="relative w-full md:w-5/6 lg:w-3/4 xl:w-2/3">
             {/* Hero Image */}
             <img
-              src={getImageUrlWithTimestamp(featuredPost.featured_image || "/Hero.jpg")}
+             
+              src={getImageUrl(featuredPost.featured_image || "/Hero.jpg")}
               alt={featuredPost.title}
               className="w-full h-auto md:h-64 lg:h-124 object-cover rounded-lg md:rounded-xl shadow-md"
             />

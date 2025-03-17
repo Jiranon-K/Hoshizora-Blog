@@ -2,14 +2,15 @@ import React from "react";
 import Link from "next/link";
 import { executeQuery } from "@/lib/db";
 import CategoryFilter from "./CategoryFilter";
+import { getImageUrl } from "@/lib/helpers";
 
 const BlogPostCard = ({ title, description, category, date, author, authorTitle, image, slug }) => {
   return (
     <div className="card bg-base-100 h-full overflow-hidden border border-gray-100 rounded-lg transition-all duration-300 hover:shadow-md">
-      {/* Image Container with Aspect Ratio */}
+      
       <figure className="relative h-48 overflow-hidden">
         <img
-          src={image}
+          src={getImageUrl(image)}
           alt={title}
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
@@ -41,7 +42,10 @@ const BlogPostCard = ({ title, description, category, date, author, authorTitle,
         <div className="flex items-center mt-auto pt-2 border-t border-gray-100">
           <div className="w-8 h-8 rounded-full overflow-hidden mr-3">
             <img 
-              src={typeof author === 'object' ? author.avatar || "/avatar/Aharen-san.webp" : "/avatar/Aharen-san.webp"} 
+              // แก้ไขให้ใช้ getImageUrl
+              src={typeof author === 'object' ? 
+                getImageUrl(author.avatar || "/avatar/Aharen-san.webp") : 
+                getImageUrl("/avatar/Aharen-san.webp")} 
               alt={typeof author === 'object' ? author.display_name || "Author" : author} 
               className="w-full h-full object-cover"
             />
@@ -122,7 +126,7 @@ async function getPosts(categorySlug = '', page = 1, perPage = 12) {
       values.push(categorySlug);
     }
 
-    // Get total count for pagination
+    
     const countQuery = `
       SELECT COUNT(*) as total FROM posts p 
       LEFT JOIN categories c ON p.category_id = c.id 

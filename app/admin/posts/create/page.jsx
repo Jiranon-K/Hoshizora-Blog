@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import AdminNavbar from '../../../components/AdminNavbar';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-
+import { getImageUrl } from '@/lib/helpers';
 
 const RichTextEditor = dynamic(() => import('../../../components/RichTextEditor'), {
   ssr: false,
@@ -19,7 +19,6 @@ export default function CreatePostPage() {
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
   
-  
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -30,17 +29,11 @@ export default function CreatePostPage() {
     category_id: ''
   });
   
-  
   const [errors, setErrors] = useState({});
-  
-  
   const [previewImage, setPreviewImage] = useState('');
-  
- 
   const [isImageSelectorOpen, setIsImageSelectorOpen] = useState(false);
 
   useEffect(() => {
-   
     const userData = localStorage.getItem('blog_user');
     if (userData) {
       try {
@@ -53,7 +46,6 @@ export default function CreatePostPage() {
     } else {
       router.push('/login');
     }
-    
   
     fetchCategories();
   }, [router]);
@@ -73,7 +65,6 @@ export default function CreatePostPage() {
     }
   };
 
- 
   const handleLogout = async () => {
     try {
       const response = await fetch('/api/auth/logout', {
@@ -92,12 +83,10 @@ export default function CreatePostPage() {
     }
   };
 
-  
   const handleChange = (e) => {
     const { name, value } = e.target;
     
     if (name === 'title' && !formData.slug) {
-      
       const slug = value
         .toLowerCase()
         .replace(/[^\w\sก-๙]/g, '') 
@@ -118,7 +107,6 @@ export default function CreatePostPage() {
     }
   };
 
-  
   const handleEditorChange = (content) => {
     setFormData(prev => ({
       ...prev,
@@ -126,7 +114,6 @@ export default function CreatePostPage() {
     }));
   };
 
-  
   const handleSelectFeaturedImage = (imageUrl) => {
     setFormData(prev => ({
       ...prev,
@@ -136,7 +123,6 @@ export default function CreatePostPage() {
     setIsImageSelectorOpen(false);
   };
 
-  
   const validateForm = () => {
     const newErrors = {};
     
@@ -162,10 +148,8 @@ export default function CreatePostPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     
     if (!validateForm()) {
       return;
@@ -188,7 +172,6 @@ export default function CreatePostPage() {
         throw new Error(data.error || 'เกิดข้อผิดพลาดในการสร้างบทความ');
       }
       
-     
       router.push('/admin/posts');
       
     } catch (error) {
@@ -199,7 +182,6 @@ export default function CreatePostPage() {
     }
   };
 
-  
   const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -207,13 +189,11 @@ export default function CreatePostPage() {
     const [previewUrl, setPreviewUrl] = useState('');
     const [uploading, setUploading] = useState(false);
     
-    
     useEffect(() => {
       if (isOpen) {
         fetchImages();
       }
     }, [isOpen]);
-    
     
     const fetchImages = async () => {
       setLoading(true);
@@ -228,7 +208,6 @@ export default function CreatePostPage() {
       }
     };
     
-    
     const handleFileChange = (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -240,14 +219,12 @@ export default function CreatePostPage() {
       
       setUploadFile(file);
       
-      
       const reader = new FileReader();
       reader.onload = () => {
         setPreviewUrl(reader.result);
       };
       reader.readAsDataURL(file);
     };
-    
     
     const handleUpload = async () => {
       if (!uploadFile) return;
@@ -269,10 +246,8 @@ export default function CreatePostPage() {
           throw new Error(data.error || 'อัพโหลดล้มเหลว');
         }
         
-        
         setImages([{ name: uploadFile.name, url: data.url }, ...images]);
         
-       
         setUploadFile(null);
         setPreviewUrl('');
         
@@ -354,7 +329,7 @@ export default function CreatePostPage() {
                     className="aspect-square border rounded-md overflow-hidden cursor-pointer hover:border-primary transition-colors"
                   >
                     <img
-                      src={image.url}
+                      src={getImageUrl(image.url)}
                       alt={image.name}
                       className="w-full h-full object-cover"
                     />
@@ -363,7 +338,6 @@ export default function CreatePostPage() {
               </div>
             )}
           </div>
-          
           
           <div className="p-4 border-t">
             <button onClick={onClose} className="btn btn-neutral w-full">

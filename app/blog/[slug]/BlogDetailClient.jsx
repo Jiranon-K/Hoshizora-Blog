@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Head from "next/head";
+import { getImageUrl } from "@/lib/helpers";
 
 const BlogDetailClient = ({ data, slug }) => {
   
@@ -56,7 +57,7 @@ const BlogDetailClient = ({ data, slug }) => {
         {/* Featured Image */}
         <div className="mb-8 rounded-lg overflow-hidden shadow-md">
           <img
-            src={post.image}
+            src={getImageUrl(post.image)}
             alt={post.title}
             className="w-full h-auto object-cover"
           />
@@ -85,7 +86,7 @@ const BlogDetailClient = ({ data, slug }) => {
           <div className="flex items-start">
             <div className="w-16 h-16 rounded-full overflow-hidden mr-4">
               <img
-                src={post.authorAvatar}
+                src={getImageUrl(post.authorAvatar)}
                 alt={post.author}
                 className="w-full h-full object-cover"
               />
@@ -108,7 +109,7 @@ const BlogDetailClient = ({ data, slug }) => {
                   <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full w-full">
                     <div className="h-40 overflow-hidden">
                       <img
-                        src={related.image}
+                        src={getImageUrl(related.image)}
                         alt={related.title}
                         className="w-full h-full object-cover"
                       />
@@ -124,7 +125,7 @@ const BlogDetailClient = ({ data, slug }) => {
         )}
       </div>
 
-      {/* เพิ่ม CSS สำหรับหน้าแสดงเนื้อหาบล็อก */}
+      
       <style jsx global>{`
         .blog-content {
           color: #000000 !important;
