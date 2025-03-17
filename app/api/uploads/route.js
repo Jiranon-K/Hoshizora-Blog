@@ -1,42 +1,42 @@
 import { NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
-import { readdir } from 'fs/promises';
+import fs from 'fs';
 import path from 'path';
 
-
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
-
-export async function GET(request) {
+export async function GET() {
   try {
-   
-    const token = request.cookies.get('blog_token')?.value;
-    if (!token) {
-      return NextResponse.json(
-        { error: 'ไม่ได้รับอนุญาต' },
-        { status: 401 }
-      );
+    const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
+    
+    
+    if (!fs.existsSync(UPLOAD_DIR)) {
+      console.log("ไม่พบโฟลเดอร์ uploads");
+      try {
+        fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+        console.log("สร้างโฟลเดอร์ uploads สำเร็จ");
+      } catch (error) {
+        console.error("ไม่สามารถสร้างโฟลเดอร์ uploads:", error.message);
+        return NextResponse.json({ 
+          error: 'ไม่พบโฟลเดอร์อัปโหลด', 
+          currentPath: process.cwd(),
+          uploadDir: UPLOAD_DIR,
+          exists: false 
+        }, { status: 404 });
+      }
     }
     
-    const user = verifyToken(token);
-    if (!user) {
-      return NextResponse.json(
-        { error: 'ไม่มีสิทธิ์ในการเข้าถึงรูปภาพ' },
-        { status: 403 }
-      );
-    }
-
+   
     
     let files = [];
     try {
-      files = await readdir(UPLOAD_DIR);
+      console.log("กำลังอ่านรายการไฟล์จากโฟลเดอร์");
+      files = fs.readdirSync(UPLOAD_DIR);
     } catch (error) {
-     
+      console.error("เกิดข้อผิดพลาดในการอ่านไฟล์:", error.message);
+      
       if (error.code === 'ENOENT') {
         return NextResponse.json({ images: [] });
       }
       throw error;
     }
-    
     
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
     const imageFiles = files.filter(file => {
@@ -44,18 +44,28 @@ export async function GET(request) {
       return imageExtensions.includes(ext);
     });
     
-  
+    console.log(`พบรูปภาพทั้งหมด ${imageFiles.length} ไฟล์`);
+    
     const images = imageFiles.map(file => ({
       name: file,
       url: `/uploads/${file}`
     }));
     
-    return NextResponse.json({ images });
+    return NextResponse.json({ 
+      images,
+      success: true,
+      uploadDir: UPLOAD_DIR,
+      workingDir: process.cwd()
+    });
     
   } catch (error) {
     console.error('Error listing uploaded images:', error);
     return NextResponse.json(
-      { error: 'เกิดข้อผิดพลาดในการดึงรายการรูปภาพ' },
+      { 
+        error: 'เกิดข้อผิดพลาดในการดึงรายการรูปภาพ',
+        message: error.message,
+        stack: error.stack
+      },
       { status: 500 }
     );
   }

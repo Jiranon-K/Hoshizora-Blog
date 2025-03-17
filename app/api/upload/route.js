@@ -1,9 +1,9 @@
-
 import { NextResponse } from 'next/server';
 import { writeFile } from 'fs/promises';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import fs from 'fs';
+
 
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
 
@@ -26,7 +26,7 @@ export async function POST(request) {
     console.log("เริ่มกระบวนการอัปโหลดรูปภาพ");
     console.log("โฟลเดอร์ที่จะใช้:", UPLOAD_DIR);
     
-
+   
     await ensureDirectoryExists(UPLOAD_DIR);
     
     const formData = await request.formData();
@@ -65,7 +65,7 @@ export async function POST(request) {
       await writeFile(filePath, fileBuffer);
       console.log(`บันทึกไฟล์สำเร็จที่: ${filePath}`);
       
-     
+      
       const fileExists = fs.existsSync(filePath);
       console.log(`ไฟล์มีอยู่จริงหลังจากบันทึก: ${fileExists}`);
     } catch (writeError) {

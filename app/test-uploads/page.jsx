@@ -1,4 +1,3 @@
-// app/test-uploads/page.jsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -8,19 +7,44 @@ export default function TestUploadsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [debugInfo, setDebugInfo] = useState(null);
+  const [apiResponses, setApiResponses] = useState({});
   
-  // เช็คไฟล์ที่อัปโหลดแล้ว
+  
   useEffect(() => {
     async function fetchImages() {
       try {
         setLoading(true);
         const response = await fetch('/api/uploads');
-        const data = await response.json();
         
-        if (data.error) {
-          setError(data.error);
-        } else {
-          setImages(data.images || []);
+        
+        try {
+          const clonedResponse = response.clone();
+          const text = await clonedResponse.text();
+          setApiResponses(prev => ({
+            ...prev,
+            uploads: {
+              status: response.status,
+              text: text.substring(0, 500) + (text.length > 500 ? '...' : '')
+            }
+          }));
+        } catch (err) {
+          console.error("ไม่สามารถอ่าน response text:", err);
+        }
+        
+        if (!response.ok) {
+          setError(`API ตอบกลับด้วยสถานะผิดพลาด: ${response.status}`);
+          return;
+        }
+        
+        try {
+          const data = await response.json();
+          if (data.error) {
+            setError(data.error);
+          } else {
+            setImages(data.images || []);
+          }
+        } catch (jsonError) {
+          setError(`การแปลง Response เป็น JSON ล้มเหลว: ${jsonError.message}`);
         }
       } catch (err) {
         setError('เกิดข้อผิดพลาดในการโหลดรูปภาพ: ' + err.message);
@@ -32,18 +56,43 @@ export default function TestUploadsPage() {
     fetchImages();
   }, []);
   
-  // เช็คพาธและสิทธิ์ของโฟลเดอร์
+ 
   async function checkPaths() {
     try {
       const response = await fetch('/api/debug-paths');
-      const data = await response.json();
-      setDebugInfo(data);
+      
+     
+      try {
+        const clonedResponse = response.clone();
+        const text = await clonedResponse.text();
+        setApiResponses(prev => ({
+          ...prev,
+          debugPaths: {
+            status: response.status,
+            text: text.substring(0, 500) + (text.length > 500 ? '...' : '')
+          }
+        }));
+      } catch (err) {
+        console.error("ไม่สามารถอ่าน response text:", err);
+      }
+      
+      if (!response.ok) {
+        setError(`API ตอบกลับด้วยสถานะผิดพลาด: ${response.status}`);
+        return;
+      }
+      
+      try {
+        const data = await response.json();
+        setDebugInfo(data);
+      } catch (jsonError) {
+        setError(`การแปลง Response เป็น JSON ล้มเหลว: ${jsonError.message}`);
+      }
     } catch (err) {
       setError('เกิดข้อผิดพลาดในการตรวจสอบพาธ: ' + err.message);
     }
   }
   
-  // อัปโหลดไฟล์ทดสอบ
+  
   async function uploadTestFile(e) {
     e.preventDefault();
     
@@ -62,14 +111,37 @@ export default function TestUploadsPage() {
         body: formData
       });
       
-      const data = await response.json();
+     
+      try {
+        const clonedResponse = response.clone();
+        const text = await clonedResponse.text();
+        setApiResponses(prev => ({
+          ...prev,
+          upload: {
+            status: response.status,
+            text: text.substring(0, 500) + (text.length > 500 ? '...' : '')
+          }
+        }));
+      } catch (err) {
+        console.error("ไม่สามารถอ่าน response text:", err);
+      }
       
-      if (data.success) {
-        alert('อัปโหลดสำเร็จ: ' + data.url);
-        // โหลดรายการไฟล์ใหม่
-        window.location.reload();
-      } else {
-        alert('อัปโหลดล้มเหลว: ' + (data.error || 'เกิดข้อผิดพลาดไม่ทราบสาเหตุ'));
+      if (!response.ok) {
+        alert(`อัปโหลดล้มเหลว: API ส่งสถานะ ${response.status}`);
+        return;
+      }
+      
+      try {
+        const data = await response.json();
+        if (data.success) {
+          alert('อัปโหลดสำเร็จ: ' + data.url);
+          // โหลดรายการไฟล์ใหม่
+          window.location.reload();
+        } else {
+          alert('อัปโหลดล้มเหลว: ' + (data.error || 'เกิดข้อผิดพลาดไม่ทราบสาเหตุ'));
+        }
+      } catch (jsonError) {
+        alert(`การแปลง Response เป็น JSON ล้มเหลว: ${jsonError.message}`);
       }
     } catch (err) {
       alert('เกิดข้อผิดพลาดในการอัปโหลด: ' + err.message);
@@ -105,6 +177,19 @@ export default function TestUploadsPage() {
         ตรวจสอบพาธและสิทธิ์
       </button>
       
+      
+      {Object.keys(apiResponses).length > 0 && (
+        <div className="mb-6 p-4 bg-gray-50 rounded overflow-auto">
+          <h2 className="text-lg font-semibold mb-2">API Responses (Debug)</h2>
+          {Object.entries(apiResponses).map(([key, value]) => (
+            <div key={key} className="mb-4">
+              <h3 className="text-md font-medium">{key} (Status: {value.status})</h3>
+              <pre className="text-xs bg-gray-100 p-2 mt-1 rounded overflow-auto">{value.text}</pre>
+            </div>
+          ))}
+        </div>
+      )}
+      
       {debugInfo && (
         <div className="mb-6 p-4 bg-gray-50 rounded overflow-auto">
           <h2 className="text-lg font-semibold mb-2">ข้อมูลการดีบัก</h2>
@@ -136,7 +221,7 @@ export default function TestUploadsPage() {
                   className="w-full h-48 object-cover mb-2"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = '/placeholder.jpg';
+                    e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
                     e.target.title = `ไม่สามารถโหลดรูปภาพ: ${image.url}`;
                   }}
                 />
