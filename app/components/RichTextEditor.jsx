@@ -8,7 +8,7 @@ import Image from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
 import TextAlign from '@tiptap/extension-text-align';
 import Color from '@tiptap/extension-color';
-import { fetchApi } from '@/lib/api-helpers';
+import { getImageUrl } from '@/lib/helpers';
 import YouTube, { getYoutubeEmbedUrl } from './extensions/YouTubeExtension';
 
 
@@ -31,7 +31,8 @@ const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
   const fetchImages = async () => {
     setLoading(true);
     try {
-      const data = await fetchApi('/api/uploads');
+      const response = await fetch('/api/file');
+      const data = await response.json();
       setImages(data.images || []);
     } catch (error) {
       console.error('Error fetching images:', error);
@@ -70,7 +71,7 @@ const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
       const formData = new FormData();
       formData.append('image', uploadFile);
       
-      const response = await fetch('/api/upload', {
+      const response = await fetch('/api/file', {
         method: 'POST',
         body: formData,
       });
@@ -171,7 +172,7 @@ const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
                   className="aspect-square border rounded-md overflow-hidden cursor-pointer hover:border-primary transition-colors"
                 >
                   <img
-                    src={image.url}
+                    src={getImageUrl(image.url)}
                     alt={image.name}
                     className="w-full h-full object-cover"
                   />

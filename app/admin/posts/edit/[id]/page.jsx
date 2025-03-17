@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import AdminNavbar from '../../../../components/AdminNavbar';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-
+import { getImageUrl } from '@/lib/helpers';
 
 const RichTextEditor = dynamic(() => import('../../../../components/RichTextEditor'), {
   ssr: false,
@@ -230,7 +230,7 @@ export default function EditPostPage({ params }) {
     const fetchImages = async () => {
       setLoading(true);
       try {
-        const response = await fetch('/api/uploads');
+        const response = await fetch('/api/file/');
         const data = await response.json();
         setImages(data.images || []);
       } catch (error) {
@@ -366,7 +366,7 @@ export default function EditPostPage({ params }) {
                     className="aspect-square border rounded-md overflow-hidden cursor-pointer hover:border-primary transition-colors"
                   >
                     <img
-                      src={image.url}
+                      src={getImageUrl(image.url)}
                       alt={image.name}
                       className="w-full h-full object-cover"
                     />
