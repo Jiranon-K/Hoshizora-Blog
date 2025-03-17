@@ -124,17 +124,19 @@ const BlogDetailClient = ({ data, slug }) => {
         )}
       </div>
 
-      
+      {/* เพิ่ม CSS สำหรับหน้าแสดงเนื้อหาบล็อก */}
       <style jsx global>{`
         .blog-content {
-          color: #333;
+          color: #000000 !important;
           line-height: 1.8;
           font-size: 1.125rem;
+          font-weight: 400;
         }
         
         .blog-content p {
           margin-bottom: 1.5rem;
           margin-top: 1.5rem;
+          color: #000000 !important;
         }
         
         .blog-content h1 {
@@ -142,7 +144,7 @@ const BlogDetailClient = ({ data, slug }) => {
           font-weight: 700;
           margin-top: 2.5rem;
           margin-bottom: 1.2rem;
-          color: #111;
+          color: #000000 !important;
         }
         
         .blog-content h2 {
@@ -150,7 +152,7 @@ const BlogDetailClient = ({ data, slug }) => {
           font-weight: 600;
           margin-top: 2.2rem;
           margin-bottom: 1rem;
-          color: #222;
+          color: #000000 !important;
         }
         
         .blog-content h3 {
@@ -158,7 +160,7 @@ const BlogDetailClient = ({ data, slug }) => {
           font-weight: 600;
           margin-top: 1.8rem;
           margin-bottom: 0.8rem;
-          color: #333;
+          color: #000000 !important;
         }
         
         .blog-content ul, 
@@ -169,6 +171,7 @@ const BlogDetailClient = ({ data, slug }) => {
         
         .blog-content li {
           margin-bottom: 0.7rem;
+          color: #000000 !important;
         }
         
         .blog-content blockquote {
@@ -176,7 +179,7 @@ const BlogDetailClient = ({ data, slug }) => {
           padding: 0.8rem 1.5rem;
           margin: 2rem 0;
           font-style: italic;
-          color: #4a5568;
+          color: #000000 !important;
           background-color: #f8fafc;
           border-radius: 0 0.5rem 0.5rem 0;
         }
@@ -187,7 +190,6 @@ const BlogDetailClient = ({ data, slug }) => {
           margin: 2.5rem auto;
           border-radius: 0.5rem;
           display: block;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .blog-content div[data-youtube-video] {
@@ -243,28 +245,7 @@ const BlogDetailClient = ({ data, slug }) => {
           font-size: 0.9rem;
           line-height: 1.6;
         }
-        
-        
-        @media (prefers-color-scheme: dark) {
-          .blog-content {
-            color: #e2e8f0;
-          }
-          
-          .blog-content h1, .blog-content h2, .blog-content h3 {
-            color: #f1f5f9;
-          }
-          
-          .blog-content blockquote {
-            background-color: #1a202c;
-            border-left-color: #4a5568;
-            color: #cbd5e0;
-          }
-          
-          .blog-content pre {
-            background-color: #1a202c;
-            color: #e2e8f0;
-          }
-        }
+      
       `}</style>
     </div>
   );

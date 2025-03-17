@@ -11,11 +11,12 @@ export default function BlogLayout({ children }) {
       
       
       <style jsx global>{`
-        
+        /* ปรับแต่งการแสดงผลเนื้อหาทั่วไป */
         .blog-content {
-          color: #333;
+          color: #000000 !important; /* เปลี่ยนเป็นสีดำเข้ม */
           line-height: 1.8;
           font-size: 1.125rem;
+          font-weight: 400;
         }
         
         .blog-content p {
@@ -73,7 +74,6 @@ export default function BlogLayout({ children }) {
           margin: 2.5rem auto;
           border-radius: 0.5rem;
           display: block;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .blog-content div[data-youtube-video] {
