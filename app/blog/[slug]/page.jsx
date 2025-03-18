@@ -1,17 +1,24 @@
+
 import React from "react";
 import BlogDetailClient from "./BlogDetailClient"; 
 import '../../styles/blogContent.css'; 
 import { getPostDetails } from "@/lib/blogService";
 
 export default async function BlogDetailPage({ params }) {
-  const { slug } = params;
+
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
+  
   const data = await getPostDetails(slug);
   
   return <BlogDetailClient data={data} slug={slug} />;
 }
 
 export async function generateMetadata({ params }) {
-  const { slug } = params;
+
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
+  
   const data = await getPostDetails(slug);
   
   if (!data || !data.post) {
