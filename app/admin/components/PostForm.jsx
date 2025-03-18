@@ -3,9 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import CategoriesSelect from './CategoriesSelect';
+import CategoriesSelect from '../components/CategoriesSelect';
 import StatusSelect from './StatusSelect';
-import FeaturedImageField from './FeaturedImageField';
+import FeaturedImageField from '../components/FeaturedImageField';
 
 const RichTextEditor = dynamic(() => import('../../components/RichTextEditor'), {
   ssr: false,
