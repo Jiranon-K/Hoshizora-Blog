@@ -1,5 +1,4 @@
 import React from 'react'
-import Navbar from '../components/Navbar'
 import AllBlogPostGrid from '../components/AllBlogPostCard'
 
 export default async function BlogPage({ searchParams }) {

@@ -22,7 +22,7 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
             <a href="/" className="px-3 py-2 hover:bg-base-200 rounded-lg">Home</a>
-            <a href="/blog" className="px-3 py-2 hover:bg-base-200 rounded-lg">ALL BLOG</a>
+            <a href="/blog" className="px-3 py-2 hover:bg-base-200 rounded-lg">All Blog</a>
             <button 
               className="btn btn-neutral ml-2"
               onClick={() => document.getElementById('contact_modal').showModal()}
