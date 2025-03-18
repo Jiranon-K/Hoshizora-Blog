@@ -6,7 +6,6 @@ import Head from "next/head";
 import Breadcrumbs from '../components/Breadcrumbs';
 import PostHeader from '../components/PostHeader';
 import PostImage from '../components/PostImage';
-import TagsList from '../components/TagsList';
 import AuthorBox from '../components/AuthorBox';
 import RelatedPosts from '../components/RelatedPosts';
 import '../../styles/blogContent.css';
@@ -45,8 +44,6 @@ const BlogDetailClient = ({ data, slug }) => {
         <div className="blog-content mb-8" 
              dangerouslySetInnerHTML={{ __html: post.content }} />
         
-        {/* Tags */}
-        <TagsList tags={post.tags} />
         
         {/* Author */}
         <AuthorBox 
