@@ -1,7 +1,7 @@
 import { executeQuery } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
-
+import { revalidatePath } from 'next/cache';
 
 export async function GET(request) {
   try {
