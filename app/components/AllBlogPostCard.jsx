@@ -6,7 +6,7 @@ import { getImageUrl } from "@/lib/helpers";
 
 const BlogPostCard = ({ title, description, category, date, author, authorTitle, image, slug }) => {
   return (
-    <div className="group relative overflow-hidden bg-white rounded-lg transition-all duration-300 hover:shadow-lg hover:translate-y-[-4px] border border-gray-100 h-full flex flex-col">
+    <div className="group relative overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:translate-y-[-4px] border border-base-content h-full flex flex-col">
       
       <div className="relative h-52 overflow-hidden">
         <img
@@ -28,23 +28,23 @@ const BlogPostCard = ({ title, description, category, date, author, authorTitle,
 
       <div className="flex-grow p-5 flex flex-col">
        
-        <div className="text-xs text-gray-500 mb-2 font-mono tracking-wide">
+        <div className="text-xs text-base-content/70 mb-2 font-mono tracking-wide">
           {date}
         </div>
         
        
-        <h2 className="text-lg font-bold mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors duration-300">
+        <h2 className="text-lg font-bold mb-2 line-clamp-2 group-hover:text-pink-400 transition-colors duration-300">
           {title}
         </h2>
         
         
-        <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+        <p className="text-sm text-base-content/70 mb-4 line-clamp-3">
           {description}
         </p>
         
         
-        <div className="mt-auto pt-3 border-t border-dashed border-gray-200 flex items-center">
-          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-indigo-100 p-0.5">
+        <div className="mt-auto pt-3 border-t border-dashed border-base-content/40 flex items-center">
+          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-300 p-0.5">
             <img 
               src={typeof author === 'object' ? 
                 getImageUrl(author.avatar || "/avatar/Aharen-san.webp") : 
@@ -55,13 +55,13 @@ const BlogPostCard = ({ title, description, category, date, author, authorTitle,
           </div>
           <div className="ml-3">
             <p className="text-sm font-medium">{typeof author === 'object' ? author.display_name || "Author" : author}</p>
-            <p className="text-xs text-gray-500">{authorTitle}</p>
+            <p className="text-xs text-base-content/40">{authorTitle}</p>
           </div>
           
           
           <div className="ml-auto">
             <Link href={`/blog/${slug}`}>
-              <span className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">
+              <span className="inline-flex items-center text-sm font-medium text-pink-400 hover:text-pink-800 transition-colors">
                 อ่านต่อ
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-1">
                   <path fillRule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clipRule="evenodd" />
@@ -82,7 +82,7 @@ const CategoryFilter = ({ categories, currentCategory }) => {
       <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
         <Link href="?">
           <span className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer
-            ${!currentCategory ? 'bg-indigo-100 text-indigo-800 border-2 border-indigo-200' : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border-2 border-transparent'}`}>
+            ${!currentCategory ? 'bg-base-200 text-base-content border-2 border-base-content' : 'bg-base-200 text-base-content/50 hover:bg-neutral-700 hover:text-pink-500 border-2 border-transparent'}`}>
             ทั้งหมด
           </span>
         </Link>
@@ -90,7 +90,7 @@ const CategoryFilter = ({ categories, currentCategory }) => {
         {categories.map((category) => (
           <Link key={category.slug} href={`?category=${category.slug}`}>
             <span className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer
-              ${currentCategory === category.slug ? 'bg-indigo-100 text-indigo-800 border-2 border-indigo-200' : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border-2 border-transparent'}`}>
+              ${currentCategory === category.slug ? 'bg-base-200 text-base-content border-2 border-base-content' : 'bg-base-200 text-base-content/50 hover:bg-neutral-700 hover:text-pink-500 border-2 border-transparent'}`}>
               {category.name}
               <span className="ml-1 text-xs opacity-70">({category.postCount})</span>
             </span>
@@ -205,7 +205,7 @@ async function AllBlogPostGrid({ searchParams }) {
   const { posts, pagination } = await getPosts(category, page, perPage);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-indigo-50/30 relative">
+    <div className="min-h-screen relative">
      
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute left-0 top-0 h-32 w-32">
@@ -230,11 +230,11 @@ async function AllBlogPostGrid({ searchParams }) {
               <span className="inline-block w-3 h-3 bg-indigo-400 rounded-full mr-1"></span>
               <span className="inline-block w-3 h-3 bg-blue-400 rounded-full"></span>
             </div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight text-gray-800 relative">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight text-base-content relative">
               <span className="relative z-10">บทความทั้งหมดของเรา</span>
-              <span className="absolute -bottom-2 left-0 right-0 h-3 bg-indigo-200/50 -z-10 transform -rotate-1"></span>
+              <span className="absolute -bottom-2 left-0 right-0 h-3 bg-base-content/80 -z-10 transform -rotate-1"></span>
             </h2>
-            <p className="text-gray-600 max-w-lg mb-6">เรื่องราวและบทความที่น่าสนใจ อัพเดทล่าสุดจากนักเขียนของเรา</p>
+            <p className="text-base-content/70 max-w-lg mb-6">เรื่องราวและบทความที่น่าสนใจ อัพเดทล่าสุดจากนักเขียนของเรา</p>
             
            
             <div className="w-16 h-1 bg-indigo-400 rounded-full"></div>

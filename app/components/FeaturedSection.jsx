@@ -22,7 +22,7 @@ const FeaturedCard = ({ post, isLarge = false }) => {
       {/* Content */}
       <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
         <div className="flex items-center mb-3">
-          <span className="bg-primary/90 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full shadow-sm mr-3">
+          <span className="bg-primary/90 backdrop-blur-sm text-pink-600 text-xs px-3 py-1 rounded-full shadow-sm mr-3">
             {post.category_name}
           </span>
           <span className="text-white/80 text-xs">
@@ -37,7 +37,7 @@ const FeaturedCard = ({ post, isLarge = false }) => {
         <h3
           className={`${
             isLarge ? "text-2xl" : "text-xl"
-          } font-bold text-white mb-2 line-clamp-2 group-hover:text-primary-content transition-colors`}
+          } font-bold text-white mb-2 line-clamp-2 group-hover:text-amber-400  transition-colors`}
         >
           {post.title}
         </h3>

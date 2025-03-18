@@ -1,5 +1,5 @@
 import "./globals.css";
-
+import ThemeProvider from './components/ThemeProvider'; 
 
 export const metadata = {
   title: "Blog Hoshizora",
@@ -8,11 +8,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en"  data-theme="lofi">
+    <html lang="en">
       <body>
-
-        {children}
-        
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

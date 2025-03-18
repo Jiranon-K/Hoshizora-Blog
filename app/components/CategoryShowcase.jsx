@@ -21,7 +21,7 @@ const CategoryCard = ({ title, description, slug, image, postCount }) => {
             {description}
           </p>
           <div className="flex items-center justify-between">
-            <span className="text-xs bg-primary/80 text-white rounded-full px-3 py-1">
+            <span className="text-xs bg-primary/80 text-pink-500 rounded-full px-3 py-1">
               {postCount} โพสต์
             </span>
             <span className="text-white text-sm group-hover:underline transition-all">

@@ -11,7 +11,7 @@ export default function RelatedPosts({ posts }) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {posts.map(related => (
           <Link href={`/blog/${related.slug}`} key={related.id} className="flex">
-            <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full w-full">
+            <div className="bg-base-content/5 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full w-full">
               <div className="h-40 overflow-hidden">
                 <img
                   src={getImageUrl(related.image)}

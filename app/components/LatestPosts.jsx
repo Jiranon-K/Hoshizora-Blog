@@ -48,7 +48,7 @@ const PostCard = ({ title, description, category, date, author, image, slug }) =
       </figure>
 
       <div className="card-body">
-        <h3 className="card-title text-primary hover:text-primary-focus transition-colors duration-300 line-clamp-2">
+        <h3 className="card-title text-base-content hover:text-primary-focus transition-colors duration-300 line-clamp-2">
           {title}
         </h3>
         

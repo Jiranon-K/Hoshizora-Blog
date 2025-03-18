@@ -11,8 +11,11 @@ import {
   FaHome, 
   FaBook, 
   FaRegClock, 
-  FaHeadphonesAlt 
+  FaHeadphonesAlt,
+  FaMoon,
+  FaSun
 } from "react-icons/fa";
+import ThemeSwitcher from './ThemeSwitcher';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,7 +23,6 @@ const Navbar = () => {
   const [hoverItem, setHoverItem] = useState(null);
   const pathname = usePathname();
 
-  
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -49,7 +51,6 @@ const Navbar = () => {
     { title: "วิชวลโนเวล", href: "/blog?category=visual-novel", icon: <FaHeadphonesAlt /> }
   ];
 
-  
   const isActive = (path) => {
     return pathname === path;
   };
@@ -57,18 +58,16 @@ const Navbar = () => {
   return (
     <nav className={`sticky top-0 z-50 w-full transition-all duration-300 ${
       scrolled 
-      ? "bg-white/95 backdrop-blur-md shadow-md py-2" 
-      : "bg-white py-4"
+      ? "bg-base-100/95 backdrop-blur-md shadow-md py-2" 
+      : "bg-base-100 py-4"
     }`}>
-     
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400"></div>
-      
       
       <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#6b46c1_0.8px,transparent_0.8px)] bg-[size:12px_12px]"></div>
       
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
-         
+          
           <Link 
             href="/" 
             className="relative group"
@@ -87,11 +86,9 @@ const Navbar = () => {
               </span>
             </div>
             
-          
             <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 transition-all duration-300 ${hoverItem === 'logo' ? 'w-full' : ''}`}></span>
           </Link>
 
-         
           <div className="hidden md:flex items-center space-x-1">
             {menuItems.map((item, index) => (
               <Link 
@@ -100,30 +97,30 @@ const Navbar = () => {
                 className={`relative px-3 py-2 rounded-lg flex items-center space-x-1 font-medium transition-all duration-300 overflow-hidden ${
                   isActive(item.href)
                   ? "text-white" 
-                  : "text-gray-700 hover:text-purple-600"
+                  : "text-base-content hover:text-primary"
                 }`}
                 onMouseEnter={() => setHoverItem(item.title)}
                 onMouseLeave={() => setHoverItem(null)}
               >
-              
                 {isActive(item.href) && (
                   <span className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 -z-10"></span>
                 )}
                 
-               
                 {!isActive(item.href) && hoverItem === item.title && (
-                  <span className="absolute inset-0 bg-purple-100 -z-10 animate-pulse"></span>
+                  <span className="absolute inset-0 bg-base-200 -z-10 animate-pulse"></span>
                 )}
                 
                 <span className="text-sm">{item.icon}</span>
                 <span>{item.title}</span>
                 
-               
                 {hoverItem === item.title && (
                   <span className="absolute top-0 -right-1 h-full w-4 bg-white/30 skew-x-[30deg] transform transition-all duration-300"></span>
                 )}
               </Link>
             ))}
+            
+            {/* ThemeSwitcher */}
+            <ThemeSwitcher />
             
             <button 
               className="relative overflow-hidden ml-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium transition-all duration-300 hover:shadow-lg hover:scale-105"
@@ -134,22 +131,19 @@ const Navbar = () => {
                 <span>ติดต่อ</span>
               </span>
               
-              
               <span className="absolute -top-1 -right-1 w-8 h-8 bg-white/20 rounded-full transform scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 delay-100"></span>
             </button>
           </div>
 
-         
           <button 
-            className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg text-gray-700 hover:bg-purple-100 transition-colors"
+            className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg text-base-content hover:bg-base-200 transition-colors"
             onClick={toggleMenu}
           >
             {isMenuOpen ? (
-              <FaTimes size={20} className="text-purple-600" />
+              <FaTimes size={20} className="text-primary" />
             ) : (
               <FaBars size={20} />
             )}
-            
             
             <span className="absolute inset-0 rounded-lg bg-purple-200/50 transform scale-0 opacity-0 transition-all duration-300 hover:scale-100 hover:opacity-100"></span>
           </button>
@@ -157,17 +151,17 @@ const Navbar = () => {
       </div>
 
       {/* เมนูมือถือ */}
-      <div className={`fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out ${
+      <div className={`fixed inset-0 bg-base-100 z-40 transform transition-transform duration-300 ease-in-out ${
         isMenuOpen ? 'translate-x-0' : 'translate-x-full'
       } md:hidden`}>
         <div className="h-full flex flex-col overflow-y-auto">
-          <div className="flex justify-between items-center p-4 border-b">
+          <div className="flex justify-between items-center p-4 border-b border-base-200">
             <Link href="/" className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600" onClick={closeMenu}>
               Hoshizora Blog
             </Link>
             <button 
               onClick={closeMenu}
-              className="p-2 rounded-full bg-purple-100 text-purple-600 hover:bg-purple-200 transition-colors"
+              className="p-2 rounded-full bg-base-200 text-primary hover:bg-base-300 transition-colors"
             >
               <FaTimes size={20} />
             </button>
@@ -182,7 +176,7 @@ const Navbar = () => {
                   className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-300 ${
                     isActive(item.href)
                     ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white" 
-                    : "hover:bg-purple-50 text-gray-700"
+                    : "hover:bg-base-200 text-base-content"
                   }`}
                   onClick={closeMenu}
                 >
@@ -190,10 +184,16 @@ const Navbar = () => {
                   <span className="font-medium">{item.title}</span>
                 </Link>
               ))}
+              
+              {/* ThemeSwitcher สำหรับโหมดมือถือ */}
+              <div className="flex items-center space-x-3 p-3 rounded-xl hover:bg-base-200 text-base-content">
+                <ThemeSwitcher />
+                <span className="font-medium">เปลี่ยนธีม</span>
+              </div>
             </div>
           </div>
           
-          <div className="mt-auto p-4 border-t">
+          <div className="mt-auto p-4 border-t border-base-200">
             <button 
               onClick={() => {
                 document.getElementById('contact_modal').showModal();
@@ -208,7 +208,7 @@ const Navbar = () => {
             <div className="flex justify-center space-x-4 mt-6">
               <a 
                 href="mailto:jiranon46@gmail.com"
-                className="p-3 rounded-full bg-purple-100 text-purple-600 hover:bg-purple-200 transition-colors"
+                className="p-3 rounded-full bg-base-200 text-primary hover:bg-base-300 transition-colors"
               >
                 <FaEnvelope size={20} />
               </a>
@@ -216,7 +216,7 @@ const Navbar = () => {
                 href="https://facebook.com/facebook-page" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-3 rounded-full bg-purple-100 text-purple-600 hover:bg-purple-200 transition-colors"
+                className="p-3 rounded-full bg-base-200 text-primary hover:bg-base-300 transition-colors"
               >
                 <FaFacebook size={20} />
               </a>
@@ -225,18 +225,17 @@ const Navbar = () => {
         </div>
       </div>
 
-      
       <dialog id="contact_modal" className="modal modal-bottom sm:modal-middle">
-        <div className="modal-box bg-white relative p-4 sm:p-6">
+        <div className="modal-box bg-base-100 relative p-4 sm:p-6">
           <div className="absolute right-3 top-3 sm:right-4 sm:top-4">
             <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost text-gray-500 hover:text-gray-700">
+              <button className="btn btn-sm btn-circle btn-ghost text-base-content hover:text-base-content">
                 <FaTimes size={20} />
               </button>
             </form>
           </div>
           
-          <h3 className="font-bold text-xl mt-2 mb-5 sm:mb-6 text-center">ติดต่อเรา</h3>
+          <h3 className="font-bold text-xl mt-2 mb-5 sm:mb-6 text-center text-base-content">ติดต่อเรา</h3>
           
           <div className="space-y-4 sm:space-y-5">
             <div className="w-full">

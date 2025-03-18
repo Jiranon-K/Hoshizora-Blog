@@ -25,7 +25,7 @@ const BlogDetailClient = ({ data, slug }) => {
   const { post, relatedPosts } = data;
 
   return (
-    <div className="w-full py-8 px-4 md:py-12 md:px-6">
+    <div className="w-full py-8 px-4 md:py-12 md:px-6 text-base-content">
       <Head>
         <title>{post.title} - Hoshizora Blog</title>
         <meta name="description" content={post.description} />
