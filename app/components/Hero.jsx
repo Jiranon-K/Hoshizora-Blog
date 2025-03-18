@@ -2,8 +2,15 @@ import React from "react";
 import Link from "next/link";
 import { executeQuery } from "@/lib/db";
 import { getImageUrl } from "@/lib/helpers";
+import { unstable_noStore as noStore } from 'next/cache';
+import { cookies, headers } from "next/headers";
 
 async function getFeaturedPost() {
+  
+  headers(); 
+  const timestamp = Date.now();
+  noStore(); 
+  
   try {
     const [featuredPost] = await executeQuery({
       query: `

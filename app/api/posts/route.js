@@ -69,6 +69,9 @@ export async function POST(request) {
       );
     }
     
+    revalidatePath('/');
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${data.slug}`);
     
     const result = await executeQuery({
       query: `
@@ -96,6 +99,8 @@ export async function POST(request) {
         data.status === 'published' ? new Date() : null
       ]
     });
+
+    
     
    
     const newPost = await executeQuery({
