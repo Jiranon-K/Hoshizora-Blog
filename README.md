@@ -160,12 +160,26 @@ npm run build
 npm start
 ```
 
+
+## 🔒 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+
+
+
+
 ## 👥 Contributors
 
 - [Jiranon-K](https://github.com/Jiranon-K) - Developer
 
 ---
 
+
+
+
+
 <p align="center">
   Made with ❤️ by <a href="https://github.com/Jiranon-K">Jiranon-K</a>
 </p>
+
