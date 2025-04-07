@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 const LoginForm = () => {
@@ -13,11 +13,12 @@ const LoginForm = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
   
-
   const [isLoaded, setIsLoaded] = useState(false);
   
   const router = useRouter();
+  const searchParams = useSearchParams();
 
  
   useEffect(() => {
@@ -25,8 +26,15 @@ const LoginForm = () => {
       setIsLoaded(true);
     }, 100);
     
+    // Check if session expired parameter is present
+    const expired = searchParams.get('expired');
+    if (expired === 'true') {
+      setSessionExpired(true);
+      setError('Your session has expired. Please login again.');
+    }
+    
     return () => clearTimeout(timer);
-  }, []);
+  }, [searchParams]);
 
   
   const handleChange = (e) => {

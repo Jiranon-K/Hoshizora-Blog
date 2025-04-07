@@ -8,6 +8,29 @@ export default function useAuth() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  // Check if session is valid
+  const checkSession = async () => {
+    try {
+      const response = await fetch('/api/auth/check-session', {
+        method: 'GET',
+      });
+      
+      const data = await response.json();
+      
+      if (!data.valid) {
+        // Session expired or invalid
+        localStorage.removeItem('blog_user');
+        router.push('/login?expired=true');
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Session check error:', error);
+      return false;
+    }
+  };
+
   useEffect(() => {
     const userData = localStorage.getItem('blog_user');
     
@@ -19,6 +42,14 @@ export default function useAuth() {
     try {
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
+      
+      // Verify session is still valid with backend
+      checkSession();
+      
+      // Set up interval to periodically check session
+      const sessionCheckInterval = setInterval(checkSession, 15 * 60 * 1000); // Check every 15 minutes
+      
+      return () => clearInterval(sessionCheckInterval);
     } catch (error) {
       console.error('Error parsing user data:', error);
       router.push('/login');
@@ -45,5 +76,5 @@ export default function useAuth() {
     }
   };
 
-  return { user, loading, handleLogout };
+  return { user, loading, handleLogout, checkSession };
 }
