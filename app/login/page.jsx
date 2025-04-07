@@ -1,10 +1,11 @@
-'use client';
+import dynamic from 'next/dynamic';
 
-import React from 'react';
-import LoginForm from '../components/LoginForm';
 
-const LoginPage = () => {
+const LoginForm = dynamic(() => import('../components/LoginForm'), {
+  ssr: true, 
+  loading: () => <div className="min-h-screen flex items-center justify-center">กำลังโหลด...</div>
+});
+
+export default function LoginPage() {
   return <LoginForm />;
-};
-
-export default LoginPage;
+}
