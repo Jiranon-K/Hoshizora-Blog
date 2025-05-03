@@ -1,5 +1,6 @@
 import "./globals.css";
-import ThemeProvider from './components/ThemeProvider'; 
+import ThemeProvider from './components/ThemeProvider';
+import ToastProvider from './components/ToastProvider';
 
 export const metadata = {
   title: "Blog Hoshizora",
@@ -12,6 +13,7 @@ export default function RootLayout({ children }) {
       <body className="overflow-x-hidden" suppressHydrationWarning>
         <ThemeProvider>
           {children}
+          <ToastProvider />
         </ThemeProvider>
       </body>
     </html>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { fetchApi } from '@/lib/api-helpers';
+import toast from 'react-hot-toast';
 
 export default function useCategoryManagement() {
   const [categories, setCategories] = useState([]);
@@ -21,7 +22,6 @@ export default function useCategoryManagement() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState(null);
 
-  // ดึงข้อมูลหมวดหมู่
   const fetchCategories = async () => {
     try {
       setLoading(true);
@@ -37,12 +37,10 @@ export default function useCategoryManagement() {
     }
   };
 
-  // โหลดข้อมูลเมื่อเริ่มต้น
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  // สร้าง slug อัตโนมัติจากชื่อ
   const generateSlug = (name) => {
     return name
       .toLowerCase()
@@ -52,11 +50,9 @@ export default function useCategoryManagement() {
       .replace(/-+/g, '-');
   };
 
-  // จัดการการเปลี่ยนแปลงในฟอร์ม
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     
-    // สร้าง slug อัตโนมัติเมื่อกรอกชื่อ
     if (name === 'name' && (!formData.slug || formData.slug === generateSlug(formData.name))) {
       setFormData(prev => ({
         ...prev,
@@ -71,7 +67,6 @@ export default function useCategoryManagement() {
     }
   };
 
-  // ตรวจสอบความถูกต้องของข้อมูลฟอร์ม
   const validateForm = () => {
     const errors = {};
     
@@ -89,7 +84,6 @@ export default function useCategoryManagement() {
     return Object.keys(errors).length === 0;
   };
 
-  // เปิดฟอร์มเพิ่มหมวดหมู่
   const openAddForm = () => {
     setFormData({ name: '', slug: '' });
     setFormErrors({});
@@ -97,7 +91,6 @@ export default function useCategoryManagement() {
     setIsFormOpen(true);
   };
 
-  // เปิดฟอร์มแก้ไขหมวดหมู่
   const openEditForm = (category) => {
     setFormData({
       name: category.name,
@@ -108,7 +101,6 @@ export default function useCategoryManagement() {
     setIsFormOpen(true);
   };
 
-  // ปิดฟอร์ม
   const closeForm = () => {
     setIsFormOpen(false);
     setFormData({ name: '', slug: '' });
@@ -116,7 +108,6 @@ export default function useCategoryManagement() {
     setEditingCategory(null);
   };
 
-  // บันทึกข้อมูลหมวดหมู่ (เพิ่ม/แก้ไข)
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -128,28 +119,22 @@ export default function useCategoryManagement() {
       setSubmitting(true);
       
       if (editingCategory) {
-        // แก้ไขหมวดหมู่
         const updatedCategory = await fetchApi(`/api/categories/${editingCategory.id}`, {
           method: 'PUT',
           body: JSON.stringify(formData)
         });
         
-        // อัปเดตข้อมูลในสถานะ
         setCategories(prev => 
           prev.map(cat => cat.id === updatedCategory.id ? updatedCategory : cat)
         );
       } else {
-        // เพิ่มหมวดหมู่ใหม่
         const newCategory = await fetchApi('/api/categories', {
           method: 'POST',
           body: JSON.stringify(formData)
         });
         
-        // เพิ่มข้อมูลในสถานะ
         setCategories(prev => [...prev, newCategory]);
       }
-      
-      // ปิดฟอร์ม
       closeForm();
     } catch (err) {
       console.error('Error saving category:', err);
@@ -158,28 +143,25 @@ export default function useCategoryManagement() {
       if (err.message.includes('Slug นี้ถูกใช้งานแล้ว')) {
         setFormErrors(prev => ({ ...prev, slug: 'Slug นี้ถูกใช้งานแล้ว กรุณาเลือก slug อื่น' }));
       } else {
-        alert(err.message || 'เกิดข้อผิดพลาดในการบันทึกหมวดหมู่');
+        toast.error(err.message || 'เกิดข้อผิดพลาดในการบันทึกหมวดหมู่');
       }
     } finally {
       setSubmitting(false);
     }
   };
 
-  // เปิดโมดัลยืนยันการลบ
   const openDeleteModal = (categoryId) => {
     setDeletingCategoryId(categoryId);
     setDeleteError(null);
     setDeleteModalOpen(true);
   };
 
-  // ปิดโมดัลยืนยันการลบ
   const closeDeleteModal = () => {
     setDeleteModalOpen(false);
     setDeletingCategoryId(null);
     setDeleteError(null);
   };
 
-  // ลบหมวดหมู่
   const handleDelete = async () => {
     if (!deletingCategoryId) {
       return;
@@ -193,10 +175,7 @@ export default function useCategoryManagement() {
         method: 'DELETE'
       });
       
-      // ลบข้อมูลจากสถานะ
       setCategories(prev => prev.filter(cat => cat.id !== deletingCategoryId));
-      
-      // ปิดโมดัล
       closeDeleteModal();
     } catch (err) {
       console.error('Error deleting category:', err);
@@ -207,13 +186,10 @@ export default function useCategoryManagement() {
   };
 
   return {
-    // ข้อมูลหมวดหมู่
     categories,
     loading,
     error,
     fetchCategories,
-    
-    // การจัดการฟอร์ม
     isFormOpen,
     formData,
     formErrors,
@@ -224,8 +200,6 @@ export default function useCategoryManagement() {
     openEditForm,
     closeForm,
     handleSubmit,
-    
-    // การลบหมวดหมู่
     deleteModalOpen,
     deleteLoading,
     deleteError,

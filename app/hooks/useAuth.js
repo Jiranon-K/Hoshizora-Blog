@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function useAuth() {
   const [user, setUser] = useState(null);
@@ -20,6 +21,7 @@ export default function useAuth() {
       if (!data.valid) {
         // Session expired or invalid
         localStorage.removeItem('blog_user');
+        toast.error('เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง');
         router.push('/login?expired=true');
         return false;
       }
@@ -72,7 +74,7 @@ export default function useAuth() {
       }
     } catch (error) {
       console.error('Logout error:', error);
-      alert('เกิดข้อผิดพลาดในการออกจากระบบ');
+      toast.error('เกิดข้อผิดพลาดในการออกจากระบบ');
     }
   };
 

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { fetchApi } from '@/lib/api-helpers';
 import ImageSelectorModal from '../../components/ImageSelectorModal';
 import { getImageUrl } from '@/lib/helpers';
+import toast from 'react-hot-toast';
 
 const UserForm = ({ 
   userId = null,
@@ -45,7 +46,7 @@ const UserForm = ({
       });
     } catch (error) {
       console.error('Error fetching user:', error);
-      alert('ไม่สามารถดึงข้อมูลผู้ใช้ได้');
+      toast.error('ไม่สามารถดึงข้อมูลผู้ใช้ได้');
       router.push('/admin/users');
     } finally {
       setLoading(false);
@@ -134,7 +135,7 @@ const UserForm = ({
       router.push('/admin/users');
     } catch (error) {
       console.error('Error saving user:', error);
-      alert(error.message || 'เกิดข้อผิดพลาดในการบันทึกข้อมูลผู้ใช้');
+      toast.error(error.message || 'เกิดข้อผิดพลาดในการบันทึกข้อมูลผู้ใช้');
     } finally {
       setSubmitting(false);
     }

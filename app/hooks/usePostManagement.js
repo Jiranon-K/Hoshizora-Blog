@@ -1,7 +1,7 @@
-// app/hooks/usePostManagement.js
 'use client';
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 export default function usePostManagement() {
   const [posts, setPosts] = useState([]);
@@ -11,7 +11,6 @@ export default function usePostManagement() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  // ดึงข้อมูลบทความ
   const fetchPosts = async () => {
     try {
       setLoading(true);
@@ -23,13 +22,12 @@ export default function usePostManagement() {
       setPosts(data);
     } catch (error) {
       console.error('Error fetching posts:', error);
-      alert('ไม่สามารถดึงข้อมูลบทความได้: ' + error.message);
+      toast.error('ไม่สามารถดึงข้อมูลบทความได้: ' + error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // ดึงข้อมูลหมวดหมู่
   const fetchCategories = async () => {
     try {
       const response = await fetch('/api/categories');
@@ -40,20 +38,18 @@ export default function usePostManagement() {
       setCategories(data);
     } catch (error) {
       console.error('Error fetching categories:', error);
-      alert('ไม่สามารถดึงข้อมูลหมวดหมู่ได้: ' + error.message);
+      toast.error('ไม่สามารถดึงข้อมูลหมวดหมู่ได้: ' + error.message);
     }
   };
 
-  // เปิดโมดัลลบ
   const openDeleteModal = (id) => {
     setDeleteId(id);
     setDeleteModalOpen(true);
   };
 
-  // ฟังก์ชันลบบทความ
   const handleDelete = async () => {
     if (!deleteId) {
-      alert('ไม่พบ ID ของบทความที่ต้องการลบ');
+      toast.error('ไม่พบ ID ของบทความที่ต้องการลบ');
       setDeleteModalOpen(false);
       return;
     }
@@ -72,24 +68,21 @@ export default function usePostManagement() {
       
       const data = await response.json();
       
-      // อัปเดตรายการบทความโดยลบรายการที่มี ID ตรงกับที่ต้องการลบ
       setPosts(prevPosts => prevPosts.filter(post => post.id !== deleteId));
       
-      // ปิดโมดัลและรีเซ็ต ID ที่จะลบ
       setDeleteModalOpen(false);
       setDeleteId(null);
       
-      alert(data.message || 'ลบบทความเรียบร้อยแล้ว');
+      toast.success(data.message || 'ลบบทความเรียบร้อยแล้ว');
       
     } catch (error) {
       console.error('Error deleting post:', error);
-      alert(error.message || 'เกิดข้อผิดพลาดในการลบบทความ');
+      toast.error(error.message || 'เกิดข้อผิดพลาดในการลบบทความ');
     } finally {
       setDeleteLoading(false);
     }
   };
 
-  // ฟังก์ชันช่วยแปลงข้อมูล
   const getCategoryName = (categoryId) => {
     const category = categories.find(cat => cat.id === categoryId);
     return category ? category.name : 'ไม่มีหมวดหมู่';
@@ -113,7 +106,6 @@ export default function usePostManagement() {
     }
   };
 
-  // โหลดข้อมูลเมื่อเริ่มต้น
   useEffect(() => {
     fetchPosts();
     fetchCategories();

@@ -10,6 +10,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import Color from '@tiptap/extension-color';
 import { getImageUrl } from '@/lib/helpers';
 import YouTube, { getYoutubeEmbedUrl } from './extensions/YouTubeExtension';
+import toast from 'react-hot-toast';
 
 
 const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
@@ -48,7 +49,7 @@ const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      alert('กรุณาเลือกไฟล์รูปภาพเท่านั้น');
+      toast.error('กรุณาเลือกไฟล์รูปภาพเท่านั้น');
       return;
     }
 
@@ -94,10 +95,10 @@ const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
         fileInputRef.current.value = '';
       }
       
-      alert('อัพโหลดรูปภาพสำเร็จ');
+      toast.success('อัพโหลดรูปภาพสำเร็จ');
     } catch (error) {
       console.error('Error uploading image:', error);
-      alert(`อัพโหลดล้มเหลว: ${error.message}`);
+      toast.error(`อัพโหลดล้มเหลว: ${error.message}`);
     } finally {
       setUploading(false);
     }

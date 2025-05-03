@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 const LoginForm = () => {
   
@@ -31,6 +32,7 @@ const LoginForm = () => {
     if (expired === 'true') {
       setSessionExpired(true);
       setError('Your session has expired. Please login again.');
+      toast.error('Your session has expired. Please login again.');
     }
     
     return () => clearTimeout(timer);
@@ -63,16 +65,21 @@ const LoginForm = () => {
       const data = await response.json();
 
       if (!data.success) {
-        setError(data.message || 'การเข้าสู่ระบบไม่สำเร็จ');
+        const errorMessage = data.message || 'การเข้าสู่ระบบไม่สำเร็จ';
+        setError(errorMessage);
+        toast.error(errorMessage);
         setLoading(false);
         return;
       }
 
       localStorage.setItem('blog_user', JSON.stringify(data.user));
+      toast.success('เข้าสู่ระบบสำเร็จ');
       router.push('/admin');
       
     } catch (error) {
-      setError('เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์');
+      const errorMessage = 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์';
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error('Login error:', error);
     } finally {
       setLoading(false);

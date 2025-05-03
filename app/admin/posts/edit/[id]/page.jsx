@@ -9,6 +9,7 @@ import PostForm from '../../../components/PostForm';
 import useAuth from '../../../../hooks/useAuth';
 import useCategories from '../../../../hooks/useCategories';
 import usePostForm from '../../../../hooks/usePostForm';
+import toast from 'react-hot-toast';
 
 export default function EditPostPage({ params }) {
   const router = useRouter();
@@ -67,7 +68,7 @@ export default function EditPostPage({ params }) {
       setPostLoading(false);
     } catch (error) {
       console.error('Error fetching post:', error);
-      alert('ไม่สามารถดึงข้อมูลบทความได้');
+      toast.error('ไม่สามารถดึงข้อมูลบทความได้');
       router.push('/admin/posts');
     }
   };
