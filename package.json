@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "update-password": "node --experimental-modules scripts/update-password.js"
+    "update-password": "node --experimental-modules scripts/update-password.js",
+    "analyze": "BUNDLE_ANALYZE=true next build"
   },
   "dependencies": {
     "@emotion/styled": "^11.14.0",
@@ -44,6 +45,7 @@
     "@tailwindcss/postcss": "^4.0.14",
     "eslint": "^9",
     "eslint-config-next": "15.2.2",
-    "tailwindcss": "^4.0.14"
+    "tailwindcss": "^4.0.14",
+    "@next/bundle-analyzer": "^13.1.4"
   }
 }

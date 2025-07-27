@@ -3,12 +3,19 @@
 import React from "react";
 import Link from "next/link";
 import Head from "next/head";
+import dynamic from 'next/dynamic';
 import Breadcrumbs from '../components/Breadcrumbs';
 import PostHeader from '../components/PostHeader';
 import PostImage from '../components/PostImage';
 import AuthorBox from '../components/AuthorBox';
 import RelatedPosts from '../components/RelatedPosts';
 import '../../styles/blogContent.css';
+
+const Breadcrumbs = dynamic(() => import('../components/Breadcrumbs'));
+const PostHeader = dynamic(() => import('../components/PostHeader'));
+const PostImage = dynamic(() => import('../components/PostImage'));
+const AuthorBox = dynamic(() => import('../components/AuthorBox'));
+const RelatedPosts = dynamic(() => import('../components/RelatedPosts'));
 
 const BlogDetailClient = ({ data, slug }) => {
   if (!data || !data.post) {
