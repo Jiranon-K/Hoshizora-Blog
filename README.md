@@ -22,9 +22,9 @@ A modern, minimalist blog platform built with Next.js and Tailwind CSS, featurin
 
 <div align="center">
   
-  ![Blog](https://github.com/user-attachments/assets/2fb32285-6f6e-41da-8d9c-7ab3c4ebccb9)
+  ![Blog](https://github.com/user-attachments/assets/0bf02e90-7205-4c71-b4cc-bac040f743c1)
 
- ![image](https://github.com/user-attachments/assets/c3d71832-d60c-4c1b-b87e-ff829fc51dc5)
+ ![image](https://github.com/user-attachments/assets/d1ac52d4-e486-4e6a-8802-0185fc9baeec)
 
 </div>
 
