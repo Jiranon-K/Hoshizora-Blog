@@ -136,10 +136,48 @@ export default async function LatestPosts() {
 
   if (posts.length === 0) {
     return (
-      <div className="text-center py-12 bg-base-200 rounded-xl p-8 shadow-inner">
-        <div className="text-primary text-6xl mb-4">📭</div>
-        <h3 className="text-xl font-bold mb-2">ยังไม่มีบทความ</h3>
-        <p className="text-base-content/70">กลับมาเร็วๆ นี้เพื่อติดตามเนื้อหาที่น่าตื่นเต้น!</p>
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex justify-between items-center mb-8">
+          <div className="skeleton h-9 w-40"></div>
+          <div className="skeleton h-12 w-36 rounded-lg"></div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, index) => (
+            <div key={index} className="card bg-base-100 shadow-xl">
+              {/* Image skeleton */}
+              <figure className="relative h-56">
+                <div className="skeleton w-full h-full"></div>
+                <div className="absolute top-4 left-4">
+                  <div className="skeleton h-5 w-16 rounded-full"></div>
+                </div>
+              </figure>
+
+              <div className="card-body">
+                {/* Title skeleton */}
+                <div className="skeleton h-6 w-full mb-2"></div>
+                <div className="skeleton h-6 w-3/4"></div>
+                
+                {/* Description skeleton */}
+                <div className="skeleton h-4 w-full mt-4"></div>
+                <div className="skeleton h-4 w-full"></div>
+                <div className="skeleton h-4 w-2/3"></div>
+                
+                {/* Footer skeleton */}
+                <div className="card-actions justify-between items-center mt-4 pt-4 border-t border-base-content/10">
+                  <div className="flex items-center space-x-3">
+                    <div className="skeleton w-10 h-10 rounded-full shrink-0"></div>
+                    <div>
+                      <div className="skeleton h-4 w-24 mb-1"></div>
+                      <div className="skeleton h-3 w-20"></div>
+                    </div>
+                  </div>
+                  <div className="skeleton h-8 w-20 rounded-lg"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

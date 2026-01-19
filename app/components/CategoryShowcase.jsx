@@ -81,18 +81,31 @@ const CategoryShowcase = () => {
     }
   }
 
-  if (loading) {
+  if (loading || categories.length === 0) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <div className="loading loading-dots loading-lg text-primary"></div>
-      </div>
-    );
-  }
-
-  if (categories.length === 0) {
-    return (
-      <div className="text-center py-12">
-      <p>ไม่พบหมวดหมู่ กรุณาตรวจสอบอีกครั้งในภายหลัง!</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[...Array(3)].map((_, index) => (
+          <div key={index} className="relative h-64 rounded-xl overflow-hidden shadow-md bg-base-100">
+            {/* Image skeleton */}
+            <div className="skeleton w-full h-full"></div>
+            
+            {/* Content overlay skeleton */}
+            <div className="absolute bottom-0 left-0 right-0 p-5 z-20 bg-gradient-to-t from-base-300/90 to-transparent">
+              {/* Title skeleton */}
+              <div className="skeleton h-6 w-3/4 mb-2"></div>
+              
+              {/* Description skeleton */}
+              <div className="skeleton h-4 w-full mb-1"></div>
+              <div className="skeleton h-4 w-2/3 mb-3"></div>
+              
+              {/* Footer skeleton */}
+              <div className="flex items-center justify-between">
+                <div className="skeleton h-5 w-16 rounded-full"></div>
+                <div className="skeleton h-4 w-24"></div>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     );
   }

@@ -97,16 +97,53 @@ export default function FeaturedSection() {
     fetchFeaturedPosts();
   }, []);
 
-  if (loading) {
+  if (loading || featuredPosts.length === 0) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <div className="loading loading-dots loading-lg text-primary"></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Large featured skeleton */}
+        <div className="relative h-134 rounded-xl overflow-hidden shadow-md bg-base-100">
+          <div className="skeleton w-full h-full"></div>
+          <div className="absolute bottom-0 left-0 right-0 p-6 z-20 bg-gradient-to-t from-base-300/90 to-transparent">
+            <div className="flex items-center mb-3">
+              <div className="skeleton h-5 w-20 rounded-full mr-3"></div>
+              <div className="skeleton h-4 w-24"></div>
+            </div>
+            <div className="skeleton h-8 w-3/4 mb-2"></div>
+            <div className="skeleton h-8 w-1/2 mb-3"></div>
+            <div className="skeleton h-4 w-full mb-1"></div>
+            <div className="skeleton h-4 w-2/3 mb-3"></div>
+            <div className="flex items-center">
+              <div className="skeleton w-8 h-8 rounded-full shrink-0 mr-3"></div>
+              <div className="skeleton h-4 w-24"></div>
+              <div className="skeleton h-4 w-28 ml-auto"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Small featured skeletons */}
+        <div className="grid grid-cols-1 gap-6">
+          {[...Array(2)].map((_, index) => (
+            <div key={index} className="relative h-64 rounded-xl overflow-hidden shadow-md bg-base-100">
+              <div className="skeleton w-full h-full"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 z-20 bg-gradient-to-t from-base-300/90 to-transparent">
+                <div className="flex items-center mb-3">
+                  <div className="skeleton h-5 w-16 rounded-full mr-3"></div>
+                  <div className="skeleton h-4 w-20"></div>
+                </div>
+                <div className="skeleton h-6 w-3/4 mb-2"></div>
+                <div className="skeleton h-4 w-full mb-1"></div>
+                <div className="skeleton h-4 w-1/2 mb-3"></div>
+                <div className="flex items-center">
+                  <div className="skeleton w-8 h-8 rounded-full shrink-0 mr-3"></div>
+                  <div className="skeleton h-4 w-20"></div>
+                  <div className="skeleton h-4 w-24 ml-auto"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
-  }
-
-  if (featuredPosts.length === 0) {
-    return null;
   }
 
   return (

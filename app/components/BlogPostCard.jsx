@@ -99,6 +99,64 @@ async function getLatestPosts() {
 async function BlogPostGrid() {
   const blogPosts = await getLatestPosts();
 
+  // Skeleton for empty state
+  if (blogPosts.length === 0) {
+    return (
+      <div className="w-full py-8 px-4 md:py-12 md:px-6 lg:py-16 lg:px-8">
+        <div className="mx-auto max-w-screen-xl">
+          <div className="flex flex-col items-center mb-10 text-center">
+            <div className="skeleton h-10 w-48 mb-4"></div>
+            <div className="skeleton h-5 w-80"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {[...Array(4)].map((_, index) => (
+              <div key={index} className="card bg-base-100 h-full overflow-hidden border border-gray-100 rounded-lg">
+                {/* Image skeleton */}
+                <figure className="relative h-48 overflow-hidden">
+                  <div className="skeleton w-full h-full"></div>
+                  <div className="absolute top-3 left-3">
+                    <div className="skeleton h-5 w-16 rounded-md"></div>
+                  </div>
+                </figure>
+
+                <div className="card-body p-4">
+                  {/* Date skeleton */}
+                  <div className="skeleton h-3 w-24 mb-2"></div>
+                  
+                  {/* Title skeleton */}
+                  <div className="skeleton h-6 w-full mb-1"></div>
+                  <div className="skeleton h-6 w-3/4 mb-2"></div>
+                  
+                  {/* Description skeleton */}
+                  <div className="skeleton h-4 w-full mb-1"></div>
+                  <div className="skeleton h-4 w-full mb-1"></div>
+                  <div className="skeleton h-4 w-2/3 mb-4"></div>
+                  
+                  {/* Author section skeleton */}
+                  <div className="flex items-center mt-auto pt-2 border-t border-gray-100">
+                    <div className="skeleton w-8 h-8 rounded-full shrink-0 mr-3"></div>
+                    <div>
+                      <div className="skeleton h-4 w-20 mb-1"></div>
+                      <div className="skeleton h-3 w-16"></div>
+                    </div>
+                    <div className="ml-auto">
+                      <div className="skeleton h-8 w-16 rounded-lg"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex justify-center mt-10">
+            <div className="skeleton h-12 w-40 rounded-lg"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full py-8 px-4 md:py-12 md:px-6 lg:py-16 lg:px-8">
       <div className="mx-auto max-w-screen-xl">

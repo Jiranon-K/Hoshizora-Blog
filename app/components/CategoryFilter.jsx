@@ -27,9 +27,7 @@ export default function CategoryFilter({ categories, currentCategory }) {
     return (
       <div className="mb-8 flex flex-wrap justify-center gap-4">
         <div className="w-full md:w-auto">
-          <div className="select select-bordered w-full md:w-64 opacity-50">
-            กำลังโหลด...
-          </div>
+          <div className="skeleton h-12 w-full md:w-64 rounded-lg"></div>
         </div>
       </div>
     );

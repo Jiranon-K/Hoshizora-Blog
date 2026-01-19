@@ -37,7 +37,16 @@ export default async function AnimeHero() {
   const featuredPost = await getFeaturedPost();
   
   if (!featuredPost) {
-    return null;
+    return (
+      <div className="relative w-full h-[45vh] min-h-[600px] overflow-hidden bg-[#0F1015]">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none z-0" 
+             style={{
+               backgroundImage: 'radial-gradient(#FFFFFF 8%, transparent 8%)',
+               backgroundSize: '30px 30px'
+             }}></div>
+      </div>
+    );
   }
 
   return (
