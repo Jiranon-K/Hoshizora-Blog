@@ -15,7 +15,7 @@ export default function EditUserPage() {
   
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-neutral">
+      <div className="min-h-screen bg-black">
         <AdminNavbar user={user} onLogout={handleLogout} />
         <div className="flex justify-center items-center h-[80vh]">
           <span className="loading loading-spinner loading-lg text-white"></span>
@@ -25,7 +25,7 @@ export default function EditUserPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral">
+    <div className="min-h-screen bg-black">
       <AdminNavbar user={user} onLogout={handleLogout} />
       
       <div className="container mx-auto p-4">

@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AdminNavbar from "../../components/AdminNavbar";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiImage, FiCheck, FiX, FiSave, FiEdit3 } from "react-icons/fi";
+import { FiImage, FiCheck, FiX, FiSave, FiEdit3, FiUpload, FiTrash2 } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 export default function HomepageManagement() {
   const [user, setUser] = useState(null);
@@ -24,6 +25,7 @@ export default function HomepageManagement() {
   const [showImagePicker, setShowImagePicker] = useState(false);
   const [r2Files, setR2Files] = useState([]);
   const [loadingFiles, setLoadingFiles] = useState(false);
+  const [uploading, setUploading] = useState(false);
   
   const router = useRouter();
 
@@ -97,6 +99,56 @@ export default function HomepageManagement() {
     fetchR2Files();
   }
 
+  async function handleFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น (JPG, PNG, WEBP, GIF)");
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("ขนาดไฟล์ต้องไม่เกิน 5MB");
+      return;
+    }
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("อัปโหลดรูปภาพสำเร็จ");
+        // Add new file to the list directly or refetch
+        setR2Files(prev => [{
+            key: data.filename,
+            url: data.url,
+            uploadedAt: new Date().toISOString()
+        }, ...prev]);
+      } else {
+        toast.error(data.error || "เกิดข้อผิดพลาดในการอัปโหลด");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("เกิดข้อผิดพลาดในการเชื่อมต่อ");
+    } finally {
+      setUploading(false);
+      // Reset input
+      e.target.value = null;
+    }
+  }
+
   function selectImage(url) {
     if (editingCategory) {
       setEditingCategory({
@@ -125,13 +177,13 @@ export default function HomepageManagement() {
       if (response.ok) {
         await fetchData();
         setEditingCategory(null);
-        alert("บันทึกข้อมูลเรียบร้อยแล้ว");
+        toast.success("บันทึกข้อมูลเรียบร้อยแล้ว");
       } else {
         const error = await response.json();
-        alert(error.error || "เกิดข้อผิดพลาด");
+        toast.error(error.error || "เกิดข้อผิดพลาด");
       }
     } catch (error) {
-      alert("เกิดข้อผิดพลาดในการบันทึก");
+      toast.error("เกิดข้อผิดพลาดในการบันทึก");
     } finally {
       setSaving(false);
     }
@@ -150,12 +202,12 @@ export default function HomepageManagement() {
       });
       
       if (response.ok) {
-        alert("บันทึกการตั้งค่า Hero เรียบร้อยแล้ว");
+        toast.success("บันทึกการตั้งค่า Hero เรียบร้อยแล้ว");
       } else {
-        alert("เกิดข้อผิดพลาด");
+        toast.error("เกิดข้อผิดพลาด");
       }
     } catch (error) {
-      alert("เกิดข้อผิดพลาดในการบันทึก");
+      toast.error("เกิดข้อผิดพลาดในการบันทึก");
     } finally {
       setSaving(false);
     }
@@ -174,12 +226,12 @@ export default function HomepageManagement() {
       });
       
       if (response.ok) {
-        alert("บันทึกโพสต์แนะนำเรียบร้อยแล้ว");
+        toast.success("บันทึกโพสต์แนะนำเรียบร้อยแล้ว");
       } else {
-        alert("เกิดข้อผิดพลาด");
+        toast.error("เกิดข้อผิดพลาด");
       }
     } catch (error) {
-      alert("เกิดข้อผิดพลาดในการบันทึก");
+      toast.error("เกิดข้อผิดพลาดในการบันทึก");
     } finally {
       setSaving(false);
     }
@@ -510,10 +562,35 @@ export default function HomepageManagement() {
                     className="relative bg-zinc-950 border border-zinc-800 w-full max-w-4xl max-h-[80vh] flex flex-col shadow-2xl"
                 >
                     <div className="p-6 border-b border-zinc-900 flex justify-between items-center bg-zinc-950 sticky top-0 z-10">
-                        <h3 className="text-xl font-light text-white">เลือกรูปภาพ</h3>
-                        <button onClick={() => setShowImagePicker(false)} className="text-zinc-500 hover:text-white transition-colors">
-                            <FiX size={24} />
-                        </button>
+                        <div>
+                            <h3 className="text-xl font-light text-white">เลือกรูปภาพ</h3>
+                            <p className="text-xs text-zinc-500 font-light mt-1">คลิกที่รูปภาพเพื่อเลือก หรืออัปโหลดใหม่</p>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <label className={`cursor-pointer flex items-center gap-2 bg-white text-black px-4 py-2 text-xs font-bold uppercase tracking-widest hover:bg-zinc-200 transition-colors ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                                {uploading ? (
+                                    <>
+                                        <div className="loading loading-spinner loading-xs"></div>
+                                        <span>กำลังอัปโหลด...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <FiUpload />
+                                        <span>อัปโหลดรูปภาพ</span>
+                                    </>
+                                )}
+                                <input 
+                                    type="file" 
+                                    className="hidden" 
+                                    accept="image/jpeg,image/png,image/webp,image/gif"
+                                    onChange={handleFileUpload}
+                                    disabled={uploading}
+                                />
+                            </label>
+                            <button onClick={() => setShowImagePicker(false)} className="text-zinc-500 hover:text-white transition-colors">
+                                <FiX size={24} />
+                            </button>
+                        </div>
                     </div>
                     
                     <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-zinc-950">

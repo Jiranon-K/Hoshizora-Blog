@@ -3,21 +3,21 @@
   
 <div align="center">
   
- [![hsz](https://github.com/user-attachments/assets/2c66377a-1d46-4d8b-83e6-6a57ace25f54)](https://blog.hoshizora.online/)
+ [![hsz](https://github.com/user-attachments/assets/2c66377a-1d46-4d8b-83e6-6a57ace25f54)](https://blog.yuhari.app/)
   
 </div>
  
 
-A modern, minimalist blog platform built with Next.js and Tailwind CSS, featuring a clean UI, rich content editing, and a full-featured admin panel.
+A modern, minimalist blog platform built with Next.js and Tailwind CSS, featuring a clean UI, rich content editing, and a full-featured admin panel. This project uses the **"Tech Noir Minimal"** design system.
 
 ## ✨ Features
 
-- **Modern Design** — Clean, responsive UI with light/dark mode support
+- **Tech Noir Minimal Design** — High contrast, monochrome aesthetic with clean typography
 - **Rich Content Editor** — Support for images, YouTube embeds, and formatting
 - **Admin Dashboard** — Comprehensive management for posts, categories, and users
 - **Authentication** — Secure login system with role-based access control
-- **Optimized Performance** — Fast page loads with Next.js
-  
+- **Optimized Performance** — Fast page loads with Next.js and MongoDB
+
 ## 📸 Screenshots
 
 <div align="center">
@@ -33,7 +33,7 @@ A modern, minimalist blog platform built with Next.js and Tailwind CSS, featurin
 ### Prerequisites
 
 - Node.js 18+ and npm/yarn
-- MySQL database
+- MongoDB database
 
 ### Installation
 
@@ -51,58 +51,15 @@ A modern, minimalist blog platform built with Next.js and Tailwind CSS, featurin
    ```
 
 3. Set up environment variables:
-   ```
-   DB_HOST=your_db_host
-   DB_PORT=your_db_port
-   DB_NAME=your_db_name
-   DB_USER=your_db_user
-   DB_PASSWORD=your_db_password
+   Create a `.env` file in the root directory:
+   ```env
+   MONGODB_URI=mongodb+srv://your_mongo_url
    JWT_SECRET=your_jwt_secret
-   ```
-
-4. Initialize the database:
-
-   
-   ```
-   USERS {
-        int id PK
-        varchar username UK
-        varchar email UK
-        varchar password
-        varchar display_name
-        varchar avatar
-        varchar title
-        text bio
-        enum role
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    CATEGORIES {
-        int id PK
-        varchar name
-        varchar slug UK
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    POSTS {
-        int id PK
-        varchar title
-        varchar slug UK
-        text description
-        longtext content
-        varchar featured_image
-        enum status
-        int views
-        int user_id FK
-        int category_id FK
-        timestamp created_at
-        timestamp published_at
-        timestamp updated_at
-    }
-
-
+   # AWS S3 / R2 Configuration (Optional for image upload)
+   R2_ACCESS_KEY_ID=your_access_key
+   R2_SECRET_ACCESS_KEY=your_secret_key
+   R2_BUCKET_NAME=your_bucket_name
+   R2_ACCOUNT_ID=your_account_id
    ```
 
 4. Run the development server:
@@ -133,7 +90,8 @@ A modern, minimalist blog platform built with Next.js and Tailwind CSS, featurin
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
 - [DaisyUI](https://daisyui.com/) - Tailwind CSS component library
 - [TipTap](https://tiptap.dev/) - Rich text editor
-- [MySQL](https://www.mysql.com/) - Database
+- [MongoDB](https://www.mongodb.com/) - Database
+- [Mongoose](https://mongoosejs.com/) - MongoDB ODM
 - [JWT](https://jwt.io/) - Authentication
 
 ## 📝 Features in Detail
@@ -149,7 +107,7 @@ A modern, minimalist blog platform built with Next.js and Tailwind CSS, featurin
 - Post management (create, edit, delete)
 - Category management
 - User management with role-based permissions
-- Image upload 
+- Image upload (AWS S3 / Cloudflare R2 support)
 
 ## 🔄 Deployment
 
@@ -166,18 +124,11 @@ npm start
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 
-
-
-
 ## 👥 Contributors
 
 - [Jiranon-K](https://github.com/Jiranon-K) - Developer
 
 ---
-
-
-
-
 
 <p align="center">
   Made with ❤️ by <a href="https://github.com/Jiranon-K">Jiranon-K</a>

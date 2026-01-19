@@ -31,7 +31,7 @@ const CategoryCard = ({ title, description, slug, image, postCount }) => {
             </div>
             
              <span className="text-xs font-medium tracking-widest uppercase text-zinc-500 border border-zinc-800 px-2 py-1 bg-black">
-              {postCount} Posts
+              {postCount} โพสต์
             </span>
           </div>
         </div>
