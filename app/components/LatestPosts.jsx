@@ -47,7 +47,7 @@ async function getLatestPosts() {
 function PostCard({ title, description, category, date, author, authorAvatar, image, slug }) {
   return (
     <Link href={`/blog/${slug}`} className="group block h-full"> 
-      <div className="bg-zinc-950 h-full border border-zinc-900 transition-all duration-300 hover:border-zinc-700 flex flex-col pt-0">
+      <div className="bg-black h-full border border-zinc-900 transition-all duration-300 hover:border-zinc-700 flex flex-col pt-0">
         <figure className="relative overflow-hidden h-56 border-b border-zinc-900">
           <Image
             src={getImageUrl(image)}

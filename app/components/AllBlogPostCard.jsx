@@ -8,7 +8,7 @@ import { getImageUrl } from "@/lib/helpers";
 const BlogPostCard = ({ title, description, category, date, author, authorAvatar, authorTitle, image, slug }) => {
   return (
     <Link href={`/blog/${slug}`} className="group block h-full"> 
-       <div className="bg-zinc-950 h-full border border-zinc-900 transition-all duration-300 hover:border-zinc-700 flex flex-col">
+       <div className="bg-black h-full border border-zinc-900 transition-all duration-300 hover:border-zinc-700 flex flex-col">
         {/* Image */}
         <div className="relative h-52 overflow-hidden border-b border-zinc-900">
           <img
