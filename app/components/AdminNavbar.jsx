@@ -39,6 +39,12 @@ const AdminNavbar = ({ user, onLogout }) => {
               แดชบอร์ด
             </Link>
             <Link 
+              href="/admin/homepage" 
+              className={`py-2 px-4 rounded text-sm transition-all duration-200 ${isActive('/admin/homepage') ? 'bg-zinc-900 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-950'}`}
+            >
+             หน้าแรก
+            </Link>
+            <Link 
               href="/admin/posts" 
               className={`py-2 px-4 rounded text-sm transition-all duration-200 ${isActive('/admin/posts') ? 'bg-zinc-900 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-950'}`}
             >

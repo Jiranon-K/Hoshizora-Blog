@@ -92,18 +92,10 @@ export default function EditPostPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-neutral">
+    <div className="min-h-screen bg-zinc-950">
       <AdminNavbar user={user} onLogout={handleLogout} />
       
-      <div className="container mx-auto p-4">
-        <div className="bg-base-100 rounded-lg shadow-md p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">แก้ไขบทความ</h1>
-            <Link href="/admin/posts" className="btn btn-neutral">
-              กลับไปหน้ารายการ
-            </Link>
-          </div>
-          
+      <div className="w-full px-6 pt-6">
           <PostForm 
             formData={formData}
             errors={errors}
@@ -116,7 +108,6 @@ export default function EditPostPage({ params }) {
             isEdit={true}
             post={post}
           />
-        </div>
       </div>
       
       <ImageSelectorModal

@@ -282,13 +282,13 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
   }
 
   return (
-    <div className="menu-bar bg-gray-100 p-2 rounded-t-lg border border-gray-300 flex flex-wrap gap-1 mb-1">
+    <div className="menu-bar bg-zinc-900 p-2 rounded-t-lg border-b border-zinc-800 flex flex-wrap gap-1 mb-0">
       <button
         onClick={(e) => {
           e.preventDefault();
           editor.chain().focus().toggleBold().run();
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('bold') ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive('bold') ? 'bg-zinc-800 text-white' : ''}`}
         title="ตัวหนา"
         type="button"
       >
@@ -301,7 +301,7 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           e.preventDefault();
           editor.chain().focus().toggleItalic().run();
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('italic') ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive('italic') ? 'bg-zinc-800 text-white' : ''}`}
         title="ตัวเอียง"
         type="button"
       >
@@ -314,7 +314,7 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           e.preventDefault();
           editor.chain().focus().toggleUnderline().run();
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('underline') ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive('underline') ? 'bg-zinc-800 text-white' : ''}`}
         title="ขีดเส้นใต้"
         type="button"
       >
@@ -327,7 +327,7 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           e.preventDefault();
           editor.chain().focus().toggleStrike().run();
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('strike') ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive('strike') ? 'bg-zinc-800 text-white' : ''}`}
         title="ขีดทับ"
         type="button"
       >
@@ -335,13 +335,13 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           <path d="M6.333 5.686c0 .31.083.581.27.814H5.166a2.776 2.776 0 0 1-.099-.76c0-1.627 1.436-2.768 3.48-2.768 1.969 0 3.39 1.175 3.445 2.85h-1.23c-.11-1.08-.964-1.743-2.25-1.743-1.23 0-2.18.602-2.18 1.607zm2.194 7.478c-2.153 0-3.589-1.107-3.705-2.81h1.23c.144 1.06 1.129 1.703 2.544 1.703 1.34 0 2.31-.705 2.31-1.675 0-.827-.547-1.374-1.914-1.675L8.046 8.5H1v-1h14v1h-3.504c.468.437.675.994.675 1.697 0 1.826-1.436 2.967-3.644 2.967z"/>
         </svg>
       </button>
-      <div className="border-r border-gray-300 mx-1 h-6"></div>
+      <div className="border-r border-zinc-700 mx-1 h-6 self-center"></div>
       <button
         onClick={(e) => {
           e.preventDefault();
           editor.chain().focus().toggleHeading({ level: 1 }).run();
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('heading', { level: 1 }) ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive('heading', { level: 1 }) ? 'bg-zinc-800 text-white' : ''}`}
         title="หัวข้อใหญ่"
         type="button"
       >
@@ -354,7 +354,7 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           e.preventDefault();
           editor.chain().focus().toggleHeading({ level: 2 }).run();
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive('heading', { level: 2 }) ? 'bg-zinc-800 text-white' : ''}`}
         title="หัวข้อรอง"
         type="button"
       >
@@ -367,7 +367,7 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           e.preventDefault();
           editor.chain().focus().toggleHeading({ level: 3 }).run();
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('heading', { level: 3 }) ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive('heading', { level: 3 }) ? 'bg-zinc-800 text-white' : ''}`}
         title="หัวข้อย่อย"
         type="button"
       >
@@ -375,13 +375,13 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           <path d="M7.637 13V3.669H6.379V7.62H1.758V3.67H.5V13h1.258V8.728h4.62V13h1.259zm3.625-4.272h1.018c1.142 0 1.935.67 1.949 1.674.013 1.005-.78 1.737-2.01 1.73-1.08-.007-1.853-.588-1.935-1.32H9.108c.069 1.327 1.224 2.386 3.083 2.386 1.935 0 3.343-1.155 3.309-2.789-.027-1.51-1.251-2.16-2.037-2.249v-.068c.704-.123 1.764-.91 1.723-2.229-.035-1.353-1.176-2.4-2.954-2.385-1.873.006-2.857 1.162-2.898 2.358h1.196c.062-.69.711-1.299 1.696-1.299.998 0 1.695.622 1.695 1.525.007.922-.718 1.592-1.695 1.592h-.964v1.074z"/>
         </svg>
       </button>
-      <div className="border-r border-gray-300 mx-1 h-6"></div>
+      <div className="border-r border-zinc-700 mx-1 h-6 self-center"></div>
       <button
         onClick={(e) => {
           e.preventDefault();
           editor.chain().focus().toggleBulletList().run();
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('bulletList') ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive('bulletList') ? 'bg-zinc-800 text-white' : ''}`}
         title="รายการแบบจุด"
         type="button"
       >
@@ -394,7 +394,7 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           e.preventDefault();
           editor.chain().focus().toggleOrderedList().run();
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('orderedList') ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive('orderedList') ? 'bg-zinc-800 text-white' : ''}`}
         title="รายการแบบตัวเลข"
         type="button"
       >
@@ -403,13 +403,13 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           <path d="M1.713 11.865v-.474H2c.217 0 .363-.137.363-.317 0-.185-.158-.31-.361-.31-.223 0-.367.152-.373.31h-.59c.016-.467.373-.787.986-.787.588-.002.954.291.957.703a.595.595 0 0 1-.492.594v.033a.615.615 0 0 1 .569.631c.003.533-.502.8-1.051.8-.656 0-1-.37-1.008-.794h.582c.008.178.186.306.422.309.254 0 .424-.145.422-.35-.002-.195-.155-.348-.414-.348h-.3zm-.004-4.699h-.604v-.035c0-.408.295-.844.958-.844.583 0 .96.326.96.756 0 .389-.257.617-.476.848l-.537.572v.03h1.054V9H1.143v-.395l.957-.99c.138-.142.293-.304.293-.508 0-.18-.147-.32-.342-.32a.33.33 0 0 0-.342.338v.041zM2.564 5h-.635V2.924h-.031l-.598.42v-.567l.629-.443h.635V5z"/>
         </svg>
       </button>
-      <div className="border-r border-gray-300 mx-1 h-6"></div>
+      <div className="border-r border-zinc-700 mx-1 h-6 self-center"></div>
       <button
         onClick={(e) => {
           e.preventDefault();
           editor.chain().focus().setTextAlign('left').run();
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive({ textAlign: 'left' }) ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive({ textAlign: 'left' }) ? 'bg-zinc-800 text-white' : ''}`}
         title="จัดชิดซ้าย"
         type="button"
       >
@@ -422,7 +422,7 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           e.preventDefault();
           editor.chain().focus().setTextAlign('center').run();
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive({ textAlign: 'center' }) ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive({ textAlign: 'center' }) ? 'bg-zinc-800 text-white' : ''}`}
         title="จัดกึ่งกลาง"
         type="button"
       >
@@ -435,7 +435,7 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           e.preventDefault();
           editor.chain().focus().setTextAlign('right').run();
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive({ textAlign: 'right' }) ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive({ textAlign: 'right' }) ? 'bg-zinc-800 text-white' : ''}`}
         title="จัดชิดขวา"
         type="button"
       >
@@ -443,7 +443,7 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           <path fillRule="evenodd" d="M6 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-4-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm4-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-4-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
         </svg>
       </button>
-      <div className="border-r border-gray-300 mx-1 h-6"></div>
+      <div className="border-r border-zinc-700 mx-1 h-6 self-center"></div>
       <button
         onClick={(e) => {
           e.preventDefault();
@@ -452,7 +452,7 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
             editor.chain().focus().setLink({ href: url }).run();
           }
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('link') ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ${editor.isActive('link') ? 'bg-zinc-800 text-white' : ''}`}
         title="เพิ่มลิงก์"
         type="button"
       >
@@ -466,7 +466,7 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           e.preventDefault();
           onImageClick();
         }}
-        className="p-2 rounded hover:bg-gray-200"
+        className="p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
         title="เพิ่มรูปภาพ"
         type="button"
       >
@@ -480,7 +480,7 @@ const MenuBar = ({ editor, onImageClick, onYouTubeClick }) => {
           e.preventDefault();
           onYouTubeClick();
         }}
-        className="p-2 rounded hover:bg-gray-200"
+        className="p-2 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
         title="เพิ่มวิดีโอ YouTube"
         type="button"
       >
@@ -546,13 +546,13 @@ const RichTextEditor = ({ value, onChange, placeholder }) => {
   }, [editor]);
 
   return (
-    <div className="rich-text-editor border border-gray-300 rounded-lg overflow-hidden">
+    <div className="rich-text-editor border border-zinc-800 rounded-lg overflow-hidden bg-zinc-950/30">
       <MenuBar 
         editor={editor} 
         onImageClick={() => setIsImageSelectorOpen(true)} 
         onYouTubeClick={() => setIsYouTubeModalOpen(true)}
       />
-      <div className="bg-white">
+      <div className="bg-transparent">
         <EditorContent editor={editor} className="min-h-[200px] px-4 py-3" />
       </div>
       
@@ -571,11 +571,11 @@ const RichTextEditor = ({ value, onChange, placeholder }) => {
       <style jsx global>{`
         .ProseMirror {
           min-height: 200px;
-          max-height: 500px;
+          max-height: 600px;
           overflow-y: auto;
           padding: 1rem;
           line-height: 1.6;
-          color: #333;
+          color: #e4e4e7; /* zinc-200 */
         }
         .ProseMirror:focus {
           outline: none;
@@ -589,21 +589,21 @@ const RichTextEditor = ({ value, onChange, placeholder }) => {
           font-weight: 700;
           margin-top: 2rem;
           margin-bottom: 1rem;
-          color: #111;
+          color: #ffffff;
         }
         .ProseMirror h2 {
           font-size: 1.5rem;
           font-weight: 600;
           margin-top: 1.8rem;
           margin-bottom: 0.8rem;
-          color: #222;
+          color: #f4f4f5; /* zinc-100 */
         }
         .ProseMirror h3 {
           font-size: 1.3rem;
           font-weight: 600;
           margin-top: 1.5rem;
           margin-bottom: 0.8rem;
-          color: #333;
+          color: #e4e4e7; /* zinc-200 */
         }
         .ProseMirror ul, .ProseMirror ol {
           padding-left: 1.5rem;
@@ -619,14 +619,14 @@ const RichTextEditor = ({ value, onChange, placeholder }) => {
           margin-bottom: 0.5rem;
         }
         .ProseMirror blockquote {
-          border-left: 3px solid #e2e8f0;
+          border-left: 3px solid #3f3f46; /* zinc-700 */
           padding-left: 1rem;
           margin: 1.5rem 0;
           font-style: italic;
-          color: #4a5568;
+          color: #a1a1aa; /* zinc-400 */
         }
         .ProseMirror p.is-editor-empty:first-child::before {
-          color: #adb5bd;
+          color: #52525b; /* zinc-600 */
           content: attr(data-placeholder);
           float: left;
           height: 0;
@@ -638,7 +638,7 @@ const RichTextEditor = ({ value, onChange, placeholder }) => {
           margin: 2rem auto;
           border-radius: 0.5rem;
           display: block;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
         .ProseMirror div[data-youtube-video] {
           position: relative;
@@ -648,7 +648,7 @@ const RichTextEditor = ({ value, onChange, placeholder }) => {
           max-width: 90%;
           border-radius: 0.5rem;
           overflow: hidden;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
         .ProseMirror div[data-youtube-video] iframe {
           position: absolute;
@@ -660,12 +660,12 @@ const RichTextEditor = ({ value, onChange, placeholder }) => {
           border: none;
         }
         .ProseMirror a {
-          color: #2563eb;
+          color: #60a5fa; /* blue-400 */
           text-decoration: underline;
           text-underline-offset: 2px;
         }
         .ProseMirror a:hover {
-          color: #1d4ed8;
+          color: #93c5fd; /* blue-300 */
         }
         /* สำหรับการจัดตำแหน่งข้อความ */
         .ProseMirror .text-align-left {
@@ -679,12 +679,13 @@ const RichTextEditor = ({ value, onChange, placeholder }) => {
         }
         /* ปรับแต่งการแสดงโค้ด */
         .ProseMirror pre {
-          background-color: #f1f5f9;
+          background-color: #18181b; /* zinc-950 */
           border-radius: 0.375rem;
           padding: 1rem;
           margin: 1.5rem 0;
           overflow-x: auto;
           font-family: monospace;
+          border: 1px solid #27272a; /* zinc-800 */
         }
       `}</style>
     </div>
