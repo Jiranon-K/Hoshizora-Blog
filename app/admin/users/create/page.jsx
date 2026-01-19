@@ -26,10 +26,10 @@ export default function CreateUserPage() {
       <AdminNavbar user={user} onLogout={handleLogout} />
       
       <div className="container mx-auto p-4">
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-black rounded-lg shadow-md p-6">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-indigo-600">เพิ่มผู้ใช้ใหม่</h1>
-            <Link href="/admin/users" className="btn btn-neutral">
+            <h1 className="text-2xl font-bold text-white">เพิ่มผู้ใช้ใหม่</h1>
+            <Link href="/admin/users" className="btn btn-black text-white">
               กลับไปหน้าจัดการผู้ใช้
             </Link>
           </div>

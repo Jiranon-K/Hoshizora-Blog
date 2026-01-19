@@ -44,7 +44,7 @@ async function getLatestPosts() {
   }
 }
 
-function PostCard({ title, description, category, date, author, image, slug }) {
+function PostCard({ title, description, category, date, author, authorAvatar, image, slug }) {
   return (
     <Link href={`/blog/${slug}`} className="group block h-full"> 
       <div className="bg-zinc-950 h-full border border-zinc-900 transition-all duration-300 hover:border-zinc-700 flex flex-col pt-0">
@@ -77,15 +77,15 @@ function PostCard({ title, description, category, date, author, image, slug }) {
             <div className="flex items-center space-x-3">
               <div className="relative w-8 h-8 rounded-full overflow-hidden border border-zinc-800">
                 <Image 
-                  src={getImageUrl(typeof author === 'object' ? author.avatar : '/avatar/default.webp')} 
-                  alt={typeof author === 'object' ? author.display_name : author}
+                  src={getImageUrl(authorAvatar || '/avatar/default.webp')} 
+                  alt={author}
                   fill
                   className="object-cover"
                 />
               </div>
               <div>
                 <p className="text-xs font-light text-zinc-300">
-                  {typeof author === 'object' ? author.display_name : author}
+                  {author}
                 </p>
                 <p className="text-[10px] text-zinc-600">{date}</p>
               </div>
@@ -152,6 +152,7 @@ export default async function LatestPosts() {
             category={post.category_name}
             date={post.date}
             author={post.author}
+            authorAvatar={post.authorAvatar}
             image={post.image}
             slug={post.slug}
           />

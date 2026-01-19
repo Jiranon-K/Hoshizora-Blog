@@ -29,7 +29,6 @@ const UserForm = ({
   const [submitting, setSubmitting] = useState(false);
   const [isImageSelectorOpen, setIsImageSelectorOpen] = useState(false);
   
-  // โหลดข้อมูลผู้ใช้กรณีแก้ไข
   useEffect(() => {
     if (userId) {
       fetchUser();
@@ -120,13 +119,11 @@ const UserForm = ({
       }
       
       if (userId) {
-        // แก้ไขผู้ใช้
         await fetchApi(`/api/users/${userId}`, {
           method: 'PUT',
           body: JSON.stringify(dataToSubmit)
         });
       } else {
-        // เพิ่มผู้ใช้ใหม่
         await fetchApi('/api/users', {
           method: 'POST',
           body: JSON.stringify(dataToSubmit)

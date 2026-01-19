@@ -10,7 +10,8 @@ export async function GET(request) {
 
     const posts = await Post.find()
       .populate("category", "name slug")
-      .populate("user", "displayName")
+      .populate("category", "name slug")
+      .populate("user", "displayName avatar")
       .sort({ createdAt: -1 })
       .lean();
 
@@ -29,6 +30,9 @@ export async function GET(request) {
       published_at: post.publishedAt,
       created_at: post.createdAt,
       updated_at: post.updatedAt,
+      updated_at: post.updatedAt,
+      author: post.user?.displayName || "Unknown",
+      author_avatar: post.user?.avatar || "",
     }));
 
     return NextResponse.json(transformedPosts);

@@ -4,7 +4,7 @@ import { connectToDatabase } from "@/lib/db";
 import Post from "@/lib/models/Post";
 import { getImageUrl } from "@/lib/helpers";
 
-const BlogPostCard = ({ title, description, category, date, author, authorTitle, image, slug }) => {
+const BlogPostCard = ({ title, description, category, date, author, authorAvatar, authorTitle, image, slug }) => {
   return (
     <Link href={`/blog/${slug}`} className="group block h-full"> 
        <div className="bg-zinc-950 h-full border border-zinc-900 transition-all duration-300 hover:border-zinc-600 flex flex-col">
@@ -38,15 +38,15 @@ const BlogPostCard = ({ title, description, category, date, author, authorTitle,
           </p>
 
           <div className="mt-auto pt-4 border-t border-zinc-900 flex items-center">
-            <div className="w-6 h-6 rounded-full overflow-hidden mr-2 border border-zinc-800 grayscale opacity-70">
+            <div className="w-6 h-6 rounded-full overflow-hidden mr-2 border border-zinc-800">
               <img
-                src={getImageUrl(author.avatar)}
-                alt={author.display_name || "Author"}
+                src={getImageUrl(authorAvatar || "/avatar/default.webp")}
+                alt={author || "Author"}
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="flex flex-col">
-                <span className="text-xs font-light text-zinc-300">{typeof author === 'object' ? author.display_name || "Author" : author}</span>
+                <span className="text-xs font-light text-zinc-300">{author || "Author"}</span>
                  {/* Optional: Author Title if needed, maybe hide for minimal look */}
             </div>
              <div className="ml-auto"> 
@@ -140,7 +140,9 @@ async function BlogPostGrid() {
               description={post.description}
               category={post.category}
               date={post.date}
+
               author={post.author}
+              authorAvatar={post.authorAvatar}
               authorTitle={post.authorTitle}
               image={post.image}
               slug={post.slug}

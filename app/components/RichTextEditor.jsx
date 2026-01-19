@@ -189,7 +189,7 @@ const ImageSelectorModal = ({ isOpen, onClose, onSelectImage }) => {
         <div className="p-4 border-t">
           <button 
             onClick={onClose} 
-            className="btn btn-neutral w-full"
+            className="btn btn-black w-full"
             type="button"
           >
             ปิด

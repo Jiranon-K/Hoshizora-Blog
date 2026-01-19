@@ -5,7 +5,7 @@ import Post from "@/lib/models/Post";
 import Category from "@/lib/models/Category";
 import { getImageUrl } from "@/lib/helpers";
 
-const BlogPostCard = ({ title, description, category, date, author, authorTitle, image, slug }) => {
+const BlogPostCard = ({ title, description, category, date, author, authorAvatar, authorTitle, image, slug }) => {
   return (
     <Link href={`/blog/${slug}`} className="group block h-full"> 
        <div className="bg-zinc-950 h-full border border-zinc-900 transition-all duration-300 hover:border-zinc-700 flex flex-col">
@@ -37,17 +37,15 @@ const BlogPostCard = ({ title, description, category, date, author, authorTitle,
           </p>
 
           <div className="mt-auto pt-4 border-t border-zinc-900 flex items-center">
-            <div className="w-8 h-8 rounded-full overflow-hidden mr-3 border border-zinc-800 grayscale opacity-70">
+            <div className="w-8 h-8 rounded-full overflow-hidden mr-3 border border-zinc-800">
               <img 
-                src={typeof author === 'object' ? 
-                  getImageUrl(author.avatar || "/avatar/default.webp") : 
-                  getImageUrl("/avatar/default.webp")} 
-                alt={typeof author === 'object' ? author.display_name || "Author" : author} 
+                src={getImageUrl(authorAvatar || "/avatar/default.webp")} 
+                alt={author || "Author"} 
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="flex flex-col">
-                <span className="text-xs font-light text-zinc-300">{typeof author === 'object' ? author.display_name || "Author" : author}</span>
+                <span className="text-xs font-light text-zinc-300">{author || "Author"}</span>
             </div>
              <div className="ml-auto"> 
                  <span className="text-xs text-zinc-500 uppercase tracking-widest group-hover:text-white transition-colors">อ่านต่อ</span>
@@ -209,8 +207,7 @@ async function AllBlogPostGrid({ searchParams }) {
             </div>
           ) : (
             <div className="text-center py-24 border border-zinc-900 border-dashed rounded-lg bg-zinc-950/50">
-              <p className="text-xl font-light text-zinc-500">No posts found in this category.</p>
-              <Link href="?" className="text-sm text-zinc-600 mt-2 hover:text-white underline transition-colors">Return to all posts</Link>
+              <p className="text-xl font-light text-zinc-500">ไม่พบบทความ</p>
             </div>
           )}
           
