@@ -42,8 +42,8 @@ const BlogPostCard = ({ title, description, category, date, author, authorTitle,
           <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-300 p-0.5">
             <img 
               src={typeof author === 'object' ? 
-                getImageUrl(author.avatar || "/avatar/Aharen-san.webp") : 
-                getImageUrl("/avatar/Aharen-san.webp")} 
+                getImageUrl(author.avatar || "/avatar/default.webp") : 
+                getImageUrl("/avatar/default.webp")} 
               alt={typeof author === 'object' ? author.display_name || "Author" : author} 
               className="w-full h-full object-cover rounded-full"
             />

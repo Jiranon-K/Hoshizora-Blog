@@ -3,6 +3,8 @@ import Link from 'next/link';
 import Image from 'next/image';  
 import { connectToDatabase } from '@/lib/db';
 import Post from '@/lib/models/Post';
+import '@/lib/models/Category';
+import '@/lib/models/User';
 import { getImageUrl } from '@/lib/helpers';
 import { unstable_noStore as noStore } from 'next/cache';
 
@@ -86,7 +88,7 @@ function PostCard({ title, description, category, date, author, image, slug }) {
             <div className="avatar">
               <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                 <Image 
-                  src={getImageUrl(typeof author === 'object' ? author.avatar : '/avatar/Aharen-san.webp')} 
+                  src={getImageUrl(typeof author === 'object' ? author.avatar : '/avatar/default.webp')} 
                   alt={typeof author === 'object' ? author.display_name : author}
                   width={40}
                   height={40}

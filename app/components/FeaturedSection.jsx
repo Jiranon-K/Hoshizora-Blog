@@ -51,7 +51,7 @@ const FeaturedCard = ({ post, isLarge = false }) => {
             <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white/30">
               <img
                 src={getImageUrl(
-                  post.authorAvatar || "/avatar/Aharen-san.webp"
+                  post.authorAvatar || "/avatar/default.webp"
                 )}
                 alt={post.author}
                 className="w-full h-full object-cover"
