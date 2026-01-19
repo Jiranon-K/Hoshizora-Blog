@@ -10,7 +10,6 @@ export async function GET() {
 
     const categories = await Category.find().sort({ name: 1 }).lean();
 
-    // Get post counts for each category
     const categoriesWithCounts = await Promise.all(
       categories.map(async (cat) => {
         const postCount = await Post.countDocuments({
@@ -22,6 +21,8 @@ export async function GET() {
           name: cat.name,
           slug: cat.slug,
           description: cat.description,
+          showcaseImage: cat.showcaseImage || "",
+          showcaseDescription: cat.showcaseDescription || "",
           post_count: postCount,
           created_at: cat.createdAt,
           updated_at: cat.updatedAt,

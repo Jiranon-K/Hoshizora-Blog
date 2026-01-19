@@ -78,13 +78,31 @@ export default function FeaturedSection() {
   useEffect(() => {
     async function fetchFeaturedPosts() {
       try {
+        const settingsRes = await fetch("/api/homepage-settings");
+        const settings = await settingsRes.json();
+        
         const response = await fetch("/api/posts");
         const data = await response.json();
+        const publishedPosts = data.filter((post) => post.status === "published");
 
-        const featured = data
-          .filter((post) => post.status === "published")
-          .sort((a, b) => b.views - a.views)
-          .slice(0, 3);
+        let featured = [];
+        
+        if (settings.featured?.postIds && settings.featured.postIds.length > 0) {
+          const orderedPosts = settings.featured.postIds
+            .map(id => publishedPosts.find(p => p.id === id))
+            .filter(Boolean);
+          
+          const usedIds = new Set(orderedPosts.map(p => p.id));
+          const remainingPosts = publishedPosts
+            .filter(p => !usedIds.has(p.id))
+            .sort((a, b) => b.views - a.views);
+          
+          featured = [...orderedPosts, ...remainingPosts].slice(0, 3);
+        } else {
+          featured = publishedPosts
+            .sort((a, b) => b.views - a.views)
+            .slice(0, 3);
+        }
 
         setFeaturedPosts(featured);
       } catch (error) {

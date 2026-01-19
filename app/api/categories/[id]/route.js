@@ -24,6 +24,8 @@ export async function GET(request, context) {
       name: category.name,
       slug: category.slug,
       description: category.description,
+      showcaseImage: category.showcaseImage || "",
+      showcaseDescription: category.showcaseDescription || "",
       post_count: postCount,
       created_at: category.createdAt,
       updated_at: category.updatedAt,
@@ -89,6 +91,13 @@ export async function PUT(request, context) {
     existingCategory.slug = data.slug.toLowerCase();
     existingCategory.description = data.description || "";
 
+    if (data.showcaseImage !== undefined) {
+      existingCategory.showcaseImage = data.showcaseImage;
+    }
+    if (data.showcaseDescription !== undefined) {
+      existingCategory.showcaseDescription = data.showcaseDescription;
+    }
+
     await existingCategory.save();
 
     revalidatePath("/");
@@ -100,6 +109,8 @@ export async function PUT(request, context) {
       name: existingCategory.name,
       slug: existingCategory.slug,
       description: existingCategory.description,
+      showcaseImage: existingCategory.showcaseImage || "",
+      showcaseDescription: existingCategory.showcaseDescription || "",
       updated_at: existingCategory.updatedAt,
     });
   } catch (error) {

@@ -97,7 +97,7 @@ export default function AdminPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
               <h3 className="text-lg font-semibold mb-2 text-blue-600">
                 จัดการบทความ
@@ -140,6 +140,21 @@ export default function AdminPage() {
                 className="bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600 transition duration-200 w-full"
               >
                 จัดการผู้ใช้
+              </button>
+            </div>
+
+            <div className="bg-pink-50 p-4 rounded-lg border border-pink-200">
+              <h3 className="text-lg font-semibold mb-2 text-pink-600">
+                จัดการหน้าแรก
+              </h3>
+              <p className="text-pink-600 mb-4">
+                ตั้งค่า Hero, หมวดหมู่ และโพสต์เด่น
+              </p>
+              <button
+                onClick={() => router.push("/admin/homepage")}
+                className="bg-pink-500 text-white py-2 px-4 rounded hover:bg-pink-600 transition duration-200 w-full"
+              >
+                จัดการหน้าแรก
               </button>
             </div>
           </div>

@@ -38,13 +38,6 @@ const CategoryShowcase = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const categoryImages = {
-    anime: "/uploads/t1.jpg",
-    "visual-novel": "/uploads/t3.webp",
-    novels: "/uploads/t5.webp",
-    default: "/placeholder-image.jpg",
-  };
-
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -53,8 +46,8 @@ const CategoryShowcase = () => {
 
         const enhancedCategories = data.map((cat) => ({
           ...cat,
-          image: categoryImages[cat.slug] || categoryImages.default,
-          description: getCategoryDescription(cat.slug),
+          image: cat.showcaseImage || "/placeholder-image.jpg",
+          description: cat.showcaseDescription || getDefaultCategoryDescription(cat.slug),
         }));
 
         setCategories(enhancedCategories);
@@ -68,7 +61,7 @@ const CategoryShowcase = () => {
     fetchCategories();
   }, []);
 
-  function getCategoryDescription(slug) {
+  function getDefaultCategoryDescription(slug) {
     switch (slug) {
       case "anime":
         return "รวมรีวิว อัพเดท และพูดคุยเกี่ยวกับอนิเมะใหม่ๆ";

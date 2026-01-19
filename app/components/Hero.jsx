@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { connectToDatabase } from "@/lib/db";
 import Post from "@/lib/models/Post";
+import HomepageSettings from "@/lib/models/HomepageSettings";
 import { getImageUrl } from "@/lib/helpers";
 import { unstable_noStore as noStore } from 'next/cache';
 import { headers } from "next/headers";
@@ -13,10 +14,25 @@ async function getFeaturedPost() {
   try {
     await connectToDatabase();
     
-    const featuredPost = await Post.findOne({ status: 'published' })
-      .select('id title description slug featuredImage')
-      .sort({ publishedAt: -1 })
-      .lean();
+    const heroSetting = await HomepageSettings.findOne({ key: 'hero' }).lean();
+    
+    let featuredPost = null;
+    
+    if (heroSetting?.heroPostId) {
+      featuredPost = await Post.findOne({ 
+        _id: heroSetting.heroPostId, 
+        status: 'published' 
+      })
+        .select('id title description slug featuredImage')
+        .lean();
+    }
+    
+    if (!featuredPost) {
+      featuredPost = await Post.findOne({ status: 'published' })
+        .select('id title description slug featuredImage')
+        .sort({ publishedAt: -1 })
+        .lean();
+    }
 
     if (!featuredPost) return null;
 

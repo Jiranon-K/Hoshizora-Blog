@@ -72,7 +72,7 @@ const UserForm = ({
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.username.trim()) {
+    if (!formData.username?.trim()) {
       newErrors.username = 'กรุณาระบุชื่อผู้ใช้';
     }
     
@@ -163,7 +163,7 @@ const UserForm = ({
               <input 
                 type="text" 
                 name="username"
-                value={formData.username}
+                value={formData.username || ''}
                 onChange={handleChange}
                 className={`input input-bordered w-full ${errors.username ? 'input-error' : ''}`}
                 placeholder="ระบุชื่อผู้ใช้"
@@ -179,7 +179,7 @@ const UserForm = ({
               <input 
                 type="email" 
                 name="email"
-                value={formData.email}
+                value={formData.email || ''}
                 onChange={handleChange}
                 className={`input input-bordered w-full ${errors.email ? 'input-error' : ''}`}
                 placeholder="ระบุอีเมล"
@@ -197,7 +197,7 @@ const UserForm = ({
               <input 
                 type="password" 
                 name="password"
-                value={formData.password}
+                value={formData.password || ''}
                 onChange={handleChange}
                 className={`input input-bordered w-full ${errors.password ? 'input-error' : ''}`}
                 placeholder={userId ? 'เว้นว่างไว้หากไม่ต้องการเปลี่ยน' : 'ระบุรหัสผ่าน'}
@@ -213,7 +213,7 @@ const UserForm = ({
               <input 
                 type="password" 
                 name="confirm_password"
-                value={formData.confirm_password}
+                value={formData.confirm_password || ''}
                 onChange={handleChange}
                 className={`input input-bordered w-full ${errors.confirm_password ? 'input-error' : ''}`}
                 placeholder="ยืนยันรหัสผ่าน"
@@ -233,7 +233,7 @@ const UserForm = ({
               <input 
                 type="text" 
                 name="display_name"
-                value={formData.display_name}
+                value={formData.display_name || ''}
                 onChange={handleChange}
                 className={`input input-bordered w-full ${errors.display_name ? 'input-error' : ''}`}
                 placeholder="ระบุชื่อที่แสดง"
@@ -250,7 +250,7 @@ const UserForm = ({
                 <input 
                   type="text" 
                   name="avatar"
-                  value={formData.avatar}
+                  value={formData.avatar || ''}
                   onChange={handleChange}
                   className="input input-bordered w-full mr-2"
                   placeholder="URL ของรูปโปรไฟล์"
@@ -287,7 +287,7 @@ const UserForm = ({
               <input 
                 type="text" 
                 name="title"
-                value={formData.title}
+                value={formData.title || ''}
                 onChange={handleChange}
                 className="input input-bordered w-full"
                 placeholder="ระบุตำแหน่ง (ไม่บังคับ)"
@@ -302,7 +302,7 @@ const UserForm = ({
                 </label>
                 <select 
                   name="role"
-                  value={formData.role}
+                  value={formData.role || 'author'}
                   onChange={handleChange}
                   className="select select-bordered w-full"
                 >
