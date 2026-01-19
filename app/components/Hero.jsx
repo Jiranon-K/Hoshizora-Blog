@@ -1,37 +1,32 @@
 import React from "react";
 import Link from "next/link";
-import { executeQuery } from "@/lib/db";
+import { connectToDatabase } from "@/lib/db";
+import Post from "@/lib/models/Post";
 import { getImageUrl } from "@/lib/helpers";
 import { unstable_noStore as noStore } from 'next/cache';
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 
 async function getFeaturedPost() {
-  
   headers(); 
-  const timestamp = Date.now();
   noStore(); 
   
   try {
-    const [featuredPost] = await executeQuery({
-      query: `
-        SELECT 
-          id, 
-          title, 
-          description, 
-          slug, 
-          featured_image
-        FROM 
-          posts
-        WHERE 
-          status = 'published'
-        ORDER BY 
-          published_at DESC
-        LIMIT 1
-      `,
-      values: []
-    });
+    await connectToDatabase();
+    
+    const featuredPost = await Post.findOne({ status: 'published' })
+      .select('id title description slug featuredImage')
+      .sort({ publishedAt: -1 })
+      .lean();
 
-    return featuredPost;
+    if (!featuredPost) return null;
+
+    return {
+      id: featuredPost._id.toString(),
+      title: featuredPost.title,
+      description: featuredPost.description,
+      slug: featuredPost.slug,
+      featured_image: featuredPost.featuredImage
+    };
   } catch (error) {
     console.error('ข้อผิดพลาดในการดึงโพสต์เด่น:', error);
     return null;

@@ -1,8 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import { executeQuery } from "@/lib/db";
+import { connectToDatabase } from "@/lib/db";
+import Post from "@/lib/models/Post";
+import Category from "@/lib/models/Category";
 import { getImageUrl } from "@/lib/helpers";
-
 
 const BlogPostCard = ({ title, description, category, date, author, authorTitle, image, slug }) => {
   return (
@@ -15,9 +16,7 @@ const BlogPostCard = ({ title, description, category, date, author, authorTitle,
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         
-       
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-        
         
         <div className="absolute top-3 left-3">
           <span className="bg-pink-400/90 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm font-medium tracking-wide shadow-sm">
@@ -27,21 +26,17 @@ const BlogPostCard = ({ title, description, category, date, author, authorTitle,
       </div>
 
       <div className="flex-grow p-5 flex flex-col">
-       
         <div className="text-xs text-base-content/70 mb-2 font-mono tracking-wide">
           {date}
         </div>
         
-       
         <h2 className="text-lg font-bold mb-2 line-clamp-2 group-hover:text-pink-400 transition-colors duration-300">
           {title}
         </h2>
         
-        
         <p className="text-sm text-base-content/70 mb-4 line-clamp-3">
           {description}
         </p>
-        
         
         <div className="mt-auto pt-3 border-t border-dashed border-base-content/40 flex items-center">
           <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-300 p-0.5">
@@ -58,7 +53,6 @@ const BlogPostCard = ({ title, description, category, date, author, authorTitle,
             <p className="text-xs text-base-content/40">{authorTitle}</p>
           </div>
           
-          
           <div className="ml-auto">
             <Link href={`/blog/${slug}`}>
               <span className="inline-flex items-center text-sm font-medium text-pink-400 hover:text-pink-800 transition-colors">
@@ -74,7 +68,6 @@ const BlogPostCard = ({ title, description, category, date, author, authorTitle,
     </div>
   );
 };
-
 
 const CategoryFilter = ({ categories, currentCategory }) => {
   return (
@@ -103,23 +96,26 @@ const CategoryFilter = ({ categories, currentCategory }) => {
 
 async function getCategories() {
   try {
-    const categories = await executeQuery({
-      query: `
-        SELECT 
-          c.name,
-          c.slug,
-          COUNT(p.id) as postCount
-        FROM 
-          categories c
-        LEFT JOIN 
-          posts p ON c.id = p.category_id AND p.status = 'published'
-        GROUP BY 
-          c.id
-        ORDER BY 
-          c.name ASC
-      `
-    });
-    return categories;
+    await connectToDatabase();
+    
+    const categories = await Category.find().lean();
+    
+    // Get post counts for each category
+    const categoriesWithCounts = await Promise.all(
+      categories.map(async (category) => {
+        const postCount = await Post.countDocuments({ 
+          category: category._id, 
+          status: 'published' 
+        });
+        return {
+          name: category.name,
+          slug: category.slug,
+          postCount
+        };
+      })
+    );
+    
+    return categoriesWithCounts.sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
     console.error('Error fetching categories:', error);
     return [];
@@ -128,66 +124,55 @@ async function getCategories() {
 
 async function getPosts(categorySlug = '', page = 1, perPage = 12) {
   try {
-    let query = `
-      SELECT 
-        p.id, 
-        p.title, 
-        p.description, 
-        p.featured_image as image, 
-        p.published_at as date,
-        c.name as category,
-        u.display_name as author,
-        u.title as authorTitle,
-        u.avatar as authorAvatar,
-        p.slug
-      FROM 
-        posts p
-      JOIN 
-        users u ON p.user_id = u.id
-      LEFT JOIN 
-        categories c ON p.category_id = c.id
-      WHERE 
-        p.status = 'published'
-    `;
-
-    const offset = (page - 1) * perPage;
-    const values = [];
-
-    if (categorySlug) {
-      query += ` AND c.slug = ?`;
-      values.push(categorySlug);
-    }
-
-    const countQuery = `
-      SELECT COUNT(*) as total FROM posts p 
-      LEFT JOIN categories c ON p.category_id = c.id 
-      WHERE p.status = 'published' ${categorySlug ? 'AND c.slug = ?' : ''}
-    `;
+    await connectToDatabase();
     
-    const [totalResult] = await executeQuery({
-      query: countQuery,
-      values: categorySlug ? [categorySlug] : []
-    });
-
-    query += ` ORDER BY p.published_at DESC LIMIT ? OFFSET ?`;
-    values.push(perPage, offset);
-
-    const posts = await executeQuery({ query, values });
+    const offset = (page - 1) * perPage;
+    
+    // Build filter
+    let filter = { status: 'published' };
+    
+    if (categorySlug) {
+      const category = await Category.findOne({ slug: categorySlug }).lean();
+      if (category) {
+        filter.category = category._id;
+      }
+    }
+    
+    // Get total count
+    const total = await Post.countDocuments(filter);
+    
+    // Get posts with populated data
+    const posts = await Post.find(filter)
+      .populate('user', 'displayName title avatar')
+      .populate('category', 'name slug')
+      .select('id title description featuredImage publishedAt slug')
+      .sort({ publishedAt: -1 })
+      .skip(offset)
+      .limit(perPage)
+      .lean();
 
     return {
       posts: posts.map(post => ({
-        ...post,
-        date: new Date(post.date).toLocaleDateString('th-TH', {
+        id: post._id.toString(),
+        title: post.title,
+        description: post.description,
+        image: post.featuredImage,
+        date: new Date(post.publishedAt).toLocaleDateString('th-TH', {
           year: 'numeric',
           month: 'long',
           day: 'numeric'
-        })
+        }),
+        category: post.category?.name || null,
+        author: post.user?.displayName || null,
+        authorTitle: post.user?.title || null,
+        authorAvatar: post.user?.avatar || null,
+        slug: post.slug
       })),
       pagination: {
-        total: totalResult.total,
+        total,
         page,
         perPage,
-        totalPages: Math.ceil(totalResult.total / perPage)
+        totalPages: Math.ceil(total / perPage)
       }
     };
   } catch (error) {
@@ -206,7 +191,6 @@ async function AllBlogPostGrid({ searchParams }) {
 
   return (
     <div className="min-h-screen relative">
-     
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute left-0 top-0 h-32 w-32">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="currentColor">
@@ -236,14 +220,11 @@ async function AllBlogPostGrid({ searchParams }) {
             </h2>
             <p className="text-base-content/70 max-w-lg mb-6">เรื่องราวและบทความที่น่าสนใจ อัพเดทล่าสุดจากนักเขียนของเรา</p>
             
-           
             <div className="w-16 h-1 bg-indigo-400 rounded-full"></div>
           </div>
           
-       
           <CategoryFilter categories={categories} currentCategory={category} />
           
-         
           {posts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
               {posts.map(post => (
@@ -265,11 +246,9 @@ async function AllBlogPostGrid({ searchParams }) {
             </div>
           )}
           
-          
           {pagination.totalPages > 1 && (
             <div className="flex justify-center mt-12">
               <div className="flex items-center gap-2">
-                
                 {page > 1 && (
                   <Link 
                     href={category ? 
@@ -283,7 +262,6 @@ async function AllBlogPostGrid({ searchParams }) {
                     </span>
                   </Link>
                 )}
-                
                 
                 {Array.from({ length: pagination.totalPages }, (_, index) => {
                   const pageNum = index + 1;
@@ -312,7 +290,6 @@ async function AllBlogPostGrid({ searchParams }) {
                     );
                   }
                   
-                 
                   if (
                     (pageNum === page - 2 && page > 3) || 
                     (pageNum === page + 2 && page < pagination.totalPages - 2)
@@ -324,7 +301,6 @@ async function AllBlogPostGrid({ searchParams }) {
                   
                   return null;
                 })}
-                
                 
                 {page < pagination.totalPages && (
                   <Link 

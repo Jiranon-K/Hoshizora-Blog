@@ -1,50 +1,40 @@
-// app/components/LatestPosts.jsx
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';  
-import { executeQuery } from '@/lib/db';
+import { connectToDatabase } from '@/lib/db';
+import Post from '@/lib/models/Post';
 import { getImageUrl } from '@/lib/helpers';
 import { unstable_noStore as noStore } from 'next/cache';
-
 
 async function getLatestPosts() {
   noStore(); 
   
   try {
-    const posts = await executeQuery({
-      query: `
-        SELECT 
-          p.id, 
-          p.title, 
-          p.description, 
-          p.featured_image as image, 
-          p.published_at as date,
-          c.name as category_name,
-          u.display_name as author,
-          u.title as authorTitle,
-          u.avatar as authorAvatar,
-          p.slug
-        FROM 
-          posts p
-        JOIN 
-          users u ON p.user_id = u.id
-        LEFT JOIN 
-          categories c ON p.category_id = c.id
-        WHERE 
-          p.status = 'published'
-        ORDER BY 
-          p.published_at DESC
-        LIMIT 6
-      `
-    });
+    await connectToDatabase();
+    
+    const posts = await Post.find({ status: 'published' })
+      .populate('user', 'displayName title avatar')
+      .populate('category', 'name slug')
+      .select('id title description featuredImage publishedAt slug')
+      .sort({ publishedAt: -1 })
+      .limit(6)
+      .lean();
 
     return posts.map(post => ({
-      ...post,
-      date: new Date(post.date).toLocaleDateString('th-TH', {
+      id: post._id.toString(),
+      title: post.title,
+      description: post.description,
+      image: post.featuredImage,
+      date: new Date(post.publishedAt).toLocaleDateString('th-TH', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
-      })
+      }),
+      category_name: post.category?.name || null,
+      author: post.user?.displayName || null,
+      authorTitle: post.user?.title || null,
+      authorAvatar: post.user?.avatar || null,
+      slug: post.slug
     }));
   } catch (error) {
     console.error('Error fetching latest posts:', error);
@@ -52,7 +42,6 @@ async function getLatestPosts() {
   }
 }
 
-// PostCard Component
 function PostCard({ title, description, category, date, author, image, slug }) {
   const categoryColor = getCategoryColors(category);
   
@@ -142,7 +131,6 @@ function getCategoryColors(category) {
   return 'text-emerald-400 bg-emerald-500/20';
 }
 
-// Main component (Server Component)
 export default async function LatestPosts() {
   const posts = await getLatestPosts();
 

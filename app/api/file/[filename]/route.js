@@ -1,86 +1,62 @@
-import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
+import { NextResponse } from "next/server";
+import path from "path";
 
+/**
+ * This route now acts as a redirect proxy to R2 for backwards compatibility.
+ * Old URLs like /api/file/image.webp will redirect to R2.
+ *
+ * For new content, the frontend should use R2 URLs directly.
+ */
 export async function GET(request, { params }) {
   try {
+    const { filename } = await params;
+
     // Validate filename to prevent directory traversal attacks
-    const filename = params.filename;
-    if (!filename || filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
-      return NextResponse.json(
-        { error: 'Invalid filename' },
-        { status: 400 }
-      );
+    if (
+      !filename ||
+      filename.includes("..") ||
+      filename.includes("/") ||
+      filename.includes("\\")
+    ) {
+      return NextResponse.json({ error: "Invalid filename" }, { status: 400 });
     }
-    
-    // Only allow image files to be served
-    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+
+    // Only allow image files
+    const allowedExtensions = [
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".gif",
+      ".webp",
+      ".svg",
+    ];
     const ext = path.extname(filename).toLowerCase();
     if (!allowedExtensions.includes(ext)) {
-      return NextResponse.json(
-        { error: 'Invalid file type' },
-        { status: 400 }
+      return NextResponse.json({ error: "Invalid file type" }, { status: 400 });
+    }
+
+    // Check if R2_PUBLIC_URL is configured
+    const r2PublicUrl = process.env.R2_PUBLIC_URL;
+
+    if (r2PublicUrl) {
+      // Redirect to R2 CDN with permanent redirect
+      return NextResponse.redirect(
+        `${r2PublicUrl}/${filename}`,
+        { status: 301 }, // Permanent redirect for caching
       );
     }
-    
-    // Safe paths to check for the file
-    const possiblePaths = [
-      path.join(process.cwd(), 'public', 'uploads', filename),
-      path.join('/app/public/uploads', filename),
-      path.join('/public/uploads', filename)
-    ];
-    
-    let filePath = null;
-    let fileContent = null;
-    
-   
-    for (const pathToTry of possiblePaths) {
-      try {
-        await fs.access(pathToTry);
-        filePath = pathToTry;
-        fileContent = await fs.readFile(pathToTry);
-        break;
-      } catch (e) {
-       
-      }
-    }
-    
-    if (!filePath || !fileContent) {
-      return NextResponse.json(
-        { error: 'ไม่พบไฟล์' },
-        { status: 404 }
-      );
-    }
-    
-    
-    // Use the ext variable already declared above instead of redeclaring it
-    let contentType = 'application/octet-stream'; 
-    
-    if (ext === '.jpg' || ext === '.jpeg') {
-      contentType = 'image/jpeg';
-    } else if (ext === '.png') {
-      contentType = 'image/png';
-    } else if (ext === '.gif') {
-      contentType = 'image/gif';
-    } else if (ext === '.webp') {
-      contentType = 'image/webp';
-    } else if (ext === '.svg') {
-      contentType = 'image/svg+xml';
-    }
-    
-    
-    return new NextResponse(fileContent, {
-      headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=31536000', 
-      }
-    });
-    
-  } catch (error) {
-    // Log error internally but don't expose details
+
+    // Fallback: If R2 is not configured, return 404
+    // This handles the transition period
     return NextResponse.json(
-      { error: 'เกิดข้อผิดพลาดในการให้บริการไฟล์' },
-      { status: 500 }
+      { error: "File storage not configured. Please upload files again." },
+      { status: 404 },
+    );
+  } catch (error) {
+    console.error("Error in file route:", error);
+    return NextResponse.json(
+      { error: "เกิดข้อผิดพลาดในการให้บริการไฟล์" },
+      { status: 500 },
     );
   }
 }
