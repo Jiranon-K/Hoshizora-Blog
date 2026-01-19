@@ -1,0 +1,12 @@
+[phases.build]
+cmds = ["npm run build"]
+
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[start]
+cmd = "node .next/standalone/server.js"
+
+[variables]
+PORT = "7099"
+HOSTNAME = "0.0.0.0"
