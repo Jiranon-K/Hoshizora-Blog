@@ -7,85 +7,78 @@ import { getImageUrl } from "@/lib/helpers";
 
 const BlogPostCard = ({ title, description, category, date, author, authorTitle, image, slug }) => {
   return (
-    <div className="group relative overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:translate-y-[-4px] border border-base-content h-full flex flex-col">
-      
-      <div className="relative h-52 overflow-hidden">
-        <img
-          src={getImageUrl(image)}
-          alt={title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-        
-        <div className="absolute top-3 left-3">
-          <span className="bg-pink-400/90 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm font-medium tracking-wide shadow-sm">
-            {category}
-          </span>
+    <Link href={`/blog/${slug}`} className="group block h-full"> 
+       <div className="bg-zinc-950 h-full border border-zinc-900 transition-all duration-300 hover:border-zinc-700 flex flex-col">
+        {/* Image */}
+        <div className="relative h-52 overflow-hidden border-b border-zinc-900">
+          <img
+            src={getImageUrl(image)}
+            alt={title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-60"
+          />
+          <div className="absolute top-3 left-3">
+             <span className="bg-black/80 backdrop-blur-sm text-zinc-300 text-[10px] uppercase tracking-widest px-2 py-1 border border-zinc-800">
+              {category}
+            </span>
+          </div>
         </div>
-      </div>
 
-      <div className="flex-grow p-5 flex flex-col">
-        <div className="text-xs text-base-content/70 mb-2 font-mono tracking-wide">
-          {date}
-        </div>
-        
-        <h2 className="text-lg font-bold mb-2 line-clamp-2 group-hover:text-pink-400 transition-colors duration-300">
-          {title}
-        </h2>
-        
-        <p className="text-sm text-base-content/70 mb-4 line-clamp-3">
-          {description}
-        </p>
-        
-        <div className="mt-auto pt-3 border-t border-dashed border-base-content/40 flex items-center">
-          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-300 p-0.5">
-            <img 
-              src={typeof author === 'object' ? 
-                getImageUrl(author.avatar || "/avatar/default.webp") : 
-                getImageUrl("/avatar/default.webp")} 
-              alt={typeof author === 'object' ? author.display_name || "Author" : author} 
-              className="w-full h-full object-cover rounded-full"
-            />
+        <div className="p-6 flex-grow flex flex-col">
+          <div className="flex items-center text-xs text-zinc-500 mb-3 space-x-2 font-light">
+             <span>{date}</span>
           </div>
-          <div className="ml-3">
-            <p className="text-sm font-medium">{typeof author === 'object' ? author.display_name || "Author" : author}</p>
-            <p className="text-xs text-base-content/40">{authorTitle}</p>
-          </div>
-          
-          <div className="ml-auto">
-            <Link href={`/blog/${slug}`}>
-              <span className="inline-flex items-center text-sm font-medium text-pink-400 hover:text-pink-800 transition-colors">
-                อ่านต่อ
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-1">
-                  <path fillRule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clipRule="evenodd" />
-                </svg>
-              </span>
-            </Link>
+
+          <h3 className="text-xl font-light text-white mb-3 line-clamp-2 group-hover:text-zinc-200 transition-colors tracking-tight">
+            {title}
+          </h3>
+
+          <p className="text-sm text-zinc-500 font-light mb-6 line-clamp-3 leading-relaxed">
+            {description}
+          </p>
+
+          <div className="mt-auto pt-4 border-t border-zinc-900 flex items-center">
+            <div className="w-8 h-8 rounded-full overflow-hidden mr-3 border border-zinc-800 grayscale opacity-70">
+              <img 
+                src={typeof author === 'object' ? 
+                  getImageUrl(author.avatar || "/avatar/default.webp") : 
+                  getImageUrl("/avatar/default.webp")} 
+                alt={typeof author === 'object' ? author.display_name || "Author" : author} 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex flex-col">
+                <span className="text-xs font-light text-zinc-300">{typeof author === 'object' ? author.display_name || "Author" : author}</span>
+            </div>
+             <div className="ml-auto"> 
+                 <span className="text-xs text-zinc-500 uppercase tracking-widest group-hover:text-white transition-colors">อ่านต่อ</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
 const CategoryFilter = ({ categories, currentCategory }) => {
   return (
-    <div className="mb-8">
-      <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
+    <div className="mb-12 border-b border-zinc-800 pb-4">
+      <div className="flex flex-wrap items-center gap-6">
         <Link href="?">
-          <span className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer
-            ${!currentCategory ? 'bg-base-200 text-base-content border-2 border-base-content' : 'bg-base-200 text-base-content/50 hover:bg-neutral-700 hover:text-pink-500 border-2 border-transparent'}`}>
+          <span className={`text-sm tracking-wide transition-colors duration-300 cursor-pointer pb-4 border-b-2 
+            ${!currentCategory 
+              ? 'text-white border-white font-medium' 
+              : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>
             ทั้งหมด
           </span>
         </Link>
         
         {categories.map((category) => (
           <Link key={category.slug} href={`?category=${category.slug}`}>
-            <span className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer
-              ${currentCategory === category.slug ? 'bg-base-200 text-base-content border-2 border-base-content' : 'bg-base-200 text-base-content/50 hover:bg-neutral-700 hover:text-pink-500 border-2 border-transparent'}`}>
+            <span className={`text-sm tracking-wide transition-colors duration-300 cursor-pointer pb-4 border-b-2
+              ${currentCategory === category.slug 
+                ? 'text-white border-white font-medium' 
+                : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>
               {category.name}
-              <span className="ml-1 text-xs opacity-70">({category.postCount})</span>
             </span>
           </Link>
         ))}
@@ -190,43 +183,23 @@ async function AllBlogPostGrid({ searchParams }) {
   const { posts, pagination } = await getPosts(category, page, perPage);
 
   return (
-    <div className="min-h-screen relative">
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="absolute left-0 top-0 h-32 w-32">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="currentColor">
-            <path d="M10,50 Q50,10 90,50 Q50,90 10,50 Z" />
-          </svg>
-        </div>
-        <div className="absolute right-0 bottom-0 h-40 w-40">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="currentColor">
-            <circle cx="50" cy="50" r="40" />
-            <circle cx="50" cy="50" r="20" />
-          </svg>
-        </div>
-      </div>
-      
+    <div className="min-h-screen bg-black text-white">
       <div className="w-full py-16 px-4 md:px-6 lg:px-8 relative z-10">
         <div className="mx-auto max-w-screen-xl">
           
-          <div className="flex flex-col items-center mb-12 text-center">
-            <div className="inline-block mb-2">
-              <span className="inline-block w-3 h-3 bg-pink-400 rounded-full mr-1"></span>
-              <span className="inline-block w-3 h-3 bg-indigo-400 rounded-full mr-1"></span>
-              <span className="inline-block w-3 h-3 bg-blue-400 rounded-full"></span>
-            </div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight text-base-content relative">
-              <span className="relative z-10">บทความทั้งหมดของเรา</span>
-              <span className="absolute -bottom-2 left-0 right-0 h-3 bg-base-content/80 -z-10 transform -rotate-1"></span>
+          <div className="flex flex-col items-start mb-16">
+            <h2 className="text-4xl md:text-5xl font-light mb-4 tracking-tighter text-white">
+              บทความทั้งหมด
             </h2>
-            <p className="text-base-content/70 max-w-lg mb-6">เรื่องราวและบทความที่น่าสนใจ อัพเดทล่าสุดจากนักเขียนของเรา</p>
-            
-            <div className="w-16 h-1 bg-indigo-400 rounded-full"></div>
+            <p className="text-zinc-500 font-light max-w-lg text-lg">
+              อัพเดทข่าวสารล่าสุดกับรีวิวอนิเมะ 
+            </p>
           </div>
           
           <CategoryFilter categories={categories} currentCategory={category} />
           
           {posts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {posts.map(post => (
                 <BlogPostCard
                   key={post.id}
@@ -235,83 +208,39 @@ async function AllBlogPostGrid({ searchParams }) {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <div className="mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-300" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.536 5.879a1 1 0 001.415 0 3 3 0 014.242 0 1 1 0 001.415-1.415 5 5 0 00-7.072 0 1 1 0 000 1.415z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <p className="text-xl font-medium text-gray-500">ไม่พบบทความในหมวดหมู่นี้</p>
-              <p className="text-sm text-gray-400 mt-1">ลองเลือกหมวดหมู่อื่น หรือกลับไปที่หมวดหมู่ทั้งหมด</p>
+            <div className="text-center py-24 border border-zinc-900 border-dashed rounded-lg bg-zinc-950/50">
+              <p className="text-xl font-light text-zinc-500">No posts found in this category.</p>
+              <Link href="?" className="text-sm text-zinc-600 mt-2 hover:text-white underline transition-colors">Return to all posts</Link>
             </div>
           )}
           
           {pagination.totalPages > 1 && (
-            <div className="flex justify-center mt-12">
-              <div className="flex items-center gap-2">
+            <div className="flex justify-center mt-20 border-t border-zinc-900 pt-8">
+              <div className="flex items-center gap-4">
                 {page > 1 && (
                   <Link 
                     href={category ? 
                       `?category=${category}&page=${page - 1}` : 
                       `?page=${page - 1}`}
                   >
-                    <span className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-600 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
+                    <span className="px-4 py-2 border border-zinc-800 hover:border-zinc-600 text-zinc-400 hover:text-white text-sm transition-all">
+                      Previous
                     </span>
                   </Link>
                 )}
                 
-                {Array.from({ length: pagination.totalPages }, (_, index) => {
-                  const pageNum = index + 1;
-                  
-                  if (
-                    pageNum === 1 || 
-                    pageNum === pagination.totalPages || 
-                    (pageNum >= page - 1 && pageNum <= page + 1)
-                  ) {
-                    const href = category ? 
-                      `?category=${category}&page=${pageNum}` : 
-                      `?page=${pageNum}`;
-                    
-                    return (
-                      <Link 
-                        key={pageNum}
-                        href={href}
-                      >
-                        <span className={`w-10 h-10 flex items-center justify-center rounded-full text-sm font-medium transition-all
-                          ${page === pageNum 
-                            ? 'bg-indigo-600 text-white border-2 border-indigo-600 shadow-md' 
-                            : 'border-2 border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-600'}`}>
-                          {pageNum}
-                        </span>
-                      </Link>
-                    );
-                  }
-                  
-                  if (
-                    (pageNum === page - 2 && page > 3) || 
-                    (pageNum === page + 2 && page < pagination.totalPages - 2)
-                  ) {
-                    return (
-                      <span key={pageNum} className="text-gray-400 px-1">...</span>
-                    );
-                  }
-                  
-                  return null;
-                })}
-                
+                <span className="text-zinc-500 text-sm font-mono">
+                  Page {page} of {pagination.totalPages}
+                </span>
+
                 {page < pagination.totalPages && (
                   <Link 
                     href={category ? 
                       `?category=${category}&page=${page + 1}` : 
                       `?page=${page + 1}`}
                   >
-                    <span className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-600 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                      </svg>
+                    <span className="px-4 py-2 border border-zinc-800 hover:border-zinc-600 text-zinc-400 hover:text-white text-sm transition-all">
+                      Next
                     </span>
                   </Link>
                 )}

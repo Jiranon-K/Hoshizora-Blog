@@ -6,57 +6,56 @@ import { getImageUrl } from "@/lib/helpers";
 
 const BlogPostCard = ({ title, description, category, date, author, authorTitle, image, slug }) => {
   return (
-    <div className="card bg-base-100 h-full overflow-hidden border border-gray-100 rounded-lg transition-all duration-300 hover:shadow-md">
-     
-      <figure className="relative h-48 overflow-hidden">
-        <img
-          src={getImageUrl(image)} 
-          alt={title}
-          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-        />
-        <div className="absolute top-3 left-3">
-          <span className="bg-primary/90 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">
-            {category}
-          </span>
+    <Link href={`/blog/${slug}`} className="group block h-full"> 
+       <div className="bg-zinc-950 h-full border border-zinc-900 transition-all duration-300 hover:border-zinc-600 flex flex-col">
+        {/* Image - 16:9 Aspect Ratio enforced if needed, or keeping h-48 */}
+        <div className="relative h-48 overflow-hidden border-b border-zinc-900">
+          <img
+            src={getImageUrl(image)}
+            alt={title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-60"
+          />
+          <div className="absolute top-3 left-3">
+             <span className="bg-black/80 backdrop-blur-sm text-zinc-300 text-[10px] uppercase tracking-widest px-2 py-1 border border-zinc-800">
+              {category}
+            </span>
+          </div>
         </div>
-      </figure>
 
-      <div className="card-body p-4">
-        <div className="flex items-center text-xs text-gray-500 mb-2">
-          <span>{date}</span>
-        </div>
-        
-        <h2 className="card-title text-lg font-medium mb-2 line-clamp-2">
-          {title}
-        </h2>
-        
-        <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-          {description}
-        </p>
-        
-        <div className="flex items-center mt-auto pt-2 border-t border-gray-100">
-          <div className="w-8 h-8 rounded-full overflow-hidden mr-3">
-            <img 
-              src={getImageUrl(author.avatar )}  
-              alt={author.display_name || "Author"} 
-              className="w-full h-full object-cover"
-            />
+        <div className="p-5 flex-grow flex flex-col">
+          <div className="flex items-center text-xs text-zinc-500 mb-3 space-x-2 font-light">
+             <span>
+              {date}
+            </span>
           </div>
-          <div>
-            <p className="text-sm font-medium">{typeof author === 'object' ? author.display_name || "Author" : author}</p>
-            <p className="text-xs text-gray-500">{authorTitle}</p>
-          </div>
-          
-          <div className="ml-auto">
-            <Link href={`/blog/${slug}`}>
-              <button className="btn btn-sm btn-ghost text-primary">
-                อ่านต่อ
-              </button>
-            </Link>
+
+          <h3 className="text-lg font-light text-white mb-2 line-clamp-2 group-hover:text-zinc-200 transition-colors">
+            {title}
+          </h3>
+
+          <p className="text-sm text-zinc-500 font-light mb-4 line-clamp-3">
+            {description}
+          </p>
+
+          <div className="mt-auto pt-4 border-t border-zinc-900 flex items-center">
+            <div className="w-6 h-6 rounded-full overflow-hidden mr-2 border border-zinc-800 grayscale opacity-70">
+              <img
+                src={getImageUrl(author.avatar)}
+                alt={author.display_name || "Author"}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex flex-col">
+                <span className="text-xs font-light text-zinc-300">{typeof author === 'object' ? author.display_name || "Author" : author}</span>
+                 {/* Optional: Author Title if needed, maybe hide for minimal look */}
+            </div>
+             <div className="ml-auto"> 
+                 <span className="text-xs text-zinc-500 uppercase tracking-widest group-hover:text-white transition-colors">อ่านต่อ</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -100,55 +99,25 @@ async function BlogPostGrid() {
   // Skeleton for empty state
   if (blogPosts.length === 0) {
     return (
-      <div className="w-full py-8 px-4 md:py-12 md:px-6 lg:py-16 lg:px-8">
+      <div className="w-full py-16 px-4 md:px-6 lg:px-8 border-t border-zinc-900">
         <div className="mx-auto max-w-screen-xl">
-          <div className="flex flex-col items-center mb-10 text-center">
-            <div className="skeleton h-10 w-48 mb-4"></div>
-            <div className="skeleton h-5 w-80"></div>
+           <div className="flex flex-col items-center mb-12 text-center animate-pulse">
+            <div className="h-8 w-48 bg-zinc-900 mb-4 rounded"></div>
+            <div className="h-4 w-64 bg-zinc-900 rounded"></div>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-pulse">
             {[...Array(4)].map((_, index) => (
-              <div key={index} className="card bg-base-100 h-full overflow-hidden border border-gray-100 rounded-lg">
-                {/* Image skeleton */}
-                <figure className="relative h-48 overflow-hidden">
-                  <div className="skeleton w-full h-full"></div>
-                  <div className="absolute top-3 left-3">
-                    <div className="skeleton h-5 w-16 rounded-md"></div>
-                  </div>
-                </figure>
-
-                <div className="card-body p-4">
-                  {/* Date skeleton */}
-                  <div className="skeleton h-3 w-24 mb-2"></div>
-                  
-                  {/* Title skeleton */}
-                  <div className="skeleton h-6 w-full mb-1"></div>
-                  <div className="skeleton h-6 w-3/4 mb-2"></div>
-                  
-                  {/* Description skeleton */}
-                  <div className="skeleton h-4 w-full mb-1"></div>
-                  <div className="skeleton h-4 w-full mb-1"></div>
-                  <div className="skeleton h-4 w-2/3 mb-4"></div>
-                  
-                  {/* Author section skeleton */}
-                  <div className="flex items-center mt-auto pt-2 border-t border-gray-100">
-                    <div className="skeleton w-8 h-8 rounded-full shrink-0 mr-3"></div>
-                    <div>
-                      <div className="skeleton h-4 w-20 mb-1"></div>
-                      <div className="skeleton h-3 w-16"></div>
-                    </div>
-                    <div className="ml-auto">
-                      <div className="skeleton h-8 w-16 rounded-lg"></div>
-                    </div>
-                  </div>
+              <div key={index} className="bg-zinc-950 border border-zinc-900 h-96 flex flex-col">
+                <div className="h-48 bg-zinc-900 w-full mb-4"></div>
+                <div className="p-5 flex-grow">
+                     <div className="h-3 w-20 bg-zinc-900 mb-3 rounded"></div>
+                     <div className="h-6 w-full bg-zinc-900 mb-2 rounded"></div>
+                     <div className="h-4 w-full bg-zinc-900 mb-1 rounded"></div>
+                      <div className="h-4 w-2/3 bg-zinc-900 rounded"></div>
                 </div>
               </div>
             ))}
-          </div>
-          
-          <div className="flex justify-center mt-10">
-            <div className="skeleton h-12 w-40 rounded-lg"></div>
           </div>
         </div>
       </div>
@@ -156,14 +125,14 @@ async function BlogPostGrid() {
   }
 
   return (
-    <div className="w-full py-8 px-4 md:py-12 md:px-6 lg:py-16 lg:px-8">
+    <div className="w-full py-16 px-4 md:px-6 lg:px-8 bg-black border-t border-zinc-900">
       <div className="mx-auto max-w-screen-xl">
-        <div className="flex flex-col items-center mb-10 text-center">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">บทความล่าสุด</h2>
-          <p className="text-gray-600 max-w-md">เรื่องราวและบทความที่น่าสนใจ อัพเดทล่าสุดจากนักเขียนของเรา</p>
+        <div className="flex flex-col items-center mb-12 text-center">
+          <h2 className="text-3xl font-light text-white mb-3 tracking-tight">Latest Articles</h2>
+           <div className="h-px w-16 bg-zinc-800"></div>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {blogPosts.map(post => (
             <BlogPostCard
               key={post.id}
@@ -179,9 +148,11 @@ async function BlogPostGrid() {
           ))}
         </div>
         
-        <div className="flex justify-center mt-10">
+        <div className="flex justify-center mt-12">
           <Link href="/blog">
-            <button className="btn btn-outline btn-primary">ดูบทความทั้งหมด</button>
+            <button className="text-zinc-400 hover:text-white text-sm uppercase tracking-widest border-b border-zinc-800 hover:border-white transition-all pb-1">
+              อ่านทั้งหมด
+            </button>
           </Link>
         </div>
       </div>

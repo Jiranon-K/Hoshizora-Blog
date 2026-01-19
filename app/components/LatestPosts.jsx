@@ -45,92 +45,60 @@ async function getLatestPosts() {
 }
 
 function PostCard({ title, description, category, date, author, image, slug }) {
-  const categoryColor = getCategoryColors(category);
-  
   return (
-    <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group">
-      <figure className="relative overflow-hidden h-56">
-        <div className="relative w-full h-full">
+    <Link href={`/blog/${slug}`} className="group block h-full"> 
+      <div className="bg-zinc-950 h-full border border-zinc-900 transition-all duration-300 hover:border-zinc-700 flex flex-col pt-0">
+        <figure className="relative overflow-hidden h-56 border-b border-zinc-900">
           <Image
             src={getImageUrl(image)}
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover group-hover:scale-110 transition-transform duration-500"
+            className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-60"
           />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/60"></div>
-        
-        <div className="absolute top-4 left-4 z-10">
-          <span className={`badge badge-soft ${
-              categoryColor === 'text-pink-400 bg-neutral-950' ? 'badge-secondary' :
-              categoryColor === 'text-purple-400 bg-neutral-950' ? 'badge-secondary' :
-              categoryColor === 'text-blue-400 bg-neutral-950' ? 'badge-secondary' :
-              categoryColor === 'text-amber-400 bg-neutral-950' ? 'badge-secondary' :
-              'badge-error'
-            }`}>
-            {category}
-          </span>
-        </div>
-      </figure>
+          
+          <div className="absolute top-4 left-4 z-10">
+            <span className="bg-black/80 backdrop-blur-sm text-zinc-300 text-[10px] uppercase tracking-widest px-2 py-1 border border-zinc-800">
+              {category}
+            </span>
+          </div>
+        </figure>
 
-      <div className="card-body">
-        <h3 className="card-title text-base-content hover:text-primary-focus transition-colors duration-300 line-clamp-2">
-          {title}
-        </h3>
-        
-        <p className="text-base-content/70 line-clamp-3 flex-grow">
-          {description}
-        </p>
-        
-        <div className="card-actions justify-between items-center mt-4 pt-4 border-t border-base-content/10">
-          <div className="flex items-center space-x-3">
-            <div className="avatar">
-              <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+        <div className="p-6 flex-grow flex flex-col">
+          <h3 className="text-xl font-light text-white mb-3 tracking-tight group-hover:text-zinc-200 transition-colors line-clamp-2">
+            {title}
+          </h3>
+          
+          <p className="text-sm text-zinc-500 font-light mb-6 line-clamp-3 leading-relaxed flex-grow">
+            {description}
+          </p>
+          
+          <div className="flex items-center mt-auto pt-4 border-t border-zinc-900">
+            <div className="flex items-center space-x-3">
+              <div className="relative w-8 h-8 rounded-full overflow-hidden border border-zinc-800">
                 <Image 
                   src={getImageUrl(typeof author === 'object' ? author.avatar : '/avatar/default.webp')} 
                   alt={typeof author === 'object' ? author.display_name : author}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
+                  fill
+                  className="object-cover"
                 />
               </div>
+              <div>
+                <p className="text-xs font-light text-zinc-300">
+                  {typeof author === 'object' ? author.display_name : author}
+                </p>
+                <p className="text-[10px] text-zinc-600">{date}</p>
+              </div>
             </div>
-            <div>
-              <p className="font-medium text-base-content">
-                {typeof author === 'object' ? author.display_name : author}
-              </p>
-              <p className="text-xs text-base-content/50">{date}</p>
+            
+            <div className="ml-auto">
+               <span className="text-xs text-zinc-500 uppercase tracking-widest group-hover:text-white transition-colors">อ่านต่อ</span>
             </div>
           </div>
-          
-          <Link 
-            href={`/blog/${slug}`} 
-            className="btn btn-primary btn-sm"
-          >
-            อ่านต่อ
-          </Link>
         </div>
       </div>
-    </div>
+    </Link>
   );
-}
-
-function getCategoryColors(category) {
-  const normalizedCategory = (category || '').toLowerCase();
-  
-  const colorMap = {
-    'anime': 'text-pink-400 bg-pink-500/20',
-    'novel': 'text-purple-400 bg-purple-500/20',
-    'visual': 'text-blue-400 bg-blue-500/20',
-    'game': 'text-amber-400 bg-amber-500/20'
-  };
-
-  for (const [key, value] of Object.entries(colorMap)) {
-    if (normalizedCategory.includes(key)) return value;
-  }
-  
-  return 'text-emerald-400 bg-emerald-500/20';
 }
 
 export default async function LatestPosts() {
@@ -138,46 +106,22 @@ export default async function LatestPosts() {
 
   if (posts.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex justify-between items-center mb-8">
-          <div className="skeleton h-9 w-40"></div>
-          <div className="skeleton h-12 w-36 rounded-lg"></div>
+      <div className="container mx-auto px-4 py-16">
+        <div className="flex justify-between items-center mb-12 animate-pulse">
+           <div className="h-8 w-48 bg-zinc-900 rounded"></div>
+           <div className="h-10 w-36 bg-zinc-900 rounded"></div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
           {[...Array(6)].map((_, index) => (
-            <div key={index} className="card bg-base-100 shadow-xl">
-              {/* Image skeleton */}
-              <figure className="relative h-56">
-                <div className="skeleton w-full h-full"></div>
-                <div className="absolute top-4 left-4">
-                  <div className="skeleton h-5 w-16 rounded-full"></div>
-                </div>
-              </figure>
-
-              <div className="card-body">
-                {/* Title skeleton */}
-                <div className="skeleton h-6 w-full mb-2"></div>
-                <div className="skeleton h-6 w-3/4"></div>
-                
-                {/* Description skeleton */}
-                <div className="skeleton h-4 w-full mt-4"></div>
-                <div className="skeleton h-4 w-full"></div>
-                <div className="skeleton h-4 w-2/3"></div>
-                
-                {/* Footer skeleton */}
-                <div className="card-actions justify-between items-center mt-4 pt-4 border-t border-base-content/10">
-                  <div className="flex items-center space-x-3">
-                    <div className="skeleton w-10 h-10 rounded-full shrink-0"></div>
-                    <div>
-                      <div className="skeleton h-4 w-24 mb-1"></div>
-                      <div className="skeleton h-3 w-20"></div>
-                    </div>
-                  </div>
-                  <div className="skeleton h-8 w-20 rounded-lg"></div>
+             <div key={index} className="bg-zinc-950 border border-zinc-900 h-96 flex flex-col">
+                <div className="h-56 bg-zinc-900 w-full mb-4"></div>
+                <div className="p-6 flex-grow">
+                     <div className="h-6 w-3/4 bg-zinc-900 mb-4 rounded"></div>
+                     <div className="h-4 w-full bg-zinc-900 mb-2 rounded"></div>
+                     <div className="h-4 w-2/3 bg-zinc-900 rounded"></div>
                 </div>
               </div>
-            </div>
           ))}
         </div>
       </div>
@@ -185,14 +129,17 @@ export default async function LatestPosts() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-bold text-base-content">บทความล่าสุด</h2>
+    <div className="container mx-auto px-4 py-16">
+      <div className="flex justify-between items-end mb-12 border-b border-zinc-900 pb-4">
+        <div>
+           <h2 className="text-3xl font-light text-white tracking-tight mb-2">บทความล่าสุด</h2>
+           <p className="text-zinc-500 font-light text-sm">อัพเดทข่าวสารล่าสุดกับรีวิวอนิเมะ เกมเพลย์วิชวลโนเวล และสรุปเนื้อหาไลท์โนเวล</p>
+        </div>
         <Link 
           href="/blog" 
-          className="btn btn-outline btn-primary"
+          className="text-zinc-400 hover:text-white text-sm uppercase tracking-widest border-b border-zinc-800 hover:border-white transition-all pb-1 mb-1"
         >
-          บทความทั้งหมด
+          อ่านทั้งหมด
         </Link>
       </div>
       

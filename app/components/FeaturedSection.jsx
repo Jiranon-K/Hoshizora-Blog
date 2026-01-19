@@ -8,24 +8,27 @@ const FeaturedCard = ({ post, isLarge = false }) => {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className={`group block relative overflow-hidden rounded-xl ${
-        isLarge ? "h-134" : "h-64"
-      } shadow-md hover:shadow-xl transition-all duration-300`}
+      className={`group block relative overflow-hidden bg-zinc-950 border border-zinc-900 hover:border-zinc-700 transition-all duration-500 ${
+        isLarge ? "h-[500px]" : "h-60"
+      }`}
     >
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30 z-10"></div>
-      <img
-        src={getImageUrl(post.featured_image)}
-        alt={post.title}
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-      />
+      {/* Image Container with darkening overlay */}
+      <div className="absolute inset-0 overflow-hidden">
+         <img
+          src={getImageUrl(post.featured_image)}
+          alt={post.title}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-60 group-hover:opacity-40"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+      </div>
 
       {/* Content */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
-        <div className="flex items-center mb-3">
-          <span className="bg-primary/90 backdrop-blur-sm text-pink-600 text-xs px-3 py-1 rounded-full shadow-sm mr-3">
+      <div className="absolute bottom-0 left-0 right-0 p-8 z-20 flex flex-col justify-end h-full">
+        <div className="flex items-center space-x-3 mb-4">
+          <span className="text-xs font-medium tracking-widest uppercase text-white border border-zinc-700 px-3 py-1 bg-black/50 backdrop-blur-sm">
             {post.category_name}
           </span>
-          <span className="text-white/80 text-xs">
+          <span className="text-zinc-400 text-xs font-light tracking-wide">
             {new Date(post.published_at).toLocaleDateString("th-TH", {
               year: "numeric",
               month: "long",
@@ -36,34 +39,32 @@ const FeaturedCard = ({ post, isLarge = false }) => {
 
         <h3
           className={`${
-            isLarge ? "text-2xl" : "text-xl"
-          } font-bold text-white mb-2 line-clamp-2 group-hover:text-amber-400  transition-colors`}
+            isLarge ? "text-4xl leading-tight" : "text-xl leading-snug"
+          } font-light tracking-tight text-white mb-3 group-hover:text-zinc-200 transition-colors`}
         >
           {post.title}
         </h3>
 
-        <p className="text-white/80 text-sm mb-3 line-clamp-2">
-          {post.description}
-        </p>
+        {isLarge && (
+           <p className="text-zinc-400 text-sm font-light mb-6 line-clamp-2 max-w-2xl">
+            {post.description}
+          </p>
+        )}
 
-        <div className="flex items-center">
-          <div className="avatar mr-3">
-            <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white/30">
-              <img
-                src={getImageUrl(
-                  post.authorAvatar || "/avatar/default.webp"
-                )}
-                alt={post.author}
-                className="w-full h-full object-cover"
-              />
-            </div>
+        <div className="flex items-center mt-auto pt-4 border-t border-white/10 w-full">
+          <div className="w-6 h-6 rounded-full overflow-hidden border border-zinc-700 mr-2">
+            <img
+              src={getImageUrl(
+                post.authorAvatar || "/avatar/default.webp"
+              )}
+              alt={post.author}
+              className="w-full h-full object-cover"
+            />
           </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium text-white">{post.author}</p>
-          </div>
-
-          <span className="text-white text-sm group-hover:underline transition-all">
-            อ่านเพิ่มเติม →
+          <span className="text-xs font-light text-zinc-300 uppercase tracking-wider">{post.author}</span>
+          
+           <span className="ml-auto text-xs font-light text-zinc-500 uppercase tracking-widest group-hover:text-white transition-colors">
+            อ่านต่อ
           </span>
         </div>
       </div>
@@ -117,46 +118,28 @@ export default function FeaturedSection() {
 
   if (loading || featuredPosts.length === 0) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-pulse">
         {/* Large featured skeleton */}
-        <div className="relative h-134 rounded-xl overflow-hidden shadow-md bg-base-100">
-          <div className="skeleton w-full h-full"></div>
-          <div className="absolute bottom-0 left-0 right-0 p-6 z-20 bg-gradient-to-t from-base-300/90 to-transparent">
-            <div className="flex items-center mb-3">
-              <div className="skeleton h-5 w-20 rounded-full mr-3"></div>
-              <div className="skeleton h-4 w-24"></div>
-            </div>
-            <div className="skeleton h-8 w-3/4 mb-2"></div>
-            <div className="skeleton h-8 w-1/2 mb-3"></div>
-            <div className="skeleton h-4 w-full mb-1"></div>
-            <div className="skeleton h-4 w-2/3 mb-3"></div>
-            <div className="flex items-center">
-              <div className="skeleton w-8 h-8 rounded-full shrink-0 mr-3"></div>
-              <div className="skeleton h-4 w-24"></div>
-              <div className="skeleton h-4 w-28 ml-auto"></div>
-            </div>
-          </div>
+        <div className="h-[500px] bg-zinc-950 border border-zinc-900 p-8 flex flex-col justify-end">
+          <div className="h-6 w-24 bg-zinc-900 mb-4 rounded"></div>
+          <div className="h-10 w-3/4 bg-zinc-900 mb-2 rounded"></div>
+           <div className="h-10 w-1/2 bg-zinc-900 mb-6 rounded"></div>
+           <div className="h-4 w-full bg-zinc-900 mb-2 rounded"></div>
+           <div className="h-4 w-2/3 bg-zinc-900 mb-6 rounded"></div>
+           <div className="flex justify-between items-center border-t border-zinc-900 pt-4">
+               <div className="h-6 w-32 bg-zinc-900 rounded"></div>
+           </div>
         </div>
 
         {/* Small featured skeletons */}
         <div className="grid grid-cols-1 gap-6">
           {[...Array(2)].map((_, index) => (
-            <div key={index} className="relative h-64 rounded-xl overflow-hidden shadow-md bg-base-100">
-              <div className="skeleton w-full h-full"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 z-20 bg-gradient-to-t from-base-300/90 to-transparent">
-                <div className="flex items-center mb-3">
-                  <div className="skeleton h-5 w-16 rounded-full mr-3"></div>
-                  <div className="skeleton h-4 w-20"></div>
-                </div>
-                <div className="skeleton h-6 w-3/4 mb-2"></div>
-                <div className="skeleton h-4 w-full mb-1"></div>
-                <div className="skeleton h-4 w-1/2 mb-3"></div>
-                <div className="flex items-center">
-                  <div className="skeleton w-8 h-8 rounded-full shrink-0 mr-3"></div>
-                  <div className="skeleton h-4 w-20"></div>
-                  <div className="skeleton h-4 w-24 ml-auto"></div>
-                </div>
-              </div>
+             <div key={index} className="h-60 bg-zinc-950 border border-zinc-900 p-6 flex flex-col justify-end">
+               <div className="h-4 w-20 bg-zinc-900 mb-3 rounded"></div>
+               <div className="h-6 w-3/4 bg-zinc-900 mb-2 rounded"></div>
+                <div className="flex justify-between items-center border-t border-zinc-900 pt-4 mt-2">
+                   <div className="h-4 w-24 bg-zinc-900 rounded"></div>
+               </div>
             </div>
           ))}
         </div>
@@ -170,7 +153,7 @@ export default function FeaturedSection() {
         <FeaturedCard post={featuredPosts[0]} isLarge={true} />
       )}
 
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 gap-6 content-between">
         {featuredPosts.slice(1, 3).map((post) => (
           <FeaturedCard key={post.id} post={post} />
         ))}

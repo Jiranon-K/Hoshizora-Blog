@@ -10,7 +10,7 @@ export default async function BlogPage({ searchParams }) {
   const page = Number(resolvedSearchParams?.page ?? 1);
 
   return (
-    <div>
+    <div className="bg-black min-h-screen">
       <AllBlogPostGrid 
         searchParams={{
           category,

@@ -6,26 +6,32 @@ import { getImageUrl } from "@/lib/helpers";
 
 const CategoryCard = ({ title, description, slug, image, postCount }) => {
   return (
-    <Link href={`/blog?category=${slug}`} className="group">
-      <div className="relative h-64 rounded-xl overflow-hidden shadow-md transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20 z-10"></div>
-        <img
-          src={getImageUrl(image)}
-          alt={title}
-          className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
-        />
+    <Link href={`/blog?category=${slug}`} className="group block h-full">
+      <div className="relative h-64 overflow-hidden border border-zinc-900 bg-zinc-950 transition-colors duration-300 hover:border-zinc-700">
+        {/* Background Image with heavy overlay */}
+        <div className="absolute inset-0">
+          <img
+            src={getImageUrl(image)}
+            alt={title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-40"
+          />
+          <div className="absolute inset-0 bg-black/60 group-hover:bg-black/70 transition-colors duration-300"></div>
+        </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
-          <h3 className="text-xl font-bold text-white mb-1">{title}</h3>
-          <p className="text-white/80 text-sm mb-3 line-clamp-2">
-            {description}
-          </p>
-          <div className="flex items-center justify-between">
-            <span className="text-xs bg-primary/80 text-pink-500 rounded-full px-3 py-1">
-              {postCount} โพสต์
-            </span>
-            <span className="text-white text-sm group-hover:underline transition-all">
-              อ่านเพิ่มเติม →
+        {/* Content */}
+        <div className="absolute inset-0 p-6 flex flex-col justify-end">
+          <div className="flex justify-between items-end">
+            <div>
+              <h3 className="text-2xl font-light text-white mb-2 tracking-tight group-hover:text-zinc-200 transition-colors">
+                {title}
+              </h3>
+              <p className="text-zinc-400 text-sm font-light line-clamp-2 max-w-xs group-hover:text-zinc-300 transition-colors">
+                {description}
+              </p>
+            </div>
+            
+             <span className="text-xs font-medium tracking-widest uppercase text-zinc-500 border border-zinc-800 px-2 py-1 bg-black">
+              {postCount} Posts
             </span>
           </div>
         </div>
@@ -76,27 +82,12 @@ const CategoryShowcase = () => {
 
   if (loading || categories.length === 0) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
         {[...Array(3)].map((_, index) => (
-          <div key={index} className="relative h-64 rounded-xl overflow-hidden shadow-md bg-base-100">
-            {/* Image skeleton */}
-            <div className="skeleton w-full h-full"></div>
-            
-            {/* Content overlay skeleton */}
-            <div className="absolute bottom-0 left-0 right-0 p-5 z-20 bg-gradient-to-t from-base-300/90 to-transparent">
-              {/* Title skeleton */}
-              <div className="skeleton h-6 w-3/4 mb-2"></div>
-              
-              {/* Description skeleton */}
-              <div className="skeleton h-4 w-full mb-1"></div>
-              <div className="skeleton h-4 w-2/3 mb-3"></div>
-              
-              {/* Footer skeleton */}
-              <div className="flex items-center justify-between">
-                <div className="skeleton h-5 w-16 rounded-full"></div>
-                <div className="skeleton h-4 w-24"></div>
-              </div>
-            </div>
+          <div key={index} className="h-64 bg-zinc-950 border border-zinc-900 p-6 flex flex-col justify-end">
+            <div className="h-8 w-1/2 bg-zinc-900 mb-2 rounded"></div>
+            <div className="h-4 w-full bg-zinc-900 mb-1 rounded"></div>
+            <div className="h-4 w-2/3 bg-zinc-900 rounded"></div>
           </div>
         ))}
       </div>

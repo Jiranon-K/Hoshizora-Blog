@@ -91,10 +91,10 @@ const Navbar = () => {
             
             <div className="w-px h-4 bg-zinc-800 mx-2"></div>
             
-            {/* ThemeSwitcher - Keeping capability but styling might need adjustment if forced dark */}
-            <div className="opacity-50 hover:opacity-100 transition-opacity">
+            
+            {/* <div className="opacity-50 hover:opacity-100 transition-opacity">
                 <ThemeSwitcher />
-            </div>
+            </div> */}
             
             <button 
               className="ml-2 px-4 py-1.5 rounded-md border border-zinc-800 bg-zinc-950 text-zinc-300 text-xs font-light hover:bg-zinc-900 hover:text-white hover:border-zinc-700 transition-all duration-300"
@@ -155,12 +155,12 @@ const Navbar = () => {
                 </Link>
               ))}
               
-              <div className="pt-6 mt-6 border-t border-zinc-900">
+              {/* <div className="pt-6 mt-6 border-t border-zinc-900">
                 <div className="flex items-center justify-between p-3 text-zinc-500">
                     <span className="font-light">Theme</span>
                     <ThemeSwitcher />
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           
