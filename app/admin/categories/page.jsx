@@ -8,9 +8,9 @@ import CategoryForm from '../components/categories/CategoryForm';
 import DeleteCategoryModal from '../components/categories/DeleteCategoryModal';
 import useAuth from '../../hooks/useAuth';
 import useCategoryManagement from '../../hooks/useCategoryManagement';
+import { FiPlus, FiArrowLeft } from 'react-icons/fi';
 
 export default function CategoriesPage() {
-  // ใช้ custom hooks
   const { user, loading: authLoading, handleLogout } = useAuth();
   const { 
     categories, 
@@ -34,63 +34,65 @@ export default function CategoriesPage() {
     handleDelete
   } = useCategoryManagement();
 
-  // แสดงตัวโหลดถ้ากำลังโหลดข้อมูล
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-neutral">
-        <AdminNavbar user={user} onLogout={handleLogout} />
-        <div className="flex justify-center items-center h-[80vh]">
-          <span className="loading loading-spinner loading-lg text-white"></span>
-        </div>
+      <div className="min-h-screen bg-black flex justify-center items-center">
+        <span className="loading loading-spinner loading-lg text-white"></span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral">
+    <div className="min-h-screen bg-black text-white" style={{ fontFamily: '"Mitr", sans-serif', fontWeight: 300 }}>
       <AdminNavbar user={user} onLogout={handleLogout} />
       
-      <div className="container mx-auto p-4">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          {/* หัวข้อและปุ่มเพิ่มหมวดหมู่ใหม่ */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-            <h1 className="text-2xl font-bold text-primary">จัดการหมวดหมู่</h1>
-            <button 
-              onClick={openAddForm}
-              className="btn btn-primary"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-              </svg>
-              เพิ่มหมวดหมู่ใหม่
-            </button>
+      <main className="container mx-auto px-6 py-12 max-w-6xl">
+        <header className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+             <h1 className="text-3xl font-light tracking-tight text-white mb-2">
+                หมวดหมู่  <span className="text-zinc-500 text-lg">/ จัดการ</span>
+            </h1>
+            <p className="text-zinc-400 font-light text-sm">
+                จัดการและกำหนดสิทธิ์
+            </p>
           </div>
           
-          {/* แสดงข้อความผิดพลาด (ถ้ามี) */}
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-              {error}
-            </div>
-          )}
+          <button 
+            onClick={openAddForm}
+            className="flex items-center gap-2 px-6 py-3 bg-white text-black text-xs font-bold uppercase tracking-widest hover:bg-zinc-200 transition-colors"
+          >
+            <FiPlus size={16} />
+            <span>เพิ่มหมวดหมู่</span>
+          </button>
+        </header>
           
-          {/* ตารางแสดงรายการหมวดหมู่ */}
-          <CategoryTable 
-            categories={categories} 
-            onEdit={openEditForm}
-            onDelete={openDeleteModal}
-            loading={loading}
-          />
-          
-          {/* ลิงก์กลับไปหน้า Dashboard */}
-          <div className="mt-6 text-center">
-            <Link href="/admin" className="btn btn-outline btn-neutral">
-              กลับไปหน้า Dashboard
-            </Link>
+        {/* Error Alert */}
+        {error && (
+          <div className="bg-red-950/30 border border-red-900/50 text-red-300 px-6 py-4 mb-8 flex items-center">
+            <span className="mr-2">!</span> {error}
           </div>
+        )}
+        
+        {/* Table */}
+        <div className="mb-8">
+            <CategoryTable 
+                categories={categories} 
+                onEdit={openEditForm}
+                onDelete={openDeleteModal}
+                loading={loading}
+            />
         </div>
-      </div>
+        
+        {/* Back Link */}
+        <div className="mt-8 border-t border-zinc-900 pt-8">
+            <Link href="/admin" className="inline-flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm font-light">
+                <FiArrowLeft />
+                <span>กลับไปหน้าแดชบอร์ด</span>
+            </Link>
+        </div>
+      </main>
       
-      {/* ฟอร์มเพิ่ม/แก้ไขหมวดหมู่ */}
+      {/* Modals */}
       <CategoryForm 
         isOpen={isFormOpen}
         onClose={closeForm}
@@ -102,7 +104,6 @@ export default function CategoriesPage() {
         isEditing={!!editingCategory}
       />
       
-      {/* โมดัลยืนยันการลบ */}
       <DeleteCategoryModal 
         isOpen={deleteModalOpen}
         onClose={closeDeleteModal}

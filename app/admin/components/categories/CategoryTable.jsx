@@ -11,24 +11,23 @@ const CategoryTable = ({
 }) => {
   if (loading) {
     return (
-      <div className="overflow-x-auto">
-        <table className="table table-zebra w-full">
+      <div className="overflow-x-auto border border-zinc-800 bg-zinc-950/50">
+        <table className="w-full text-left">
           <thead>
-            <tr className="bg-neutral text-neutral-content">
-              <th className="w-14">ID</th>
-              <th>ชื่อหมวดหมู่</th>
-              <th>Slug</th>
-              <th>จำนวนบทความ</th>
-              <th>วันที่สร้าง</th>
-              <th>จัดการ</th>
+            <tr className="border-b border-zinc-800 bg-black text-xs uppercase tracking-widest text-zinc-500">
+              <th className="p-4 font-medium">ชื่อหมวดหมู่</th>
+              <th className="p-4 font-medium">Slug</th>
+              <th className="p-4 font-medium">บทความ</th>
+              <th className="p-4 font-medium">วันที่สร้าง</th>
+              <th className="p-4 font-medium">จัดการ</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td colSpan="6" className="text-center py-4">
+              <td colSpan="5" className="text-center py-12">
                 <div className="flex justify-center items-center">
-                  <span className="loading loading-spinner loading-md"></span>
-                  <span className="ml-2">กำลังโหลดข้อมูล...</span>
+                  <span className="loading loading-spinner loading-md text-white"></span>
+                  <span className="ml-3 text-zinc-400 font-light">กำลังโหลดข้อมูล...</span>
                 </div>
               </td>
             </tr>
@@ -39,19 +38,18 @@ const CategoryTable = ({
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table table-zebra w-full">
+    <div className="overflow-x-auto border border-zinc-800 bg-zinc-950/50">
+      <table className="w-full text-left">
         <thead>
-          <tr className="bg-neutral text-neutral-content">
-            <th className="w-14">ID</th>
-            <th>ชื่อหมวดหมู่</th>
-            <th>Slug</th>
-            <th>จำนวนบทความ</th>
-            <th>วันที่สร้าง</th>
-            <th>จัดการ</th>
+          <tr className="border-b border-zinc-800 bg-black text-xs uppercase tracking-widest text-zinc-500">
+            <th className="p-4 font-medium">ชื่อหมวดหมู่</th>
+            <th className="p-4 font-medium">Slug</th>
+            <th className="p-4 font-medium">บทความ</th>
+            <th className="p-4 font-medium">วันที่สร้าง</th>
+            <th className="p-4 font-medium">จัดการ</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-zinc-800/50">
           {categories.length > 0 ? (
             categories.map((category) => (
               <CategoryRow 
@@ -63,7 +61,7 @@ const CategoryTable = ({
             ))
           ) : (
             <tr>
-              <td colSpan="6" className="text-center py-4">ไม่พบข้อมูลหมวดหมู่</td>
+              <td colSpan="5" className="text-center py-12 text-zinc-500 font-light">ไม่พบข้อมูลหมวดหมู่</td>
             </tr>
           )}
         </tbody>

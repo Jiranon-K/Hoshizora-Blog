@@ -13,26 +13,26 @@ const UserTable = ({
 }) => {
   if (loading) {
     return (
-      <div className="overflow-x-auto">
-        <table className="table table-zebra w-full">
+      <div className="overflow-x-auto border border-zinc-800 bg-zinc-950/50">
+        <table className="w-full text-left">
           <thead>
-            <tr className="bg-neutral text-neutral-content">
-              <th className="w-14">ID</th>
-              <th>ชื่อที่แสดง</th>
-              <th>ชื่อผู้ใช้</th>
-              <th>อีเมล</th>
-              <th>ตำแหน่ง</th>
-              <th>สิทธิ์</th>
-              <th>วันที่สร้าง</th>
-              <th>จัดการ</th>
+            <tr className="border-b border-zinc-800 bg-black text-xs uppercase tracking-widest text-zinc-500">
+              <th className="p-4 w-14 font-medium">ID</th>
+              <th className="p-4 font-medium">Display Name</th>
+              <th className="p-4 font-medium">Username</th>
+              <th className="p-4 font-medium">Email</th>
+              <th className="p-4 font-medium">Title</th>
+              <th className="p-4 font-medium">Role</th>
+              <th className="p-4 font-medium">Created</th>
+              <th className="p-4 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td colSpan="8" className="text-center py-4">
+              <td colSpan="8" className="text-center py-12">
                 <div className="flex justify-center items-center">
-                  <span className="loading loading-spinner loading-md"></span>
-                  <span className="ml-2">กำลังโหลดข้อมูล...</span>
+                  <span className="loading loading-spinner loading-md text-white"></span>
+                  <span className="ml-3 text-zinc-400 font-light">Loading users...</span>
                 </div>
               </td>
             </tr>
@@ -43,21 +43,21 @@ const UserTable = ({
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table table-zebra w-full">
+    <div className="overflow-x-auto border border-zinc-800 bg-zinc-950/50">
+      <table className="w-full text-left">
         <thead>
-          <tr className="bg-neutral text-neutral-content">
-            <th className="w-14">ID</th>
-            <th>ชื่อที่แสดง</th>
-            <th>ชื่อผู้ใช้</th>
-            <th>อีเมล</th>
-            <th>ตำแหน่ง</th>
-            <th>สิทธิ์</th>
-            <th>วันที่สร้าง</th>
-            <th>จัดการ</th>
+          <tr className="border-b border-zinc-800 bg-black text-xs uppercase tracking-widest text-zinc-500">
+            <th className="p-4 w-14 font-medium">ID</th>
+            <th className="p-4 font-medium">Display Name</th>
+            <th className="p-4 font-medium">Username</th>
+            <th className="p-4 font-medium">Email</th>
+            <th className="p-4 font-medium">Title</th>
+            <th className="p-4 font-medium">Role</th>
+            <th className="p-4 font-medium">Created</th>
+            <th className="p-4 font-medium">Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-zinc-800/50">
           {users.length > 0 ? (
             users.map((user) => (
               <UserRow 
@@ -71,7 +71,7 @@ const UserTable = ({
             ))
           ) : (
             <tr>
-              <td colSpan="8" className="text-center py-4">ไม่พบข้อมูลผู้ใช้</td>
+              <td colSpan="8" className="text-center py-12 text-zinc-500 font-light">No users found</td>
             </tr>
           )}
         </tbody>

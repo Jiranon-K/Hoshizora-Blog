@@ -6,6 +6,7 @@ import { fetchApi } from '@/lib/api-helpers';
 import ImageSelectorModal from '../../components/ImageSelectorModal';
 import { getImageUrl } from '@/lib/helpers';
 import toast from 'react-hot-toast';
+import { FiCamera } from 'react-icons/fi';
 
 const UserForm = ({ 
   userId = null,
@@ -73,27 +74,27 @@ const UserForm = ({
     const newErrors = {};
     
     if (!formData.username?.trim()) {
-      newErrors.username = 'กรุณาระบุชื่อผู้ใช้';
+      newErrors.username = 'Username is required';
     }
     
     if (!formData.email.trim()) {
-      newErrors.email = 'กรุณาระบุอีเมล';
+      newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'กรุณาระบุอีเมลที่ถูกต้อง';
+      newErrors.email = 'Invalid email format';
     }
     
     if (!userId && !formData.password) {
-      newErrors.password = 'กรุณาระบุรหัสผ่าน';
+      newErrors.password = 'Password is required';
     } else if (formData.password && formData.password.length < 6) {
-      newErrors.password = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
+      newErrors.password = 'Password must be at least 6 characters';
     }
     
     if (formData.password && formData.password !== formData.confirm_password) {
-      newErrors.confirm_password = 'รหัสผ่านไม่ตรงกัน';
+      newErrors.confirm_password = 'Passwords do not match';
     }
     
     if (!formData.display_name.trim()) {
-      newErrors.display_name = 'กรุณาระบุชื่อที่แสดง';
+      newErrors.display_name = 'Display name is required';
     }
     
     setErrors(newErrors);
@@ -135,7 +136,7 @@ const UserForm = ({
       router.push('/admin/users');
     } catch (error) {
       console.error('Error saving user:', error);
-      toast.error(error.message || 'เกิดข้อผิดพลาดในการบันทึกข้อมูลผู้ใช้');
+      toast.error(error.message || 'Error saving user data');
     } finally {
       setSubmitting(false);
     }
@@ -144,171 +145,160 @@ const UserForm = ({
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <span className="loading loading-spinner loading-lg"></span>
+        <span className="loading loading-spinner loading-lg text-white"></span>
       </div>
     );
   }
   
   return (
     <>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* ข้อมูลส่วนซ้าย */}
           <div className="space-y-6">
+            <h3 className="text-zinc-500 text-xs uppercase tracking-widest font-bold mb-4 border-b border-zinc-900 pb-2">Account Details</h3>
+            
             {/* ชื่อผู้ใช้ */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">ชื่อผู้ใช้</span>
-              </label>
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-medium">Username</label>
               <input 
                 type="text" 
                 name="username"
                 value={formData.username || ''}
                 onChange={handleChange}
-                className={`input input-bordered w-full ${errors.username ? 'input-error' : ''}`}
-                placeholder="ระบุชื่อผู้ใช้"
+                className={`w-full bg-transparent border-b border-zinc-800 py-2 text-sm text-white focus:outline-none focus:border-white transition-colors placeholder:text-zinc-700 ${errors.username ? 'border-red-500' : ''}`}
+                placeholder="Enter username"
               />
-              {errors.username && <span className="text-error text-sm mt-1">{errors.username}</span>}
+              {errors.username && <span className="text-red-400 text-xs mt-1">{errors.username}</span>}
             </div>
             
             {/* อีเมล */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">อีเมล</span>
-              </label>
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-medium">Email</label>
               <input 
                 type="email" 
                 name="email"
                 value={formData.email || ''}
                 onChange={handleChange}
-                className={`input input-bordered w-full ${errors.email ? 'input-error' : ''}`}
-                placeholder="ระบุอีเมล"
+                className={`w-full bg-transparent border-b border-zinc-800 py-2 text-sm text-white focus:outline-none focus:border-white transition-colors placeholder:text-zinc-700 ${errors.email ? 'border-red-500' : ''}`}
+                placeholder="email@example.com"
               />
-              {errors.email && <span className="text-error text-sm mt-1">{errors.email}</span>}
+              {errors.email && <span className="text-red-400 text-xs mt-1">{errors.email}</span>}
             </div>
             
             {/* รหัสผ่าน */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">
-                  รหัสผ่าน {userId && '(เว้นว่างไว้หากไม่ต้องการเปลี่ยน)'}
-                </span>
+            <div className="space-y-2 pt-4">
+              <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-medium">
+                Password {userId && <span className="text-zinc-700 text-[10px] normal-case ml-2">(Leave blank to keep current)</span>}
               </label>
               <input 
                 type="password" 
                 name="password"
                 value={formData.password || ''}
                 onChange={handleChange}
-                className={`input input-bordered w-full ${errors.password ? 'input-error' : ''}`}
-                placeholder={userId ? 'เว้นว่างไว้หากไม่ต้องการเปลี่ยน' : 'ระบุรหัสผ่าน'}
+                className={`w-full bg-transparent border-b border-zinc-800 py-2 text-sm text-white focus:outline-none focus:border-white transition-colors placeholder:text-zinc-700 ${errors.password ? 'border-red-500' : ''}`}
+                placeholder={userId ? '••••••••' : 'Enter password'}
               />
-              {errors.password && <span className="text-error text-sm mt-1">{errors.password}</span>}
+              {errors.password && <span className="text-red-400 text-xs mt-1">{errors.password}</span>}
             </div>
             
             {/* ยืนยันรหัสผ่าน */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">ยืนยันรหัสผ่าน</span>
-              </label>
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-medium">Confirm Password</label>
               <input 
                 type="password" 
                 name="confirm_password"
                 value={formData.confirm_password || ''}
                 onChange={handleChange}
-                className={`input input-bordered w-full ${errors.confirm_password ? 'input-error' : ''}`}
-                placeholder="ยืนยันรหัสผ่าน"
+                className={`w-full bg-transparent border-b border-zinc-800 py-2 text-sm text-white focus:outline-none focus:border-white transition-colors placeholder:text-zinc-700 ${errors.confirm_password ? 'border-red-500' : ''}`}
+                placeholder="Confirm password"
                 disabled={!formData.password}
               />
-              {errors.confirm_password && <span className="text-error text-sm mt-1">{errors.confirm_password}</span>}
+              {errors.confirm_password && <span className="text-red-400 text-xs mt-1">{errors.confirm_password}</span>}
             </div>
           </div>
           
           {/* ข้อมูลส่วนขวา */}
           <div className="space-y-6">
+            <h3 className="text-zinc-500 text-xs uppercase tracking-widest font-bold mb-4 border-b border-zinc-900 pb-2">Profile Details</h3>
+            
+            {/* รูปโปรไฟล์ */}
+            <div className="flex items-start gap-6 mb-6">
+                 <div className="w-24 h-24 rounded-full overflow-hidden bg-zinc-900 border border-zinc-800 relative group">
+                    <img 
+                        src={getImageUrl(formData.avatar)} 
+                        alt="Profile" 
+                        className="w-full h-full object-cover" 
+                        onError={(e) => { e.target.src = '/avatar/default.webp'; }}
+                    />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <FiCamera className="text-white" />
+                    </div>
+                 </div>
+                 <div className="flex-1 space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-medium">Avatar</label>
+                    <div className="flex gap-2">
+                        <input 
+                            type="text" 
+                            name="avatar"
+                            value={formData.avatar || ''}
+                            onChange={handleChange}
+                            className="bg-transparent border-b border-zinc-800 w-full text-xs text-zinc-400 focus:outline-none focus:border-white py-1"
+                            placeholder="/avatar/..."
+                            readOnly
+                        />
+                         <button
+                            type="button"
+                            className="px-3 py-1 bg-zinc-900 text-[10px] text-white uppercase tracking-widest hover:bg-zinc-800 transition-colors"
+                            onClick={() => setIsImageSelectorOpen(true)}
+                            >
+                            Select
+                        </button>
+                    </div>
+                 </div>
+            </div>
+
             {/* ชื่อที่แสดง */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">ชื่อที่แสดง</span>
-              </label>
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-medium">Display Name</label>
               <input 
                 type="text" 
                 name="display_name"
                 value={formData.display_name || ''}
                 onChange={handleChange}
-                className={`input input-bordered w-full ${errors.display_name ? 'input-error' : ''}`}
-                placeholder="ระบุชื่อที่แสดง"
+                className={`w-full bg-transparent border-b border-zinc-800 py-2 text-sm text-white focus:outline-none focus:border-white transition-colors placeholder:text-zinc-700 ${errors.display_name ? 'border-red-500' : ''}`}
+                placeholder="Enter display name"
               />
-              {errors.display_name && <span className="text-error text-sm mt-1">{errors.display_name}</span>}
+              {errors.display_name && <span className="text-red-400 text-xs mt-1">{errors.display_name}</span>}
             </div>
             
-            {/* รูปโปรไฟล์ */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">รูปโปรไฟล์</span>
-              </label>
-              <div className="flex items-center">
-                <input 
-                  type="text" 
-                  name="avatar"
-                  value={formData.avatar || ''}
-                  onChange={handleChange}
-                  className="input input-bordered w-full mr-2"
-                  placeholder="URL ของรูปโปรไฟล์"
-                  readOnly
-                />
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => setIsImageSelectorOpen(true)}
-                >
-                  เลือกรูปภาพ
-                </button>
-              </div>
-              
-              {formData.avatar && (
-                <div className="mt-2">
-                  <img 
-                    src={getImageUrl(formData.avatar)} 
-                    alt="รูปโปรไฟล์" 
-                    className="w-20 h-20 rounded-full object-cover border" 
-                    onError={(e) => {
-                      e.target.src = '/avatar/default.webp';
-                    }}
-                  />
-                </div>
-              )}
-            </div>
             
             {/* ตำแหน่ง */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">ตำแหน่ง</span>
-              </label>
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-medium">Title / Position</label>
               <input 
                 type="text" 
                 name="title"
                 value={formData.title || ''}
                 onChange={handleChange}
-                className="input input-bordered w-full"
-                placeholder="ระบุตำแหน่ง (ไม่บังคับ)"
+                className="w-full bg-transparent border-b border-zinc-800 py-2 text-sm text-white focus:outline-none focus:border-white transition-colors placeholder:text-zinc-700"
+                placeholder="e.g. Editor in Chief"
               />
             </div>
             
             {/* สิทธิ์การใช้งาน */}
             {isAdmin && (
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">สิทธิ์การใช้งาน</span>
-                </label>
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-medium">Role</label>
                 <select 
                   name="role"
                   value={formData.role || 'author'}
                   onChange={handleChange}
-                  className="select select-bordered w-full"
+                  className="w-full bg-transparent border-b border-zinc-800 py-2 text-sm text-white focus:outline-none focus:border-white transition-colors appearance-none cursor-pointer"
                 >
-                  <option value="admin">ผู้ดูแลระบบ</option>
-                  <option value="author">ผู้เขียน</option>
-                  <option value="editor">บรรณาธิการ</option>
+                  <option value="admin" className="bg-black">Admin</option>
+                  <option value="author" className="bg-black">Author</option>
+                  <option value="editor" className="bg-black">Editor</option>
                 </select>
               </div>
             )}
@@ -316,37 +306,32 @@ const UserForm = ({
         </div>
         
         {/* ประวัติโดยย่อ */}
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text">ประวัติโดยย่อ</span>
-          </label>
+        <div className="space-y-2 pt-6 border-t border-zinc-900">
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-medium">Bio</label>
           <textarea 
             name="bio"
             value={formData.bio || ''}
             onChange={handleChange}
-            className="textarea textarea-bordered w-full h-32"
-            placeholder="ระบุประวัติโดยย่อ (ไม่บังคับ)"
+            className="w-full bg-zinc-950/50 border border-zinc-800 p-4 text-sm text-white focus:outline-none focus:border-white transition-colors h-32 resize-none placeholder:text-zinc-700"
+            placeholder="Write a short bio..."
           ></textarea>
         </div>
         
         {/* ปุ่มส่งฟอร์ม */}
-        <div className="flex justify-end gap-4 mt-6">
+        <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-zinc-900">
           <button 
             type="button" 
-            className="btn btn-neutral"
+            className="px-6 py-3 border border-zinc-800 text-zinc-400 text-xs font-bold uppercase tracking-widest hover:border-zinc-600 hover:text-white transition-colors"
             onClick={() => router.push('/admin/users')}
           >
-            ยกเลิก
+            Cancel
           </button>
           <button 
             type="submit" 
-            className="btn btn-primary"
+            className="px-6 py-3 bg-white text-black text-xs font-bold uppercase tracking-widest hover:bg-zinc-200 transition-colors disabled:opacity-50"
             disabled={submitting}
           >
-            {submitting ? 
-              <><span className="loading loading-spinner loading-sm"></span> กำลังบันทึก...</> : 
-              userId ? 'บันทึกการเปลี่ยนแปลง' : 'เพิ่มผู้ใช้'
-            }
+            {submitting ? 'Saving...' : (userId ? 'Save Changes' : 'Create User')}
           </button>
         </div>
       </form>

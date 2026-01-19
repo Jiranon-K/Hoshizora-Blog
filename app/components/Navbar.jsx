@@ -11,16 +11,13 @@ import {
   FaHome, 
   FaBook, 
   FaRegClock, 
-  FaHeadphonesAlt,
-  FaMoon,
-  FaSun
+  FaHeadphonesAlt
 } from "react-icons/fa";
 import ThemeSwitcher from './ThemeSwitcher';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [hoverItem, setHoverItem] = useState(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -46,9 +43,7 @@ const Navbar = () => {
 
   const menuItems = [
     { title: "หน้าแรก", href: "/", icon: <FaHome /> },
-    { title: "บทความ", href: "/blog", icon: <FaBook /> },
-    { title: "อนิเมะล่าสุด", href: "/blog?category=anime", icon: <FaRegClock /> },
-    { title: "วิชวลโนเวล", href: "/blog?category=visual-novel", icon: <FaHeadphonesAlt /> }
+  { title: "บทความ", href: "/blog", icon: <FaBook /> },
   ];
 
   const isActive = (path) => {
@@ -56,159 +51,134 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+    <nav className={`sticky top-0 z-50 w-full transition-all duration-300 border-b border-zinc-800 ${
       scrolled 
-      ? "bg-base-100/95 backdrop-blur-md shadow-md py-2" 
-      : "bg-base-100 py-4"
+      ? "bg-black/80 backdrop-blur-md py-3" 
+      : "bg-black py-5"
     }`}>
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400"></div>
-      
-      <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#6b46c1_0.8px,transparent_0.8px)] bg-[size:12px_12px]"></div>
       
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           
           <Link 
             href="/" 
-            className="relative group"
-            onMouseEnter={() => setHoverItem('logo')}
-            onMouseLeave={() => setHoverItem(null)}
+            className="group"
           >
-            <div className="flex items-center space-x-2">
-              <span className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+            <div className="flex items-center space-x-3">
+              <span className="font-light text-2xl tracking-tighter text-white group-hover:text-zinc-300 transition-colors">
                 Hoshizora
               </span>
-              <span className="relative px-2 py-0.5 text-xs bg-pink-500 text-white rounded-md font-bold tracking-wider overflow-hidden">
-                <span className="relative z-10">BLOG</span>
-                {hoverItem === 'logo' && (
-                  <span className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 animate-pulse"></span>
-                )}
+              <span className="px-2 py-0.5 text-[10px] bg-zinc-900 border border-zinc-700 text-zinc-400 rounded-full font-medium tracking-widest uppercase">
+                BLOG
               </span>
             </div>
-            
-            <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 transition-all duration-300 ${hoverItem === 'logo' ? 'w-full' : ''}`}></span>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center space-x-6">
             {menuItems.map((item, index) => (
               <Link 
                 key={index} 
                 href={item.href}
-                className={`relative px-3 py-2 rounded-lg flex items-center space-x-1 font-medium transition-all duration-300 overflow-hidden ${
+                className={`text-sm font-light tracking-wide transition-colors duration-200 flex items-center space-x-2 ${
                   isActive(item.href)
                   ? "text-white" 
-                  : "text-base-content hover:text-primary"
+                  : "text-zinc-500 hover:text-white"
                 }`}
-                onMouseEnter={() => setHoverItem(item.title)}
-                onMouseLeave={() => setHoverItem(null)}
               >
-                {isActive(item.href) && (
-                  <span className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 -z-10"></span>
-                )}
-                
-                {!isActive(item.href) && hoverItem === item.title && (
-                  <span className="absolute inset-0 bg-base-200 -z-10 animate-pulse"></span>
-                )}
-                
-                <span className="text-sm">{item.icon}</span>
                 <span>{item.title}</span>
-                
-                {hoverItem === item.title && (
-                  <span className="absolute top-0 -right-1 h-full w-4 bg-white/30 skew-x-[30deg] transform transition-all duration-300"></span>
-                )}
               </Link>
             ))}
             
-            {/* ThemeSwitcher */}
-            <ThemeSwitcher />
+            <div className="w-px h-4 bg-zinc-800 mx-2"></div>
+            
+            {/* ThemeSwitcher - Keeping capability but styling might need adjustment if forced dark */}
+            <div className="opacity-50 hover:opacity-100 transition-opacity">
+                <ThemeSwitcher />
+            </div>
             
             <button 
-              className="relative overflow-hidden ml-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium transition-all duration-300 hover:shadow-lg hover:scale-105"
+              className="ml-2 px-4 py-1.5 rounded-md border border-zinc-800 bg-zinc-950 text-zinc-300 text-xs font-light hover:bg-zinc-900 hover:text-white hover:border-zinc-700 transition-all duration-300"
               onClick={() => document.getElementById('contact_modal').showModal()}
             >
-              <span className="flex items-center space-x-1">
-                <FaEnvelope className="text-sm" />
-                <span>ติดต่อ</span>
+              <span className="flex items-center space-x-2">
+                <FaEnvelope className="text-[10px]" />
+                <span>CONTACT</span>
               </span>
-              
-              <span className="absolute -top-1 -right-1 w-8 h-8 bg-white/20 rounded-full transform scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 delay-100"></span>
             </button>
           </div>
 
           <button 
-            className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg text-base-content hover:bg-base-200 transition-colors"
+            className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg text-white hover:bg-zinc-900 transition-colors"
             onClick={toggleMenu}
           >
             {isMenuOpen ? (
-              <FaTimes size={20} className="text-primary" />
+              <FaTimes size={18} />
             ) : (
-              <FaBars size={20} />
+              <FaBars size={18} />
             )}
-            
-            <span className="absolute inset-0 rounded-lg bg-purple-200/50 transform scale-0 opacity-0 transition-all duration-300 hover:scale-100 hover:opacity-100"></span>
           </button>
         </div>
       </div>
 
-      {/* เมนูมือถือ */}
-      <div className={`fixed inset-0 bg-base-100 z-40 transform transition-transform duration-300 ease-in-out ${
+      {/* Mobile Menu */}
+      <div className={`fixed inset-0 bg-black z-40 transform transition-transform duration-300 ease-in-out ${
         isMenuOpen ? 'translate-x-0' : 'translate-x-full'
       } md:hidden`}>
         <div className="h-full flex flex-col overflow-y-auto">
-          <div className="flex justify-between items-center p-4 border-b border-base-200">
-            <Link href="/" className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600" onClick={closeMenu}>
-              Hoshizora Blog
+          <div className="flex justify-between items-center p-6 border-b border-zinc-800">
+             <Link href="/" className="font-light text-xl tracking-tighter text-white" onClick={closeMenu}>
+              Hoshizora
             </Link>
             <button 
               onClick={closeMenu}
-              className="p-2 rounded-full bg-base-200 text-primary hover:bg-base-300 transition-colors"
+              className="p-2 rounded-full hover:bg-zinc-900 text-zinc-400 transition-colors"
             >
-              <FaTimes size={20} />
+              <FaTimes size={18} />
             </button>
           </div>
           
-          <div className="p-4 flex-1">
-            <div className="space-y-2">
+          <div className="p-6 flex-1">
+            <div className="space-y-4">
               {menuItems.map((item, index) => (
                 <Link 
                   key={index} 
                   href={item.href}
-                  className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-300 ${
+                  className={`flex items-center space-x-4 p-3 rounded-lg transition-all duration-300 ${
                     isActive(item.href)
-                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white" 
-                    : "hover:bg-base-200 text-base-content"
+                    ? "bg-zinc-900 text-white border border-zinc-800" 
+                    : "text-zinc-500 hover:bg-zinc-950 hover:text-zinc-300"
                   }`}
                   onClick={closeMenu}
                 >
-                  <span className="text-xl">{item.icon}</span>
-                  <span className="font-medium">{item.title}</span>
+                  <span className="text-lg opacity-70">{item.icon}</span>
+                  <span className="font-light text-lg">{item.title}</span>
                 </Link>
               ))}
               
-              {/* ThemeSwitcher สำหรับโหมดมือถือ */}
-              <div className="flex items-center space-x-3 p-3 rounded-xl hover:bg-base-200 text-base-content">
-                <ThemeSwitcher />
-                <span className="font-medium">เปลี่ยนธีม</span>
+              <div className="pt-6 mt-6 border-t border-zinc-900">
+                <div className="flex items-center justify-between p-3 text-zinc-500">
+                    <span className="font-light">Theme</span>
+                    <ThemeSwitcher />
+                </div>
               </div>
             </div>
           </div>
           
-          <div className="mt-auto p-4 border-t border-base-200">
+          <div className="mt-auto p-6 border-t border-zinc-800">
             <button 
               onClick={() => {
                 document.getElementById('contact_modal').showModal();
                 closeMenu();
               }}
-              className="w-full p-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium flex items-center justify-center space-x-2"
+              className="w-full p-4 rounded-none border border-zinc-800 bg-zinc-950 text-white font-light uppercase tracking-widest hover:bg-zinc-900 transition-colors"
             >
-              <FaEnvelope />
-              <span>ติดต่อเรา</span>
+              Contact Us
             </button>
             
-            <div className="flex justify-center space-x-4 mt-6">
+            <div className="flex justify-center space-x-6 mt-8">
               <a 
                 href="mailto:jiranon46@gmail.com"
-                className="p-3 rounded-full bg-base-200 text-primary hover:bg-base-300 transition-colors"
+                className="text-zinc-600 hover:text-white transition-colors"
               >
                 <FaEnvelope size={20} />
               </a>
@@ -216,7 +186,7 @@ const Navbar = () => {
                 href="https://facebook.com/facebook-page" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-3 rounded-full bg-base-200 text-primary hover:bg-base-300 transition-colors"
+                className="text-zinc-600 hover:text-white transition-colors"
               >
                 <FaFacebook size={20} />
               </a>
@@ -225,26 +195,26 @@ const Navbar = () => {
         </div>
       </div>
 
-      <dialog id="contact_modal" className="modal modal-bottom sm:modal-middle">
-        <div className="modal-box bg-base-100 relative p-4 sm:p-6">
-          <div className="absolute right-3 top-3 sm:right-4 sm:top-4">
+      <dialog id="contact_modal" className="modal modal-bottom sm:modal-middle backdrop:bg-black/90">
+        <div className="modal-box bg-zinc-950 border border-zinc-800 rounded-none shadow-2xl relative p-6">
+          <div className="absolute right-4 top-4">
             <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost text-base-content hover:text-base-content">
-                <FaTimes size={20} />
+              <button className="text-zinc-500 hover:text-white transition-colors">
+                <FaTimes size={18} />
               </button>
             </form>
           </div>
           
-          <h3 className="font-bold text-xl mt-2 mb-5 sm:mb-6 text-center text-base-content">ติดต่อเรา</h3>
+          <h3 className="font-light text-2xl mb-8 text-center text-white tracking-tight">CONTACT US</h3>
           
-          <div className="space-y-4 sm:space-y-5">
+          <div className="space-y-4">
             <div className="w-full">
               <a 
                 href="mailto:jiranon46@gmail.com" 
-                className="btn btn-outline btn-primary h-auto py-3 px-4 flex items-center justify-center w-full text-sm sm:text-base"
+                className="flex items-center justify-center w-full py-3 px-4 border border-zinc-800 bg-black text-zinc-300 hover:border-zinc-500 hover:text-white transition-all duration-300"
               >
-                <FaEnvelope size={18} className="mr-2 flex-shrink-0" /> 
-                <span className="text-left overflow-hidden text-ellipsis">jiranon46@gmail.com</span>
+                <FaEnvelope size={16} className="mr-3" /> 
+                <span className="font-light">jiranon46@gmail.com</span>
               </a>
             </div>
             
@@ -253,10 +223,10 @@ const Navbar = () => {
                 href="https://facebook.com/facebook-page" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="btn btn-outline btn-primary h-auto py-3 px-4 flex items-center justify-center w-full text-sm sm:text-base"
+                className="flex items-center justify-center w-full py-3 px-4 border border-zinc-800 bg-black text-zinc-300 hover:border-zinc-500 hover:text-white transition-all duration-300"
               >
-                <FaFacebook size={18} className="mr-2 flex-shrink-0" /> 
-                <span className="text-left overflow-hidden text-ellipsis">Facebook Page</span>
+                <FaFacebook size={16} className="mr-3" /> 
+                <span className="font-light">Facebook Page</span>
               </a>
             </div>
           </div>

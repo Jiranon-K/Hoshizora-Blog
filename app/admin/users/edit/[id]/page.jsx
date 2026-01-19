@@ -29,9 +29,9 @@ export default function EditUserPage() {
       <AdminNavbar user={user} onLogout={handleLogout} />
       
       <div className="container mx-auto p-4">
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="rounded-lg shadow-md p-6">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-indigo-600">แก้ไขข้อมูลผู้ใช้</h1>
+            <h1 className="text-2xl font-bold text-white">แก้ไขข้อมูลผู้ใช้</h1>
             <Link href="/admin/users" className="btn btn-neutral">
               กลับไปหน้าจัดการผู้ใช้
             </Link>

@@ -1,6 +1,13 @@
 import "./globals.css";
 import ThemeProvider from './components/ThemeProvider';
 import ToastProvider from './components/ToastProvider';
+import { Mitr } from "next/font/google";
+
+const mitr = Mitr({
+  weight: ['200', '300', '400', '500', '600'],
+  subsets: ['thai', 'latin'],
+  variable: '--font-mitr',
+});
 
 export const metadata = {
   title: "Blog Hoshizora",
@@ -10,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="overflow-x-hidden" suppressHydrationWarning>
+      <body className={`${mitr.className} overflow-x-hidden`} suppressHydrationWarning>
         <ThemeProvider>
           {children}
           <ToastProvider />
