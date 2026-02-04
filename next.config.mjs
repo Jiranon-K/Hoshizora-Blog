@@ -26,7 +26,6 @@ const nextConfig = {
     ],
   },
 
-  serverExternalPackages: ["isomorphic-dompurify", "jsdom"],
   outputFileTracingRoot: process.cwd(),
 };
 

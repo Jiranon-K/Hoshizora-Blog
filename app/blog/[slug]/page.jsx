@@ -2,9 +2,38 @@ import React from "react";
 import BlogDetailClient from "./BlogDetailClient";
 import "../../styles/blogContent.css";
 import { getPostDetails, getAllPostSlugs } from "@/lib/blogService";
+import sanitizeHtml from "sanitize-html";
 
 // ISR: Revalidate every 60 seconds
 export const revalidate = 60;
+
+const sanitizeConfig = {
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+    "img",
+    "iframe",
+    "h1",
+    "h2",
+    "u",
+    "s",
+    "strike",
+    "span",
+  ]),
+  allowedAttributes: {
+    ...sanitizeHtml.defaults.allowedAttributes,
+    "*": ["class", "style", "title", "data-*"],
+    a: ["href", "name", "target", "rel"],
+    img: ["src", "srcset", "alt", "title", "width", "height", "loading"],
+    iframe: [
+      "src",
+      "width",
+      "height",
+      "frameborder",
+      "allow",
+      "allowfullscreen",
+    ],
+  },
+  allowedIframeHostnames: ["www.youtube.com", "youtube.com", "youtu.be"],
+};
 
 // Static Generation: Pre-render all blog posts at build time
 export async function generateStaticParams() {
@@ -17,6 +46,10 @@ export default async function BlogDetailPage({ params }) {
   const { slug } = resolvedParams;
 
   const data = await getPostDetails(slug);
+
+  if (data?.post?.content) {
+    data.post.content = sanitizeHtml(data.post.content, sanitizeConfig);
+  }
 
   // JSON-LD Structured Data for SEO
   const jsonLd = data?.post
