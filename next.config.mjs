@@ -26,10 +26,8 @@ const nextConfig = {
     ],
   },
 
-  experimental: {
-    outputFileTracingRoot: process.cwd(),
-  },
-
+  serverExternalPackages: ["isomorphic-dompurify"],
+  outputFileTracingRoot: process.cwd(),
   outputFileTracing: true,
 };
 
