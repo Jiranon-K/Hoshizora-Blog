@@ -6,7 +6,7 @@ cmds = [
 ]
 
 [phases.setup]
-nixPkgs = ["nodejs_20"]
+nixPkgs = ["nodejs_22"]
 
 [start]
 cmd = "node .next/standalone/server.js"
