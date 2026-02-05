@@ -30,9 +30,17 @@ const sanitizeConfig = {
       "frameborder",
       "allow",
       "allowfullscreen",
+      "loading",
+      "title",
     ],
   },
-  allowedIframeHostnames: ["www.youtube.com", "youtube.com", "youtu.be"],
+  allowedIframeHostnames: [
+    "www.youtube.com",
+    "youtube.com",
+    "youtu.be",
+    "www.youtube-nocookie.com",
+    "youtube-nocookie.com",
+  ],
 };
 
 // Static Generation: Pre-render all blog posts at build time
