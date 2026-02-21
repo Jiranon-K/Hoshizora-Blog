@@ -1,37 +1,31 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
-    usernameOrEmail: '',
-    password: '',
+    usernameOrEmail: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [sessionExpired, setSessionExpired] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
 
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-    }, 100);
-
-    const expired = searchParams.get('expired');
-    if (expired === 'true') {
+    const expired = searchParams.get("expired");
+    if (expired === "true") {
       setSessionExpired(true);
-      setError('Your session has expired. Please login again.');
-      toast.error('Your session has expired. Please login again.');
+      setError("Your session has expired. Please login again.");
+      toast.error("Your session has expired. Please login again.");
     }
-
-    return () => clearTimeout(timer);
   }, [searchParams]);
 
   const handleChange = (e) => {
@@ -44,14 +38,14 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
@@ -59,21 +53,21 @@ const LoginForm = () => {
       const data = await response.json();
 
       if (!data.success) {
-        const errorMessage = data.message || 'การเข้าสู่ระบบไม่สำเร็จ';
+        const errorMessage = data.message || "การเข้าสู่ระบบไม่สำเร็จ";
         setError(errorMessage);
         toast.error(errorMessage);
         setLoading(false);
         return;
       }
 
-      localStorage.setItem('blog_user', JSON.stringify(data.user));
-      toast.success('เข้าสู่ระบบสำเร็จ');
-      router.push('/admin');
+      localStorage.setItem("blog_user", JSON.stringify(data.user));
+      toast.success("เข้าสู่ระบบสำเร็จ");
+      router.push("/admin");
     } catch (error) {
-      const errorMessage = 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์';
+      const errorMessage = "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์";
       setError(errorMessage);
       toast.error(errorMessage);
-      console.error('Login error:', error);
+      console.error("Login error:", error);
     } finally {
       setLoading(false);
     }
@@ -82,10 +76,15 @@ const LoginForm = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden">
       {/* Minimal Card Container */}
-      <div
-        className={`w-full max-w-md bg-zinc-950 border border-zinc-900 p-8 transition-all duration-700 transform ${
-          isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-        }`}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.7,
+          ease: [0.16, 1, 0.3, 1],
+          delay: 0.1,
+        }}
+        className="w-full max-w-md bg-zinc-950 border border-zinc-900 p-8"
       >
         {/* Header */}
         <div className="mb-10">
@@ -146,7 +145,7 @@ const LoginForm = () => {
             </label>
             <div className="relative">
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
                 value={formData.password}
@@ -266,16 +265,17 @@ const LoginForm = () => {
             กลับไปยังหน้าหลัก
           </Link>
         </div>
-      </div>
+      </motion.div>
 
       {/* Footer Copyright */}
-      <div
-        className={`absolute bottom-6 text-center w-full text-zinc-600 text-xs font-light tracking-wide transition-all duration-1000 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
+        className="absolute bottom-6 text-center w-full text-zinc-600 text-xs font-light tracking-wide"
       >
         © {new Date().getFullYear()} Hoshizora Blog
-      </div>
+      </motion.div>
     </div>
   );
 };

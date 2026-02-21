@@ -3,40 +3,66 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { getImageUrl } from "@/lib/helpers";
+import { motion, AnimatePresence } from "framer-motion";
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.25, 0.1, 0.25, 1],
+    },
+  },
+};
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.05,
+    },
+  },
+};
 
 const CategoryCard = ({ title, description, slug, image, postCount }) => {
   return (
-    <Link href={`/blog?category=${slug}`} className="group block h-full">
-      <div className="relative h-64 overflow-hidden border border-zinc-900 bg-zinc-950 transition-colors duration-300 hover:border-zinc-700">
-        {/* Background Image with heavy overlay */}
-        <div className="absolute inset-0">
-          <img
-            src={getImageUrl(image)}
-            alt={title}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-40"
-          />
-          <div className="absolute inset-0 bg-black/60 group-hover:bg-black/70 transition-colors duration-300"></div>
-        </div>
+    <motion.div variants={cardVariants}>
+      <Link href={`/blog?category=${slug}`} className="group block h-full">
+        <div className="relative h-64 overflow-hidden border border-zinc-900 bg-zinc-950 transition-colors duration-300 hover:border-zinc-700">
+          {/* Background Image with heavy overlay */}
+          <div className="absolute inset-0">
+            <img
+              src={getImageUrl(image)}
+              alt={title}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-40"
+            />
+            <div className="absolute inset-0 bg-black/60 group-hover:bg-black/70 transition-colors duration-300"></div>
+          </div>
 
-        {/* Content */}
-        <div className="absolute inset-0 p-6 flex flex-col justify-end">
-          <div className="flex justify-between items-end">
-            <div>
-              <h3 className="text-2xl font-light text-white mb-2 tracking-tight group-hover:text-zinc-200 transition-colors">
-                {title}
-              </h3>
-              <p className="text-zinc-400 text-sm font-light line-clamp-2 max-w-xs group-hover:text-zinc-300 transition-colors">
-                {description}
-              </p>
+          {/* Content */}
+          <div className="absolute inset-0 p-6 flex flex-col justify-end">
+            <div className="flex justify-between items-end">
+              <div>
+                <h3 className="text-2xl font-light text-white mb-2 tracking-tight group-hover:text-zinc-200 transition-colors">
+                  {title}
+                </h3>
+                <p className="text-zinc-400 text-sm font-light line-clamp-2 max-w-xs group-hover:text-zinc-300 transition-colors">
+                  {description}
+                </p>
+              </div>
+
+              <span className="text-xs font-medium tracking-widest uppercase text-zinc-500 border border-zinc-800 px-2 py-1 bg-black">
+                {postCount} โพสต์
+              </span>
             </div>
-            
-             <span className="text-xs font-medium tracking-widest uppercase text-zinc-500 border border-zinc-800 px-2 py-1 bg-black">
-              {postCount} โพสต์
-            </span>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 };
 
@@ -53,7 +79,8 @@ const CategoryShowcase = () => {
         const enhancedCategories = data.map((cat) => ({
           ...cat,
           image: cat.showcaseImage || "/placeholder-image.jpg",
-          description: cat.showcaseDescription || getDefaultCategoryDescription(cat.slug),
+          description:
+            cat.showcaseDescription || getDefaultCategoryDescription(cat.slug),
         }));
 
         setCategories(enhancedCategories);
@@ -84,7 +111,10 @@ const CategoryShowcase = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
         {[...Array(3)].map((_, index) => (
-          <div key={index} className="h-64 bg-zinc-950 border border-zinc-900 p-6 flex flex-col justify-end">
+          <div
+            key={index}
+            className="h-64 bg-zinc-950 border border-zinc-900 p-6 flex flex-col justify-end"
+          >
             <div className="h-8 w-1/2 bg-zinc-900 mb-2 rounded"></div>
             <div className="h-4 w-full bg-zinc-900 mb-1 rounded"></div>
             <div className="h-4 w-2/3 bg-zinc-900 rounded"></div>
@@ -95,18 +125,26 @@ const CategoryShowcase = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {categories.map((category) => (
-        <CategoryCard
-          key={category.id}
-          title={category.name}
-          description={category.description}
-          slug={category.slug}
-          image={category.image}
-          postCount={category.post_count || 0}
-        />
-      ))}
-    </div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+      >
+        {categories.map((category) => (
+          <CategoryCard
+            key={category.id}
+            title={category.name}
+            description={category.description}
+            slug={category.slug}
+            image={category.image}
+            postCount={category.post_count || 0}
+          />
+        ))}
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

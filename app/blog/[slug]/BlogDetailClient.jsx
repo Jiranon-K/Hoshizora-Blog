@@ -9,6 +9,7 @@ import PostImage from "../components/PostImage";
 import AuthorBox from "../components/AuthorBox";
 import RelatedPosts from "../components/RelatedPosts";
 import "../../styles/blogContent.css";
+import FadeIn from "../../components/motion/FadeIn";
 
 const BlogDetailClient = ({ data, slug }) => {
   if (!data || !data.post) {
@@ -30,30 +31,42 @@ const BlogDetailClient = ({ data, slug }) => {
     <div className="w-full py-8 px-4 md:py-12 md:px-6 text-white bg-black">
       <div className="mx-auto max-w-3xl">
         {/* Breadcrumbs */}
-        <Breadcrumbs post={post} />
+        <FadeIn delay={0}>
+          <Breadcrumbs post={post} />
+        </FadeIn>
 
         {/* Header */}
-        <PostHeader post={post} />
+        <FadeIn delay={0.1}>
+          <PostHeader post={post} />
+        </FadeIn>
 
         {/* Featured Image */}
-        <PostImage image={post.image} title={post.title} />
+        <FadeIn delay={0.2} direction="none">
+          <PostImage image={post.image} title={post.title} />
+        </FadeIn>
 
-        {/* Content -*/}
-        <div
-          className="blog-content mb-8"
-          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-        />
+        {/* Content */}
+        <FadeIn delay={0.3}>
+          <div
+            className="blog-content mb-8"
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+          />
+        </FadeIn>
 
         {/* Author */}
-        <AuthorBox
-          author={post.author}
-          authorTitle={post.authorTitle}
-          authorBio={post.authorBio}
-          authorAvatar={post.authorAvatar}
-        />
+        <FadeIn delay={0.1}>
+          <AuthorBox
+            author={post.author}
+            authorTitle={post.authorTitle}
+            authorBio={post.authorBio}
+            authorAvatar={post.authorAvatar}
+          />
+        </FadeIn>
 
         {/* Related Posts */}
-        <RelatedPosts posts={relatedPosts} />
+        <FadeIn delay={0.15}>
+          <RelatedPosts posts={relatedPosts} />
+        </FadeIn>
       </div>
     </div>
   );
